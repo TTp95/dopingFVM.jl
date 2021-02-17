@@ -1,7 +1,7 @@
 name = "dopingFVM"
 uuid = "5b45d986-dd89-4206-a4bd-6fec840c3928"
 authors = ["Felipe A. Díaz"]
-version = "0.1.0"
+version = "0.1.1"
 
 [compat]
 julia = "1"
