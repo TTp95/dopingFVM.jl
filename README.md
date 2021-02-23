@@ -1,10 +1,3 @@
-#  <img src="/images/Logo_notex_dopingFVM.png" width="125" title="dopingFVM logo"> dopingFVM
-
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://TTp95.github.io/dopingFVM.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://TTp95.github.io/dopingFVM.jl/dev)
-[![Build Status](https://github.com/TTp95/dopingFVM.jl/workflows/CI/badge.svg)](https://github.com/TTp95/dopingFVM.jl/actions)
-[![Coverage](https://codecov.io/gh/TTp95/dopingFVM.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/TTp95/dopingFVM.jl)
-
 <div align="center">
   <h1><img src="/images/Logo_notex_dopingFVM.png" width="125" title="dopingFVM logo"> dopingFVM</h1>
   <p>
@@ -23,10 +16,10 @@
   </p>
 </div>
 
----
-
 # dopingFVM
 Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools set for numerically solving the Partial Diferential Equations Systems (PDEs) that describe the transport phenomenum. The scope of `dopingFVM`  that describe fluid mechanics, heat transfer, and any other phenomenum that could be described as a transport equation. This package.  
+
+---
 
 ## Table of Content
 * [dopingFVM](#dopingfvm)
