@@ -8,4 +8,4 @@ macro publish(mod,name)
   end
 end
 
-#@publish Helpers GridapType
+@publish Structures M

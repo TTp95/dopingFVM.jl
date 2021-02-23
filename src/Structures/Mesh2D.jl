@@ -18,3 +18,13 @@ builtin search :)
 # Throws
 - `NotFoundError`: I guess we could throw an error if `val` isn't found.
 """
+
+struct M
+    x::Array{Float64,1}         #Posición nodo, eje x
+    y::Array{Float64,1}         #Posición nodo, eje y
+    dx::Array{Float64,1}        #Longitud del vc eje x
+    dy::Array{Float64,1}        #Longitud del vc eje y
+    vol::Array{Float64,2}       #Volumen de vc
+    l1::Int64                   #Último nodo en eje x
+    m1::Int64                   #Último nodo en eje y
+end

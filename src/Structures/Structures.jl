@@ -11,7 +11,7 @@ using DocStringExtensions
 
 #import 
 
-#export 
+export M 
 
 include("Mesh2D.jl")
 
