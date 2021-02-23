@@ -18,7 +18,6 @@ builtin search :)
 # Throws
 - `NotFoundError`: I guess we could throw an error if `val` isn't found.
 """
-
 struct M
     x::Array{Float64,1}         #Posición nodo, eje x
     y::Array{Float64,1}         #Posición nodo, eje y

@@ -12,7 +12,6 @@ The module is structured in the following sub-modules:
 The exported names are:
 $(EXPORTS)
 """
-
 module dopingFVM
 
 using DocStringExtensions
