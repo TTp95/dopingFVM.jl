@@ -16,7 +16,31 @@ module dopingFVM
 
 using DocStringExtensions
 
+include("Convection/Convection.jl")
+
+include("CoupleAlgorithms/CoupleAlgorithms.jl")
+
+include("Diffusion/Diffusion.jl")
+
+include("dopingSolver/dopingSolver.jl")
+
+include("MeshGenerator/MeshGenerator.jl")
+
+include("Source/Source.jl")
+
 include("Structures/Structures.jl")
+
+include("StructuresConstructors/StructuresConstructors.jl")
+
+include("Tools/Tools.jl")
+
+include("Transient/Transient.jl")
+
+include("Turbulence/Turbulence.jl")
+
+include("TurbulenceCoupleAlgorithms/TurbulenceCoupleAlgorithms.jl")
+
+include("VisualizationData/VisualizationData.jl")
 
 include("Exports.jl")
 

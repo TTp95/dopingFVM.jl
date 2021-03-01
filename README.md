@@ -17,7 +17,7 @@
 </div>
 
 Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools set for numerically solving the Partial Diferential Equations Systems (PDEs) that describe the transport phenomenum. The scope of `dopingFVM`  that describe fluid mechanics, heat transfer, and any other phenomenum that could be described as a transport equation. This package.  
-ivim
+
 ---
 
 ## Table of Content
@@ -35,7 +35,7 @@ ivim
 Julia dopingFVM *will be* is registered in the Julia General Repository
 
 ```julia
-#using the internal package manager 
+#using the internal package manager
 ]
 add dopingFVM
 ```
@@ -64,11 +64,10 @@ add https://github.com/JuliaLang/Example.jl#master
 
 
 # TO DO LIST
--[] 
 -[]
 -[]
--[] 
+-[]
+-[]
 -[]
 
-# Citation 
-
+# Citation
