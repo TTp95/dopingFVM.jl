@@ -1,24 +1,23 @@
-<div align="center">
-  <h1><img src="/images/Logo_notex_dopingFVM.png" width="125" title="dopingFVM logo"> dopingFVM</h1>
+<div align="left">
+  <h1 id="dopingfvm"><img src="/images/Logo_notex_dopingFVM.png" width="125" title="dopingFVM logo"> dopingFVM</h1>
   <p>
-    <a href="https://TTp95.github.io/dopingFVM.jl/stable">
+    <a style="text-decoration: none" href="https://TTp95.github.io/dopingFVM.jl/stable">
       <img alt="Stable" src="https://img.shields.io/badge/docs-stable-blue.svg" />
     </a>
-    <a href="https://TTp95.github.io/dopingFVM.jl/dev">
+    <a style="text-decoration: none" href="https://TTp95.github.io/dopingFVM.jl/dev">
       <img alt="Dev" src="https://img.shields.io/badge/docs-dev-blue.svg" />
     </a>
-    <a href="https://github.com/TTp95/dopingFVM.jl/actions">
+    <a style="text-decoration: none" href="https://github.com/TTp95/dopingFVM.jl/actions">
       <img alt="Build Status" src="https://github.com/TTp95/dopingFVM.jl/workflows/CI/badge.svg"/>
     </a>
-    <a href="https://codecov.io/gh/TTp95/dopingFVM.jl">
+    <a style="text-decoration: none" href="https://codecov.io/gh/TTp95/dopingFVM.jl">
       <img alt="Coverage" src="https://codecov.io/gh/TTp95/dopingFVM.jl/branch/master/graph/badge.svg" />
     </a>
   </p>
 </div>
 
-# dopingFVM
 Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools set for numerically solving the Partial Diferential Equations Systems (PDEs) that describe the transport phenomenum. The scope of `dopingFVM`  that describe fluid mechanics, heat transfer, and any other phenomenum that could be described as a transport equation. This package.  
-
+ivim
 ---
 
 ## Table of Content
