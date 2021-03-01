@@ -16,7 +16,7 @@
   </p>
 </div>
 
-Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools set for numerically solving the Partial Diferential Equations Systems (PDEs) that describe the transport phenomenum. The scope of `dopingFVM`  that describe fluid mechanics, heat transfer, and any other phenomenum that could be described as a transport equation. This package.  
+`dopingFVM` is a Julia package that provides Finite Volume Method (FVM) tools for numerically solving the Partial Differential Equations Systems (PDEs) that describe the transport phenomenon. The `dopingFVM` package uses structured grids with the FVM to numerically solve fluid mechanics, heat transfer, and any similar phenomenon described as a transport equation system.
 
 ---
 
@@ -24,7 +24,9 @@ Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools se
 * [dopingFVM](#dopingfvm)
 * [Features](#features)
 * [Installation](#installation)
-* [Propurse](#propurse)
+* [Purpose](#propurse)
+* [To Do List](#to-do-list)
+* [Citation](#to-do-list)
 
 ---
 
@@ -32,7 +34,7 @@ Julia `dopingFVM` is a package that provides Finite Volume Method (FVM) tools se
 
 # Installation
 
-Julia dopingFVM *will be* is registered in the Julia General Repository
+Julia dopingFVM *will be* register in the Julia General Repository
 
 ```julia
 #using the internal package manager
@@ -43,31 +45,29 @@ add dopingFVM
 or
 
 ```julia
-#calling the Pkg manager from the Pkg libary
+#calling the Pkg manager from the Pkg library
 using Pkg
 
 Pkg.add("dopingFVM")
 ```
 
-To install the nighly version of dopingFVM:
+To install the nightly version of dopingFVM:
 
 ```julia
 #only recommended if the user required an urgent hotfix
 ]
-add https://github.com/JuliaLang/Example.jl#master
+add https://github.com/TTp95/dopingFVM.jl#master
 ```
 
-*Note: The `master` branch will never be merged with an incomplete in development feature. Bugs and glitchs could appear in the code, but no compiling error should be merged in the `master` branch. Commits without a version update will be only for minor hotfixes.*
+*Note: The `master` branch will never be merged with an incomplete in-development feature. Bugs could appear in the code, but no compiling error should be merged in the `master` branch. Commits without a version update will be only for minor hotfixes.*
 
-# Propurse
+# Purpose
 
 
 
-# TO DO LIST
--[]
--[]
--[]
--[]
--[]
+# To Do List
+-[x] Done.
+-[] Planned.
+
 
 # Citation
