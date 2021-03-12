@@ -2,7 +2,7 @@
 CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 
 """
-mutable struct CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+struct CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     eval::Array{T,1}
     iter::Array{T,1}
     time1::Array{T,1}
@@ -24,7 +24,7 @@ end
 CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 
 """
-mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     eval::Array{T,2}
     iter::Array{T,2}
     time1::Array{T,2}
@@ -46,7 +46,7 @@ end
 CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 
 """
-mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     eval::Array{T,3}
     iter::Array{T,3}
     time1::Array{T,3}

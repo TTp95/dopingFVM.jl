@@ -35,18 +35,7 @@ end
 CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
 
 """
-struct CSMaterialConstantImmutable{T<:AbstractFloat} <: MaterialCartesianStructured
-    ρ::T
-    μ::T
-    κ::T
-    cp::T
-end
-
-"""
-CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
-
-"""
-mutable struct CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
+struct CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
     ρ::T
     μ::T
     κ::T
