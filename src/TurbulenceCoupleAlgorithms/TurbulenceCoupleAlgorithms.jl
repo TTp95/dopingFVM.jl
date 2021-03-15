@@ -7,6 +7,8 @@ $(EXPORTS)
 """
 module TurbulenceCoupleAlgorithms
 
+using Base.Threads
+
 using DocStringExtensions
 
 #import

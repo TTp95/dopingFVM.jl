@@ -1,43 +1,46 @@
 """
-CSMaterial1D{T<:AbstractFloat} <: MaterialCartesianStructured
 
 """
-struct CSMaterial1D{T<:AbstractFloat} <: MaterialCartesianStructured
-    ρ::Array{T,1}
-    μ::Array{T,1}
-    κ::Array{T,1}
-    cp::Array{T,1}
+function create_CSMaterial end
+
+function create_CSMaterial(mesh::UnionCSMesh1D; T::Type{<:AbstractFloat}=Float64)
+    return CSMaterial1D{T}(
+        zeros(T, mesh.l1),
+        zeros(T, mesh.l1),
+        )
 end
 
-"""
-CSMaterial2D{T<:AbstractFloat} <: MaterialCartesianStructured
-
-"""
-struct CSMaterial2D{T<:AbstractFloat} <: MaterialCartesianStructured
-    ρ::Array{T,2}
-    μ::Array{T,2}
-    κ::Array{T,2}
-    cp::Array{T,2}
+function create_CSMaterial(mesh::UnionCSMesh2D; T::Type{<:AbstractFloat}=Float64)
+    return CSMaterial2D{T}(
+        zeros(T, mesh.l1, mesh.m1),
+        zeros(T, mesh.l1, mesh.m1),
+        )
 end
 
-"""
-CSMaterial3D{T<:AbstractFloat} <: MaterialCartesianStructured
-
-"""
-struct CSMaterial3D{T<:AbstractFloat} <: MaterialCartesianStructured
-    ρ::Array{T,3}
-    μ::Array{T,3}
-    κ::Array{T,3}
-    cp::Array{T,3}
+function create_CSMaterial(mesh::UnionCSMesh3D; T::Type{<:AbstractFloat}=Float64)
+    return CSMaterial3D{T}(
+        zeros(T, mesh.l1, mesh.m1, mesh.n1),
+        zeros(T, mesh.l1, mesh.m1, mesh.n1),
+        )
 end
 
-"""
-CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
+function create_CSMaterial(; T::Type{<:AbstractFloat}=Float64, mutable::Bool=true)
+    if mutable
+        return CSMaterialConstant{T}(0.0, 0.0)
+    elseif !mutable
+        return CSMaterialConstantImmutable{T}(0.0, 0.0)
+    end
+end
 
-"""
-struct CSMaterialConstant{T<:AbstractFloat} <: MaterialCartesianStructured
-    ρ::T
-    μ::T
-    κ::T
-    cp::T
+function create_CSMaterial(
+    ρ::AbstractFloat,
+    Γ::AbstractFloat;
+    T::Type{<:AbstractFloat}=Float64,
+    mutable::Bool=true,
+)
+    if mutable
+        return CSMaterialConstant{T}(ρ, Γ)
+    elseif !mutable
+        return CSMaterialConstantImmutable{T}(ρ, Γ)
+    end
 end

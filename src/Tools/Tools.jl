@@ -7,12 +7,30 @@ $(EXPORTS)
 """
 module Tools
 
+using Base.Threads
+
 using DocStringExtensions
 
-#import
+using dopingFVM.Structures
 
-#export M
+export assign_globalIndexCS!
+export maximum_globalIndexCS
+export order_iterCS!
+export order_timeCS!
+export remplace_offSolutionCS!
+export gamma_interpolationCS
+export density_interpolationCS
 
-#include(".jl")
+include("CSGlobalIndex.jl")
+
+include("CSOrderIter.jl")
+
+include("CSOrderTime.jl")
+
+include("CSReemplaceOffSolution.jl")
+
+include("CSDensityInterpolation.jl")
+
+include("CSGammaInterpolation.jl")
 
 end # module

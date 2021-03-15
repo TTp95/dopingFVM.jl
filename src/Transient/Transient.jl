@@ -7,9 +7,12 @@ $(EXPORTS)
 """
 module Transient
 
+using Base.Threads
+
 using DocStringExtensions
 
-#import
+using dopingFVM.Structures
+using dopingFVM.Tools
 
 #export M
 

@@ -7,6 +7,8 @@ $(EXPORTS)
 """
 module dopingSolver
 
+using Base.Threads
+
 using DocStringExtensions
 
 #import

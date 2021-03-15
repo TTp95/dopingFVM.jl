@@ -12,7 +12,7 @@ mutable struct BoundStructured{T<:AbstractFloat, N <: Signed} <: TypeDopingFMV
     e::T
     eval::T
 end
-
+Integer
 """
 Boundary{T<:AbstractFloat, N <: Signed} <: TypeDopingFMV
 

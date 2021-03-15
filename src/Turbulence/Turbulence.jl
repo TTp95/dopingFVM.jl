@@ -7,6 +7,8 @@ $(EXPORTS)
 """
 module Turbulence
 
+using Base.Threads
+
 using DocStringExtensions
 
 #import

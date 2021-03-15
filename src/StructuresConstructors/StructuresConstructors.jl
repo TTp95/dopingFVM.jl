@@ -9,32 +9,36 @@ module StructuresConstructors
 
 using DocStringExtensions
 
-#import
+using dopingFVM.Structures
 
-#export M
+export create_BoundStructured
+export create_CSMaterial
+export create_CSPhi
+export create_CSFaceVelocity
+export create_CSVelocity
 
-include("MeshCartesian.jl")
+include("BoundaryConditions.jl")
 
 include("PhiCartesian.jl")
 
 include("MaterialCartesian.jl")
 
-include("MeshPolar.jl")
-
 include("PhiPolar.jl")
 
 include("MaterialPolar.jl")
-
-include("MeshCylindrical.jl")
 
 include("PhiCylindrical.jl")
 
 include("MaterialCylindrical.jl")
 
-include("MeshSpherical.jl")
-
 include("PhiSpherical.jl")
 
 include("MaterialSpherical.jl")
+
+include("SystemConfig.jl")
+
+include("SystemTime.jl")
+
+include("DeltaTime.jl")
 
 end # module

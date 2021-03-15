@@ -7,6 +7,8 @@ $(EXPORTS)
 """
 module CoupleAlgorithms
 
+using Base.Threads
+
 using DocStringExtensions
 
 #import
