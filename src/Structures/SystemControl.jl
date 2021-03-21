@@ -8,10 +8,14 @@ mutable struct SystemControl{T <: AbstractFloat, N <: Signed} <: TypeDopingFMV
     iterate::Bool
     iterations::N
     iterationsTimeStep::N
+    minIterations::N
+    maxIterations::N
     timeSteps::N
     print::Bool
-    lastprint::T
-    printTimeStep::T
-    printIterations::N
-
+    printTime::T
+    printConsoleIterations::N
+    lastPrintTime::T
+    lastPrintConsoleIterations::T
+    SolvedtimeStep::Bool
+    SolvedProblem::Bool
 end

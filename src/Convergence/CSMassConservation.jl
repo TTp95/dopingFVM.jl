@@ -3,11 +3,11 @@
 """
 function mass_conservation end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity1D,
     material::CSMaterial1D,
     mesh::UnionCSMesh1D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1)
@@ -19,19 +19,19 @@ function mass_conservationCS(
             #Flux in x-cord
             if (i == 1)
                 dens1 = material.ρ[i]
-                dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
+                dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
             elseif (i == mesh.l1)
-                dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
+                dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
                 dens2 = material.ρ[i]
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
             else
-                dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
-                dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
+                dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
+                dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
@@ -46,19 +46,19 @@ function mass_conservationCS(
             #Flux in x-cord
             if (i == 1)
                 dens1 = material.ρ[i]
-                dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
+                dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
             elseif (i == mesh.l1)
-                dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
+                dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
                 dens2 = material.ρ[i]
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
             else
-                dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
-                dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
+                dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]])
+                dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]])
                 xflux1 = velocity.fValues.uFace[i] * dens1
                 xflux2 = velocity.fValues.uFace[i+1] * dens2
                 xflux = xflux2 - xflux1
@@ -71,11 +71,11 @@ function mass_conservationCS(
     return maximum(massFlux)
 end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity2D,
     material::CSMaterial2D,
     mesh::UnionCSMesh2D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1, mesh.m1)
@@ -89,19 +89,19 @@ function mass_conservationCS(
                 #Flux in x-cord
                 if (i == 1)
                     dens1 = material.ρ[i,j]
-                    dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
+                    dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
                 elseif (i == mesh.l1)
-                    dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
+                    dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
                     dens2 = material.ρ[i,j]
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
                 else
-                    dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
-                    dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
+                    dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
+                    dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
@@ -110,19 +110,19 @@ function mass_conservationCS(
                 #Flux in y-cord
                 if (j == 1)
                     dens1 = material.ρ[i,j]
-                    dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
+                    dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
                     yflux1 = velocity.fValues.vFace[i,j] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
                 elseif (j == mesh.m1)
-                    dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
+                    dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
                     dens2 = material.ρ[i,j]
                     yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
                 else
-                    dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
-                    dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
+                    dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
+                    dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
                     yflux1 = velocity.fValues.vFace[i,j] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
@@ -140,19 +140,19 @@ function mass_conservationCS(
                 #Flux in x-cord
                 if (i == 1)
                     dens1 = material.ρ[i,j]
-                    dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
+                    dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
                 elseif (i == mesh.l1)
-                    dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
+                    dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
                     dens2 = material.ρ[i,j]
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
                 else
-                    dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
-                    dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
+                    dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]])
+                    dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]])
                     xflux1 = velocity.fValues.uFace[i,j] * dens1 * mesh.dy[j]
                     xflux2 = velocity.fValues.uFace[i+1,j] * dens2 * mesh.dy[j]
                     xflux = xflux2 - xflux1
@@ -161,19 +161,19 @@ function mass_conservationCS(
                 #Flux in y-cord
                 if (j == 1)
                     dens1 = material.ρ[i,j]
-                    dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
+                    dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
                     yflux1 = velocity.fValues.vFace[i,j] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
                 elseif (j == mesh.m1)
-                    dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
+                    dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
                     dens2 = material.ρ[i,j]
                     yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
                 else
-                    dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
-                    dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
+                    dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]])
+                    dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]])
                     yflux1 = velocity.fValues.vFace[i,j] * dens1 * mesh.dx[i]
                     yflux2 = velocity.fValues.vFace[i,j+1] * dens2 * mesh.dx[i]
                     yflux = yflux2 - yflux1
@@ -187,11 +187,11 @@ function mass_conservationCS(
     return maximum(massFlux)
 end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity3D,
     material::CSMaterial3D,
     mesh::UnionCSMesh3D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1, mesh.m1, mesh.n1)
@@ -208,19 +208,19 @@ function mass_conservationCS(
                     #Flux in x-cord
                     if (i == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
+                        dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
                     elseif (i == mesh.l1)
-                        dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
+                        dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
                         dens2 = material.ρ[i,j,k]
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
-                        dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
+                        dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
+                        dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
@@ -229,19 +229,19 @@ function mass_conservationCS(
                     #Flux in y-cord
                     if (j == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
+                        dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
                     elseif (j == mesh.m1)
-                        dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
+                        dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
                         dens2 = material.ρ[i,j,k]
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
-                        dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
+                        dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
+                        dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
@@ -250,19 +250,19 @@ function mass_conservationCS(
                     #Flux in z-cord
                     if (k == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
+                        dens2 = density_interpolation([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
                     elseif (k == mesh.n1)
-                        dens1 = density_interpolationCS([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
+                        dens1 = density_interpolation([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
                         dens2 = material.ρ[i,j,k]
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
-                        dens2 = density_interpolationCS([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
+                        dens1 = density_interpolation([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
+                        dens2 = density_interpolation([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
@@ -284,19 +284,19 @@ function mass_conservationCS(
                     #Flux in x-cord
                     if (i == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
+                        dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
                     elseif (i == mesh.l1)
-                        dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
+                        dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
                         dens2 = material.ρ[i,j,k]
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
-                        dens2 = density_interpolationCS([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
+                        dens1 = density_interpolation([mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]])
+                        dens2 = density_interpolation([mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]])
                         xflux1 = velocity.fValues.uFace[i,j,k] * dens1 * mesh.dy[j] * mesh.dz[k]
                         xflux2 = velocity.fValues.uFace[i+1,j,k] * dens2 * mesh.dy[j] * mesh.dz[k]
                         xflux = xflux2 - xflux1
@@ -305,19 +305,19 @@ function mass_conservationCS(
                     #Flux in y-cord
                     if (j == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
+                        dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
                     elseif (j == mesh.m1)
-                        dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
+                        dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
                         dens2 = material.ρ[i,j,k]
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
-                        dens2 = density_interpolationCS([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
+                        dens1 = density_interpolation([mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]])
+                        dens2 = density_interpolation([mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]])
                         yflux1 = velocity.fValues.vFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dz[k]
                         yflux2 = velocity.fValues.vFace[i,j+1,k] * dens2 * mesh.dx[i] * mesh.dz[k]
                         yflux = yflux2 - yflux1
@@ -326,19 +326,19 @@ function mass_conservationCS(
                     #Flux in z-cord
                     if (k == 1)
                         dens1 = material.ρ[i,j,k]
-                        dens2 = density_interpolationCS([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
+                        dens2 = density_interpolation([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
                     elseif (k == mesh.n1)
-                        dens1 = density_interpolationCS([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
+                        dens1 = density_interpolation([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
                         dens2 = material.ρ[i,j,k]
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
                     else
-                        dens1 = density_interpolationCS([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
-                        dens2 = density_interpolationCS([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
+                        dens1 = density_interpolation([mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]])
+                        dens2 = density_interpolation([mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]])
                         zflux1 = velocity.fValues.wFace[i,j,k] * dens1 * mesh.dx[i] * mesh.dy[j]
                         zflux2 = velocity.fValues.wFace[i,j,k+1] * dens2 * mesh.dx[i] * mesh.dy[j]
                         zflux = zflux2 - zflux1
@@ -353,11 +353,11 @@ function mass_conservationCS(
     return maximum(massFlux)
 end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity1D,
-    material::UnionConstantMaterial,
+    material::UnionCSConstantMaterial,
     mesh::UnionCSMesh1D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1)
@@ -393,11 +393,11 @@ function mass_conservationCS(
     return maximum(massFlux)
 end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity2D,
-    material::UnionConstantMaterial,
+    material::UnionCSConstantMaterial,
     mesh::UnionCSMesh2D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1, mesh.m1)
@@ -453,11 +453,11 @@ function mass_conservationCS(
     return maximum(massFlux)
 end
 
-function mass_conservationCS(
+function mass_conservation(
     velocity::CSVelocity3D,
-    material::UnionConstantMaterial,
+    material::UnionCSConstantMaterial,
     mesh::UnionCSMesh3D;
-    threads = false,
+    threads::Bool = false,
 )
     #Inicializate variables
     massFlux = zeros(mesh.l1, mesh.m1, mesh.n1)

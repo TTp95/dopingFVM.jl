@@ -1,9 +1,9 @@
 """
 
 """
-function order_iterCS! end
+function order_iter! end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D;
     threads = false,
@@ -22,7 +22,7 @@ function order_iterCS!(
     return nothing
 end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D;
     threads = false,
@@ -45,7 +45,7 @@ function order_iterCS!(
     return nothing
 end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D;
     threads = false,
@@ -72,13 +72,13 @@ function order_iterCS!(
     return nothing
 end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSVelocity1D,
     mesh::UnionCSMesh1D;
     threads = false,
 )
-    order_iterCS!(phi.u, mesh; threads=threads)
-    order_iterCS!(phi.p, mesh; threads=threads)
+    order_iter!(phi.u, mesh; threads=threads)
+    order_iter!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:(mesh.l1 + 1)
@@ -93,14 +93,14 @@ function order_iterCS!(
     return nothing
 end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSVelocity2D,
     mesh::UnionCSMesh2D;
     threads = false,
 )
-    order_iterCS!(phi.u, mesh; threads=threads)
-    order_iterCS!(phi.v, mesh; threads=threads)
-    order_iterCS!(phi.p, mesh; threads=threads)
+    order_iter!(phi.u, mesh; threads=threads)
+    order_iter!(phi.v, mesh; threads=threads)
+    order_iter!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:mesh.l1
@@ -141,15 +141,15 @@ function order_iterCS!(
     return nothing
 end
 
-function order_iterCS!(
+function order_iter!(
     phi::CSVelocity3D,
     mesh::UnionCSMesh3D;
     threads = false,
 )
-    order_iterCS!(phi.u, mesh; threads=threads)
-    order_iterCS!(phi.v, mesh; threads=threads)
-    order_iterCS!(phi.w, mesh; threads=threads)
-    order_iterCS!(phi.p, mesh; threads=threads)
+    order_iter!(phi.u, mesh; threads=threads)
+    order_iter!(phi.v, mesh; threads=threads)
+    order_iter!(phi.w, mesh; threads=threads)
+    order_iter!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:mesh.l1

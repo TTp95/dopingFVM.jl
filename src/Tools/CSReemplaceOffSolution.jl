@@ -1,9 +1,9 @@
 """
 
 """
-function remplace_offSolutionCS! end
+function remplace_offSolution! end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D,
     offNodeValue::AbstractFloat;
@@ -27,7 +27,7 @@ function remplace_offSolutionCS!(
     return nothing
 end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D,
     offNodeValue::AbstractFloat;
@@ -55,7 +55,7 @@ function remplace_offSolutionCS!(
     return nothing
 end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D,
     offNodeValue::AbstractFloat;
@@ -87,7 +87,7 @@ function remplace_offSolutionCS!(
     return nothing
 end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D,
     offNodeValue::Array{AbstractFloat,1};
@@ -111,7 +111,7 @@ function remplace_offSolutionCS!(
     return nothing
 end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D,
     offNodeValue::Array{AbstractFloat,2};
@@ -139,7 +139,7 @@ function remplace_offSolutionCS!(
     return nothing
 end
 
-function remplace_offSolutionCS!(
+function remplace_offSolution!(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D,
     offNodeValue::Array{AbstractFloat,3};

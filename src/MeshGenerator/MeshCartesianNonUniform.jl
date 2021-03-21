@@ -1,7 +1,8 @@
 """
 
+
 """
-function create_nonuniform_CSMesh(
+function create_nonuniform_Mesh(
     zoneNumbers::Union{Array{<:Signed,1}, Array{<:Signed,2}},
     zoneLengths::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}},
     zoneVolumes::Union{Array{<:Signed,2}, Array{<:Signed,1}},
@@ -14,7 +15,7 @@ function create_nonuniform_CSMesh(
     dimenssion = length(zoneNumbers)
 
     if (dimenssion==1)
-        mesh = create_nonuniform_CSMesh1D(
+        mesh = create_nonuniform_Mesh1D(
             zoneNumbers,
             zoneLengths,
             zoneVolumes,
@@ -22,7 +23,7 @@ function create_nonuniform_CSMesh(
             T=T, N=N, threads=threads, mutable=mutable,
         )
     elseif (dimenssion==2)
-        mesh = create_nonuniform_CSMesh2D(
+        mesh = create_nonuniform_Mesh2D(
             zoneNumbers,
             zoneLengths,
             zoneVolumes,
@@ -30,7 +31,7 @@ function create_nonuniform_CSMesh(
             T=T, N=N, threads=threads, mutable=mutable,
         )
     elseif (dimenssion==3)
-        mesh = create_nonuniform_CSMesh3D(
+        mesh = create_nonuniform_Mesh3D(
             zoneNumbers,
             zoneLengths,
             zoneVolumes,
@@ -47,7 +48,7 @@ end
 """
 
 """
-function create_nonuniform_CSMesh1D(
+function create_nonuniform_Mesh1D(
     zoneNumbers::Union{Array{<:Signed,1}, Array{<:Signed,2}},
     zoneLengths::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}},
     zoneVolumes::Union{Array{<:Signed,2}, Array{<:Signed,1}},
@@ -118,7 +119,7 @@ end
 """
 
 """
-function create_nonuniform_CSMesh2D(
+function create_nonuniform_Mesh2D(
     zoneNumbers::Union{Array{<:Signed,1}, Array{<:Signed,2}},
     zoneLengths::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}},
     zoneVolumes::Union{Array{<:Signed,2}, Array{<:Signed,1}},
@@ -228,7 +229,7 @@ end
 """
 
 """
-function create_nonuniform_CSMesh3D(
+function create_nonuniform_Mesh3D(
     zoneNumbers::Union{Array{<:Signed,1}, Array{<:Signed,2}},
     zoneLengths::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}},
     zoneVolumes::Union{Array{<:Signed,2}, Array{<:Signed,1}},

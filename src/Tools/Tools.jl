@@ -13,13 +13,19 @@ using DocStringExtensions
 
 using dopingFVM.Structures
 
-export assign_globalIndexCS!
-export maximum_globalIndexCS
-export order_iterCS!
-export order_timeCS!
-export remplace_offSolutionCS!
-export gamma_interpolationCS
-export density_interpolationCS
+export _globalIndex_
+export assign_globalIndex!
+export maximum_globalIndex
+
+export order_iter!
+export order_time!
+
+export phi_to_vector
+export vector_to_phi!
+export remplace_offSolution!
+
+export gamma_interpolation
+export density_interpolation
 
 include("CSGlobalIndex.jl")
 
@@ -27,10 +33,14 @@ include("CSOrderIter.jl")
 
 include("CSOrderTime.jl")
 
-include("CSReemplaceOffSolution.jl")
-
 include("CSDensityInterpolation.jl")
 
 include("CSGammaInterpolation.jl")
+
+include("CSPhiToVector.jl")
+
+include("CSVectorToPhi.jl")
+
+include("CSReemplaceOffSolution.jl")
 
 end # module

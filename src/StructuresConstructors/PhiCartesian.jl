@@ -1,11 +1,12 @@
 """
 
 """
-function create_CSPhi end
+function create_Phi end
 
-function create_CSPhi(
+function create_Phi(
     mesh::UnionCSMesh1D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
 )
     #allocate variables
     eval = zeros(T, mesh.l1)
@@ -17,9 +18,11 @@ function create_CSPhi(
     sourceP = zeros(T, mesh.l1)
     onoff = ones(Bool, mesh.l1)
     gIndex = zeros(N, mesh.l1)
-    bound = zeros(Bool, mesh.l1)
-    nbound = zeros(N, mesh.l1)
+    bounds = zeros(Bool, mesh.l1)
+    nbounds = zeros(N, mesh.l1)
     convergence = 0.0
+    convergenceRelative = 0.0
+    convergenceTime = 0.0
     tolerance = 0.0
 
     return CSPhi1D{T,N}(
@@ -32,16 +35,19 @@ function create_CSPhi(
         sourceP,
         onoff,
         gIndex,
-        bound,
-        nbound,
+        bounds,
+        nbounds,
         convergence,
+        convergenceRelative,
+        convergenceTime,
         tolerance,
     )
 end
 
-function create_CSPhi(
+function create_Phi(
     mesh::UnionCSMesh2D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
 )
     #allocate variables
     eval = zeros(T, mesh.l1, mesh.m1)
@@ -53,9 +59,11 @@ function create_CSPhi(
     sourceP = zeros(T, mesh.l1, mesh.m1)
     onoff = ones(Bool, mesh.l1, mesh.m1)
     gIndex = zeros(N, mesh.l1, mesh.m1)
-    bound = zeros(Bool, mesh.l1, mesh.m1)
-    nbound = zeros(N, mesh.l1, mesh.m1)
+    bounds = zeros(Bool, mesh.l1, mesh.m1)
+    nbounds = zeros(N, mesh.l1, mesh.m1)
     convergence = 0.0
+    convergenceRelative = 0.0
+    convergenceTime = 0.0
     tolerance = 0.0
 
     return CSPhi2D{T,N}(
@@ -68,16 +76,19 @@ function create_CSPhi(
         sourceP,
         onoff,
         gIndex,
-        bound,
-        nbound,
+        bounds,
+        nbounds,
         convergence,
+        convergenceRelative,
+        convergenceTime,
         tolerance,
     )
 end
 
-function create_CSPhi(
+function create_Phi(
     mesh::UnionCSMesh3D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
 )
     #allocate variables
     eval = zeros(T, mesh.l1, mesh.m1, mesh.n1)
@@ -89,9 +100,11 @@ function create_CSPhi(
     sourceP = zeros(T, mesh.l1, mesh.m1, mesh.n1)
     onoff = ones(Bool, mesh.l1, mesh.m1, mesh.n1)
     gIndex = zeros(N, mesh.l1, mesh.m1, mesh.n1)
-    bound = zeros(Bool, mesh.l1, mesh.m1, mesh.n1)
-    nbound = zeros(N, mesh.l1, mesh.m1, mesh.n1)
+    bounds = zeros(Bool, mesh.l1, mesh.m1, mesh.n1)
+    nbounds = zeros(N, mesh.l1, mesh.m1, mesh.n1)
     convergence = 0.0
+    convergenceRelative = 0.0
+    convergenceTime = 0.0
     tolerance = 0.0
 
     return CSPhi3D{T,N}(
@@ -104,9 +117,11 @@ function create_CSPhi(
         sourceP,
         onoff,
         gIndex,
-        bound,
-        nbound,
+        bounds,
+        nbounds,
         convergence,
+        convergenceRelative,
+        convergenceTime,
         tolerance,
     )
 end
@@ -114,9 +129,9 @@ end
 """
 
 """
-function create_CSFaceVelocity end
+function create_FaceVelocity end
 
-function create_CSFaceVelocity(
+function create_FaceVelocity(
     mesh::UnionCSMesh1D;
     T::Type{<:AbstractFloat} = Float64,
 )
@@ -135,7 +150,7 @@ function create_CSFaceVelocity(
     )
 end
 
-function create_CSFaceVelocity(
+function create_FaceVelocity(
     mesh::UnionCSMesh2D;
     T::Type{<:AbstractFloat} = Float64,
 )
@@ -164,7 +179,7 @@ function create_CSFaceVelocity(
     )
 end
 
-function create_CSFaceVelocity(
+function create_FaceVelocity(
     mesh::UnionCSMesh3D;
     T::Type{<:AbstractFloat} = Float64,
 )
@@ -206,16 +221,18 @@ end
 """
 
 """
-function create_CSVelocity end
+function create_Velocity end
 
-function create_CSVelocity(
+function create_Velocity(
     mesh::UnionCSMesh1D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
+    template::Bool = true,
 )
     #allocate variables
-    u = create_CSPhi(mesh, T=T, N=N)
-    p = create_CSPhi(mesh, T=T, N=N)
-    fValues = create_CSFaceVelocity(mesh, T=T)
+    u = create_Phi(mesh; T=T, N=N)
+    p = create_Phi(mesh; T=T, N=N)
+    fValues = create_FaceVelocity(mesh; T=T)
 
     return CSVelocity1D{T}(
         u,
@@ -224,15 +241,17 @@ function create_CSVelocity(
     )
 end
 
-function create_CSVelocity(
+function create_Velocity(
     mesh::UnionCSMesh2D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
+    template::Bool = true,
 )
     #allocate variables
-    u = create_CSPhi(mesh, T=T, N=N)
-    v = create_CSPhi(mesh, T=T, N=N)
-    p = create_CSPhi(mesh, T=T, N=N)
-    fValues = create_CSFaceVelocity(mesh, T=T)
+    u = create_Phi(mesh; T=T, N=N)
+    v = create_Phi(mesh; T=T, N=N)
+    p = create_Phi(mesh; T=T, N=N)
+    fValues = create_FaceVelocity(mesh; T=T)
 
     return CSVelocity2D{T}(
         u,
@@ -242,16 +261,18 @@ function create_CSVelocity(
     )
 end
 
-function create_CSVelocity(
+function create_Velocity(
     mesh::UnionCSMesh3D;
-    T::Type{<:AbstractFloat} = Float64, N::Type{<:Signed} = Int64,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
+    template::Bool = true,
 )
     #allocate variables
-    u = create_CSPhi(mesh, T=T, N=N)
-    v = create_CSPhi(mesh, T=T, N=N)
-    w = create_CSPhi(mesh, T=T, N=N)
-    p = create_CSPhi(mesh, T=T, N=N)
-    fValues = create_CSFaceVelocity(mesh, T=T)
+    u = create_Phi(mesh; T=T, N=N)
+    v = create_Phi(mesh; T=T, N=N)
+    w = create_Phi(mesh; T=T, N=N)
+    p = create_Phi(mesh; T=T, N=N)
+    fValues = create_FaceVelocity(mesh; T=T)
 
     return CSVelocity3D{T}(
         u,

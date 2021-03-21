@@ -14,7 +14,7 @@ export TypeDopingFMV
 export MeshStructured
 export PhiStructured
 export MaterialStructured
-export BoundStructured
+export BoundsStructured
 export DeltaTime
 
 export MeshCartesianStructured
@@ -46,6 +46,9 @@ export CSMesh1DImmutable
 export CSMesh2DImmutable
 export CSMesh3DImmutable
 
+export CSMaterialConstant
+export CSMaterialConstantImmutable
+
 export CSPhi1D
 export CSPhi2D
 export CSPhi3D
@@ -56,13 +59,17 @@ export CSVelocity1D
 export CSVelocity2D
 export CSVelocity3D
 
+export SystemConfig
+export SystemControl
+export SystemTime
+
 export UnionCSMesh1D
 export UnionCSMesh2D
 export UnionCSMesh3D
 export UnionCSPhi
 export UnionCSMesh
-export UnionConstantMaterial
-
+export UnionCSConstantMaterial
+export UnionCSMaterialAll
 
 include("AbstractTypes.jl")
 
@@ -95,6 +102,8 @@ include("PhiSpherical.jl")
 include("MaterialSpherical.jl")
 
 include("SystemConfig.jl")
+
+include("SystemControl.jl")
 
 include("SystemTime.jl")
 

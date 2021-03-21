@@ -12,9 +12,11 @@ mutable struct CSPhi1D{T <: AbstractFloat, N <: Signed} <: PhiCartesianStructure
     sourceP::Array{T,1}
     onoff::Array{Bool,1}
     gIndex::Array{<:N,1}
-    bound::Array{Bool,1}
-    nbound::Array{<:N,1}
+    bounds::Array{Bool,1}
+    nbounds::Array{<:N,1}
     convergence::T
+    convergenceRelative::T
+    convergenceTime::T
     tolerance::T
 end
 
@@ -32,9 +34,11 @@ mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     sourceP::Array{T,2}
     onoff::Array{Bool,2}
     gIndex::Array{<:N,2}
-    bound::Array{Bool,2}
-    nbound::Array{<:N,2}
+    bounds::Array{Bool,2}
+    nbounds::Array{<:N,2}
     convergence::T
+    convergenceRelative::T
+    convergenceTime::T
     tolerance::T
 end
 
@@ -52,9 +56,11 @@ mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     sourceP::Array{T,3}
     onoff::Array{Bool,3}
     gIndex::Array{<:N,3}
-    bound::Array{Bool,3}
-    nbound::Array{<:N,3}
+    bounds::Array{Bool,3}
+    nbounds::Array{<:N,3}
     convergence::T
+    convergenceRelative::T
+    convergenceTime::T
     tolerance::T
 end
 

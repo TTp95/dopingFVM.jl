@@ -1,8 +1,8 @@
 """
-convergence_iterCS(phi::Union{CSPhi1D,CSPhi2D,CSPhi3D}, mesh::Union{CSMesh1D,CSMesh1DImmutable})
+convergence_iter(phi::Union{CSPhi1D,CSPhi2D,CSPhi3D}, mesh::Union{CSMesh1D,CSMesh1DImmutable})
 
 """
-function convergence_iterCS(
+function convergence_iter(
     phi::UnionCSPhi,
     mesh::UnionCSMesh;
 )
@@ -12,10 +12,10 @@ function convergence_iterCS(
 end
 
 """
-convergence_relative_iterCS(phi::Union{CSPhi1D,CSPhi2D,CSPhi3D}, mesh::Union{CSMesh1D,CSMesh1DImmutable})
+convergence_relative_iter(phi::Union{CSPhi1D,CSPhi2D,CSPhi3D}, mesh::Union{CSMesh1D,CSMesh1DImmutable})
 
 """
-function convergence_relative_iterCS(
+function convergence_relative_iter(
     phi::UnionCSPhi,
     mesh::UnionCSMesh;
 )

@@ -1,7 +1,7 @@
 """
 
 """
-function density_interpolationCS(
+function density_interpolation(
     lenghts::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}},
     values::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}};
     interpolation = 1
@@ -15,7 +15,7 @@ function density_interpolationCS(
         den = 0.5 * (lenghts[1] + lenghts[2])
         value = num / den
     else
-        error("density_interpolationCS mode unimplemented")
+        error("density_interpolation mode unimplemented")
     end
 
     return value

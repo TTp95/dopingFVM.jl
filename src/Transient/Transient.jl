@@ -14,8 +14,8 @@ using DocStringExtensions
 using dopingFVM.Structures
 using dopingFVM.Tools
 
-#export M
+export discretize_time
 
-#include(".jl")
+include("CSTransientTerm.jl")
 
 end # module

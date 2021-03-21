@@ -1,7 +1,7 @@
 """
 
 """
-function create_uniform_CSMesh(
+function create_uniform_Mesh(
     lengths::Array{<:AbstractFloat,1},
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
@@ -12,17 +12,17 @@ function create_uniform_CSMesh(
     dimenssion = length(lengths)
 
     if (dimenssion==1)
-        mesh = create_uniform_CSMesh1D(
+        mesh = create_uniform_Mesh1D(
             lengths, volumes;
             T=T, N=N, threads=threads, mutable=mutable,
         )
     elseif (dimenssion==2)
-        mesh = create_uniform_CSMesh2D(
+        mesh = create_uniform_Mesh2D(
             lengths, volumes;
             T=T, N=N, threads=threads, mutable=mutable,
         )
     elseif (dimenssion==3)
-        mesh = create_uniform_CSMesh3D(
+        mesh = create_uniform_Mesh3D(
             lengths, volumes;
             T=T, N=N, threads=threads, mutable=mutable,
         )
@@ -36,7 +36,7 @@ end
 """
 
 """
-function create_uniform_CSMesh1D(
+function create_uniform_Mesh1D(
     lengths::Array{<:AbstractFloat,1},
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
@@ -87,7 +87,7 @@ end
 """
 
 """
-function create_uniform_CSMesh2D(
+function create_uniform_Mesh2D(
     lengths::Array{<:AbstractFloat,1},
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
@@ -160,7 +160,7 @@ end
 """
 
 """
-function create_uniform_CSMesh3D(
+function create_uniform_Mesh3D(
     lengths::Array{<:AbstractFloat,1},
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,

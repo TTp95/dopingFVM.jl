@@ -10,12 +10,16 @@ module Source
 using Base.Threads
 
 using DocStringExtensions
+using SparseArrays
 
 using dopingFVM.Structures
 using dopingFVM.Tools
 
-#export M
+export discretize_source
+export discretize_bodyForcesRhieChow
 
-#include(".jl")
+include("CSSource.jl")
+
+include("CSBodyForcesRhieChow.jl")
 
 end # module

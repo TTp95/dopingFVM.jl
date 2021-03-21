@@ -1,9 +1,9 @@
 """
 
 """
-function order_timeCS! end
+function order_time! end
 
-function order_timeCS!(
+function order_time!(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D;
     threads = false,
@@ -26,7 +26,7 @@ function order_timeCS!(
     return nothing
 end
 
-function order_timeCS!(
+function order_time!(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D;
     threads = false,
@@ -53,7 +53,7 @@ function order_timeCS!(
     return nothing
 end
 
-function order_timeCS!(
+function order_time!(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D;
     threads = false,
@@ -84,13 +84,13 @@ function order_timeCS!(
     return nothing
 end
 
-function order_timeCS!(
+function order_time!(
     phi::CSVelocity1D,
     mesh::UnionCSMesh1D;
     threads = false,
 )
-    order_timeCS!(phi.u, mesh; threads=threads)
-    order_timeCS!(phi.p, mesh; threads=threads)
+    order_time!(phi.u, mesh; threads=threads)
+    order_time!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:(mesh.l1 + 1)
@@ -109,14 +109,14 @@ function order_timeCS!(
     return nothing
 end
 
-function order_timeCS!(
+function order_time!(
     phi::CSVelocity2D,
     mesh::UnionCSMesh2D;
     threads = false,
 )
-    order_timeCS!(phi.u, mesh; threads=threads)
-    order_timeCS!(phi.v, mesh; threads=threads)
-    order_timeCS!(phi.p, mesh; threads=threads)
+    order_time!(phi.u, mesh; threads=threads)
+    order_time!(phi.v, mesh; threads=threads)
+    order_time!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:mesh.l1
@@ -181,15 +181,15 @@ function order_timeCS!(
     return nothing
 end
 
-function order_timeCS!(
+function order_time!(
     phi::CSVelocity3D,
     mesh::UnionCSMesh3D;
     threads = false,
 )
-    order_timeCS!(phi.u, mesh; threads=threads)
-    order_timeCS!(phi.v, mesh; threads=threads)
-    order_timeCS!(phi.w, mesh; threads=threads)
-    order_timeCS!(phi.p, mesh; threads=threads)
+    order_time!(phi.u, mesh; threads=threads)
+    order_time!(phi.v, mesh; threads=threads)
+    order_time!(phi.w, mesh; threads=threads)
+    order_time!(phi.p, mesh; threads=threads)
 
     if threads
         Base.Threads.@threads for i in 1:mesh.l1

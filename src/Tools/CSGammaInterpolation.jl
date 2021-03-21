@@ -1,10 +1,10 @@
 """
 
 """
-function gamma_interpolationCS(
+function gamma_interpolation(
     lenghts::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}},
     values::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}};
-    interpolation = 1
+    interpolation = 2
 )
     #Inicializate value
     value = 0.0
@@ -22,7 +22,7 @@ function gamma_interpolationCS(
         value = num / den
 
     else
-        error("gamma_interpolationCS mode unimplemented")
+        error("gamma_interpolation mode unimplemented")
 
     end
 
