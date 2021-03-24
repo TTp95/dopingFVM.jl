@@ -18,8 +18,13 @@ using dopingFVM.Tools
 export discretize_source
 export discretize_bodyForcesRhieChow
 
+export implicit_relaxation!
+export implicit_relaxation
+
 include("CSSource.jl")
 
 include("CSBodyForcesRhieChow.jl")
+
+include("CSImplicitRelaxation.jl")
 
 end # module

@@ -90,7 +90,7 @@ end
 function remplace_offSolution!(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D,
-    offNodeValue::Array{AbstractFloat,1};
+    offNodeValue::Array{<:AbstractFloat,1};
     threads = false,
 )
 
@@ -114,7 +114,7 @@ end
 function remplace_offSolution!(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D,
-    offNodeValue::Array{AbstractFloat,2};
+    offNodeValue::Array{<:AbstractFloat,2};
     threads = false,
 )
 
@@ -142,7 +142,7 @@ end
 function remplace_offSolution!(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D,
-    offNodeValue::Array{AbstractFloat,3};
+    offNodeValue::Array{<:AbstractFloat,3};
     threads = false,
 )
 

@@ -23,7 +23,7 @@ function _convection_centralDifference_central_ end
 
 function _convection_centralDifference_central_(
     i::Signed,
-    velocityU::Array{AbstractFloat,1},
+    velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh1D;
@@ -53,8 +53,8 @@ end
 function _convection_centralDifference_central_(
     i::Signed,
     j::Signed,
-    velocityU::Array{AbstractFloat,2},
-    velocityV::Array{AbstractFloat,2},
+    velocityU::Array{<:AbstractFloat,2},
+    velocityV::Array{<:AbstractFloat,2},
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh2D;
@@ -86,9 +86,9 @@ function _convection_centralDifference_central_(
     i::Signed,
     j::Signed,
     k::Signed,
-    velocityU::Array{AbstractFloat,3},
-    velocityV::Array{AbstractFloat,3},
-    velocityW::Array{AbstractFloat,3},
+    velocityU::Array{<:AbstractFloat,3},
+    velocityV::Array{<:AbstractFloat,3},
+    velocityW::Array{<:AbstractFloat,3},
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh3D;

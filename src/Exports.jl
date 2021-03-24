@@ -102,6 +102,7 @@ end
 
 @publish Tools gamma_interpolation
 @publish Tools density_interpolation
+@publish Tools general_interpolation
 
 @publish Convergence convergence_iter
 @publish Convergence convergence_relative_iter
@@ -117,6 +118,8 @@ end
 
 @publish Source discretize_source
 @publish Source discretize_bodyForcesRhieChow
+@publish Source implicit_relaxation!
+@publish Source implicit_relaxation
 
 @publish Gradients pressure_phi_gradient
 
@@ -127,14 +130,15 @@ end
 @publish VelocityInterpolation compute_RhieChow_BodyForces
 @publish VelocityInterpolation compute_RhieChow_Time
 
-@publish Bounds check_bounds!
 @publish Bounds create_BoundsDict
 @publish Bounds bounds_template
 @publish Bounds assign_bounds!
+@publish Bounds evaluate_bounds!
 @publish Bounds _evaluate_bounds!_
 
-#@publish CoupleAlgorithms
-
+@publish CoupleAlgorithms discretize_SIMPLE_PressureCorrection
+@publish CoupleAlgorithms _SIMPLE_PressureCorrection_Coefficients_
+@publish CoupleAlgorithms SIMPLE_correction!
 #@publish Turbulence
 
 #@publish TurbulenceCoupleAlgorithms

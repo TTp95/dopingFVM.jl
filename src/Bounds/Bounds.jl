@@ -15,19 +15,19 @@ using dopingFVM.Structures
 using dopingFVM.StructuresConstructors
 using dopingFVM.Tools
 
-export check_bounds!
+export evaluate_bounds!
 export create_BoundsDict
 export bounds_template
 export assign_bounds!
 export _evaluate_bounds!_
-
-include("CSBoundsCheck.jl")
 
 include("CSBoundsDictionary.jl")
 
 include("CSBoundsTemplate.jl")
 
 include("CSAssignBounds.jl")
+
+include("CSEvaluation.jl")
 
 include("CSEvaluateBounds.jl")
 

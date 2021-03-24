@@ -367,7 +367,7 @@ function pressure_phi_gradient(
                             num = phisolution[i,j,k+1] - phisolution[i,j,k]
                             den = 0.5 * (mesh.dz[k] + mesh.dz[k+1])
                             bz[id] = (num / den) * mesh.vol[i,j,k]
-                        elseif (k == mesh.m1)
+                        elseif (k == mesh.n1)
                             id = phi.gIndex[i,j,k]
                             num = phisolution[i,j,k] - phisolution[i,j,k-1]
                             den = 0.5 * (mesh.dz[k] + mesh.dz[k-1])
@@ -383,7 +383,7 @@ function pressure_phi_gradient(
                             num = phisolution[i,j,k] * dz2 + phisolution[i,j,k+1] * dz1
                             den = dz1 + dz2
                             b = num / den
-                            by[id] = ((b - a) / mesh.dz[k]) * mesh.vol[i,j,k]
+                            bz[id] = ((b - a) / mesh.dz[k]) * mesh.vol[i,j,k]
                         elseif (!phi.onoff[i,j,k-1])
                             id = phi.gIndex[i,j,k]
                             num = phisolution[i,j,k+1] - phisolution[i,j,k]
@@ -483,7 +483,7 @@ function pressure_phi_gradient(
                             num = phisolution[i,j,k+1] - phisolution[i,j,k]
                             den = 0.5 * (mesh.dz[k] + mesh.dz[k+1])
                             bz[id] = (num / den) * mesh.vol[i,j,k]
-                        elseif (k == mesh.m1)
+                        elseif (k == mesh.n1)
                             id = phi.gIndex[i,j,k]
                             num = phisolution[i,j,k] - phisolution[i,j,k-1]
                             den = 0.5 * (mesh.dz[k] + mesh.dz[k-1])
@@ -499,7 +499,7 @@ function pressure_phi_gradient(
                             num = phisolution[i,j,k] * dz2 + phisolution[i,j,k+1] * dz1
                             den = dz1 + dz2
                             b = num / den
-                            by[id] = ((b - a) / mesh.dz[k]) * mesh.vol[i,j,k]
+                            bz[id] = ((b - a) / mesh.dz[k]) * mesh.vol[i,j,k]
                         elseif (!phi.onoff[i,j,k-1])
                             id = phi.gIndex[i,j,k]
                             num = phisolution[i,j,k+1] - phisolution[i,j,k]

@@ -6,6 +6,11 @@ function create_SystemConfig(;
     T::Type{AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
 )
-
-    return nothing
+    return SystemConfig(
+        1,
+        2,
+        1,
+        2,
+        1,
+    )
 end

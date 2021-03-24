@@ -4,7 +4,7 @@
 function discretize_convection end
 
 function discretize_convection(
-    velocityU::Array{AbstractFloat,1},
+    velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial1D,UnionCSConstantMaterial},
@@ -80,7 +80,7 @@ function discretize_convection(
     SparseMatrixCSC{<:AbstractFloat,<:Signed},
     Array{<:AbstractFloat,2},
     },
-    velocityU::Array{AbstractFloat,1},
+    velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial1D,UnionCSConstantMaterial},
@@ -151,8 +151,8 @@ function discretize_convection(
 end
 
 function discretize_convection(
-    velocityU::Array{AbstractFloat,2},
-    velocityV::Array{AbstractFloat,2},
+    velocityU::Array{<:AbstractFloat,2},
+    velocityV::Array{<:AbstractFloat,2},
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial2D,UnionCSConstantMaterial},
@@ -236,8 +236,8 @@ function discretize_convection(
     SparseMatrixCSC{<:AbstractFloat,<:Signed},
     Array{<:AbstractFloat,2},
     },
-    velocityU::Array{AbstractFloat,2},
-    velocityV::Array{AbstractFloat,2},
+    velocityU::Array{<:AbstractFloat,2},
+    velocityV::Array{<:AbstractFloat,2},
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial2D,UnionCSConstantMaterial},
@@ -316,9 +316,9 @@ function discretize_convection(
 end
 
 function discretize_convection(
-    velocityU::Array{AbstractFloat,3},
-    velocityV::Array{AbstractFloat,3},
-    velocityW::Array{AbstractFloat,3},
+    velocityU::Array{<:AbstractFloat,3},
+    velocityV::Array{<:AbstractFloat,3},
+    velocityW::Array{<:AbstractFloat,3},
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial3D,UnionCSConstantMaterial},
@@ -411,9 +411,9 @@ function discretize_convection(
     SparseMatrixCSC{<:AbstractFloat,<:Signed},
     Array{<:AbstractFloat,2},
     },
-    velocityU::Array{AbstractFloat,3},
-    velocityV::Array{AbstractFloat,3},
-    velocityW::Array{AbstractFloat,3},
+    velocityU::Array{<:AbstractFloat,3},
+    velocityV::Array{<:AbstractFloat,3},
+    velocityW::Array{<:AbstractFloat,3},
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::Union{CSMaterial3D,UnionCSConstantMaterial},

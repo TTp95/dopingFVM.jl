@@ -188,7 +188,7 @@ function compute_RhieChow!(
     Array{<:AbstractFloat,2},
     },
     velocity::CSVelocity2D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh2D;
     threads::Bool = false,
 )
     #Compute u
@@ -541,7 +541,7 @@ function compute_RhieChow!(
     Array{<:AbstractFloat,2},
     },
     velocity::CSVelocity3D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh3D;
     threads::Bool = false,
 )
     #Compute u
@@ -925,7 +925,7 @@ function compute_RhieChow!(
                             den = mesh.z[k] - mesh.z[k-1]
                             gradpressure = num / den
 
-                            if (j == 2)
+                            if (k == 2)
                                 num = velocity.p.eval[i,j,k] - velocity.p.eval[i,j,k-1]
                                 den = mesh.z[k] - mesh.z[k-1]
                                 a1 = num / den
@@ -1007,7 +1007,7 @@ function compute_RhieChow!(
                             den = mesh.z[k] - mesh.z[k-1]
                             gradpressure = num / den
 
-                            if (j == 2)
+                            if (k == 2)
                                 num = velocity.p.eval[i,j,k] - velocity.p.eval[i,j,k-1]
                                 den = mesh.z[k] - mesh.z[k-1]
                                 a1 = num / den

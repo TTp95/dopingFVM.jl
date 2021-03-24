@@ -5,7 +5,7 @@ function _discretize_convection_centralDifference_ end
 
 function _discretize_convection_centralDifference_(
     i::Signed,
-    velocityU::Array{AbstractFloat,1},
+    velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
@@ -36,7 +36,7 @@ function _discretize_convection_centralDifference_(
 
     #West Coefficents
     if (i != 1) && (phi.onoff[i-1])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i]; material.ρ[i-1]];
             interpolation = interpolation
         )
@@ -49,7 +49,7 @@ function _discretize_convection_centralDifference_(
 
     #East Coefficents
     if (i != mesh.l1)  && (phi.onoff[i+1])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i]; material.ρ[i+1]];
             interpolation = interpolation
         )
@@ -62,7 +62,7 @@ function _discretize_convection_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             velocityU,
             phi,
@@ -79,9 +79,9 @@ function _discretize_convection_centralDifference_(
     return A, b
 end
 
-function _discretize_diffusion_centralDifference_(
+function _discretize_convection_centralDifference_(
     i::Signed,
-    velocityU::Array{AbstractFloat,1},
+    velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
@@ -132,7 +132,7 @@ function _discretize_diffusion_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             velocityU,
             phi,
@@ -149,11 +149,11 @@ function _discretize_diffusion_centralDifference_(
     return A, b
 end
 
-function _discretize_diffusion_centralDifference_(
+function _discretize_convection_centralDifference_(
     i::Signed,
     j::Signed,
-    velocityU::Array{AbstractFloat,2},
-    velocityV::Array{AbstractFloat,2},
+    velocityU::Array{<:AbstractFloat,2},
+    velocityV::Array{<:AbstractFloat,2},
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
@@ -190,7 +190,7 @@ function _discretize_diffusion_centralDifference_(
 
     #West Coefficents
     if (i != 1) && (phi.onoff[i-1,j])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j]; material.ρ[i-1,j]];
             interpolation = interpolation
         )
@@ -203,7 +203,7 @@ function _discretize_diffusion_centralDifference_(
 
     #East Coefficents
     if (i != mesh.l1)  && (phi.onoff[i+1,j])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j]; material.ρ[i+1,j]];
             interpolation = interpolation
         )
@@ -216,7 +216,7 @@ function _discretize_diffusion_centralDifference_(
 
     #South Coefficents
     if (j != 1) && (phi.onoff[i,j-1])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j]; material.ρ[i,j-1]];
             interpolation = interpolation
         )
@@ -229,7 +229,7 @@ function _discretize_diffusion_centralDifference_(
 
     #North Coefficents
     if (j != mesh.m1) && (phi.onoff[i,j+1])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j]; material.ρ[i,j+1]];
             interpolation = interpolation
         )
@@ -242,7 +242,7 @@ function _discretize_diffusion_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i,j]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             j,
             velocityU,
@@ -261,11 +261,11 @@ function _discretize_diffusion_centralDifference_(
     return A, b
 end
 
-function _discretize_diffusion_centralDifference_(
+function _discretize_convection_centralDifference_(
     i::Signed,
     j::Signed,
-    velocityU::Array{AbstractFloat,2},
-    velocityV::Array{AbstractFloat,2},
+    velocityU::Array{<:AbstractFloat,2},
+    velocityV::Array{<:AbstractFloat,2},
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
@@ -342,7 +342,7 @@ function _discretize_diffusion_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i,j]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             j,
             velocityU,
@@ -361,13 +361,13 @@ function _discretize_diffusion_centralDifference_(
     return A, b
 end
 
-function _discretize_diffusion_centralDifference_(
+function _discretize_convection_centralDifference_(
     i::Signed,
     j::Signed,
     k::Signed,
-    velocityU::Array{AbstractFloat,3},
-    velocityV::Array{AbstractFloat,3},
-    velocityW::Array{AbstractFloat,3},
+    velocityU::Array{<:AbstractFloat,3},
+    velocityV::Array{<:AbstractFloat,3},
+    velocityW::Array{<:AbstractFloat,3},
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
@@ -410,7 +410,7 @@ function _discretize_diffusion_centralDifference_(
 
     #West Coefficents
     if (i != 1) && (phi.onoff[i-1,j,k])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i-1]], [material.ρ[i,j,k]; material.ρ[i-1,j,k]];
             interpolation = interpolation
         )
@@ -423,7 +423,7 @@ function _discretize_diffusion_centralDifference_(
 
     #East Coefficents
     if (i != mesh.l1)  && (phi.onoff[i+1,j,k])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dx[i]; mesh.dx[i+1]], [material.ρ[i,j,k]; material.ρ[i+1,j,k]];
             interpolation = interpolation
         )
@@ -436,7 +436,7 @@ function _discretize_diffusion_centralDifference_(
 
     #South Coefficents
     if (j != 1) && (phi.onoff[i,j-1,k])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dy[j]; mesh.dy[j-1]], [material.ρ[i,j,k]; material.ρ[i,j-1,k]];
             interpolation = interpolation
         )
@@ -449,7 +449,7 @@ function _discretize_diffusion_centralDifference_(
 
     #North Coefficents
     if (j != mesh.l1) && (phi.onoff[i,j+1,k])
-        rho = gamma_interpolation(
+        rho = density_interpolation(
             [mesh.dy[j]; mesh.dy[j+1]], [material.ρ[i,j,k]; material.ρ[i,j+1,k]];
             interpolation = interpolation
         )
@@ -462,8 +462,8 @@ function _discretize_diffusion_centralDifference_(
 
     #Bottom Coefficents
     if (k != 1) && (phi.onoff[i,j,k-1])
-        rho = gamma_interpolation(
-            [mesh.dz[k]; mesh.dzk[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]];
+        rho = density_interpolation(
+            [mesh.dz[k]; mesh.dz[k-1]], [material.ρ[i,j,k]; material.ρ[i,j,k-1]];
             interpolation = interpolation
         )
         @inbounds ab, abc, b5 = _convection_centralDifference_neighbors_(
@@ -475,8 +475,8 @@ function _discretize_diffusion_centralDifference_(
 
     #Top Coefficents
     if (k != mesh.n1) && (phi.onoff[i,j,k+1])
-        rho = gamma_interpolation(
-            [mesh.dz[k]; mesh.dzk[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]];
+        rho = density_interpolation(
+            [mesh.dz[k]; mesh.dz[k+1]], [material.ρ[i,j,k]; material.ρ[i,j,k+1]];
             interpolation = interpolation
         )
         @inbounds at, atc, b6 = _convection_centralDifference_neighbors_(
@@ -488,7 +488,7 @@ function _discretize_diffusion_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i,j,k]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             j,
             k,
@@ -509,13 +509,13 @@ function _discretize_diffusion_centralDifference_(
     return A, b
 end
 
-function _discretize_diffusion_centralDifference_(
+function _discretize_convection_centralDifference_(
     i::Signed,
     j::Signed,
     k::Signed,
-    velocityU::Array{AbstractFloat,3},
-    velocityV::Array{AbstractFloat,3},
-    velocityW::Array{AbstractFloat,3},
+    velocityU::Array{<:AbstractFloat,3},
+    velocityV::Array{<:AbstractFloat,3},
+    velocityW::Array{<:AbstractFloat,3},
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
@@ -618,7 +618,7 @@ function _discretize_diffusion_centralDifference_(
 
     #Center Coefficent
     if phi.bounds[i,j,k]
-        @inbounds ac, b0 = _diffusion_centralDifference_central_(
+        @inbounds ac, b0 = _convection_centralDifference_central_(
             i,
             j,
             k,

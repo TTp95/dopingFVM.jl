@@ -10,7 +10,7 @@ function compute_RhieChow_Relaxation(
     T::Type{<:AbstractFloat} = Float64,
     threads::Bool = false,
 )
-    rhieChow_Relax = zeros(T, mesh.l1)
+    rhieChow_Relax = zeros(T, mesh.l1+1)
 
     if mesh.l1 != 1
         if threads
@@ -27,17 +27,15 @@ function compute_RhieChow_Relaxation(
                     dx1 = 0.5 * mesh.dx[i-1]
                     dx2 =  0.5 * mesh.dx[i]
 
-                    if relaxation
-                        rel = (1.0 - relaxU)
+                    rel = (1.0 - relaxU)
 
-                        velf_old = velocity.fValues.uFaceIter[i]
+                    velf_old = velocity.fValues.uFaceIter[i]
 
-                        num = velocity.u.time1[i-1] * dx2 + velocity.u.time1[i] * dx1
-                        den = dx1 + dx2
-                        meanvelf_old = num / den
+                    num = velocity.u.iter[i-1] * dx2 + velocity.u.iter[i] * dx1
+                    den = dx1 + dx2
+                    meanvelf_old = num / den
 
-                        relaxterm = rel * (velf_old - meanvelf_old)
-                    end
+                    relaxterm = rel * (velf_old - meanvelf_old)
 
                     rhieChow_Relax[i] = relaxterm
                 end
@@ -57,17 +55,15 @@ function compute_RhieChow_Relaxation(
                     dx1 = 0.5 * mesh.dx[i-1]
                     dx2 =  0.5 * mesh.dx[i]
 
-                    if relaxation
-                        rel = (1.0 - relaxU)
+                    rel = (1.0 - relaxU)
 
-                        velf_old = velocity.fValues.uFaceIter[i]
+                    velf_old = velocity.fValues.uFaceIter[i]
 
-                        num = velocity.u.time1[i-1] * dx2 + velocity.u.time1[i] * dx1
-                        den = dx1 + dx2
-                        meanvelf_old = num / den
+                    num = velocity.u.iter[i-1] * dx2 + velocity.u.iter[i] * dx1
+                    den = dx1 + dx2
+                    meanvelf_old = num / den
 
-                        relaxterm = rel * (velf_old - meanvelf_old)
-                    end
+                    relaxterm = rel * (velf_old - meanvelf_old)
 
                     rhieChow_Relax[i] = relaxterm
                 end
@@ -87,8 +83,8 @@ function compute_RhieChow_Relaxation(
     T::Type{<:AbstractFloat} = Float64,
     threads::Bool = false,
 )
-    u_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1)
-    v_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1)
+    u_rhieChow_Relax = zeros(T, mesh.l1+1, mesh.m1)
+    v_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1+1)
 
     #Compute u
     if mesh.l1 != 1
@@ -107,17 +103,15 @@ function compute_RhieChow_Relaxation(
                         dx1 = 0.5 * mesh.dx[i-1]
                         dx2 =  0.5 * mesh.dx[i]
 
-                        if relaxation
-                            rel = (1.0 - relaxU)
+                        rel = (1.0 - relaxU)
 
-                            velf_old = velocity.fValues.uFaceIter[i,j]
+                        velf_old = velocity.fValues.uFaceIter[i,j]
 
-                            num = velocity.u.time1[i-1,j] * dx2 + velocity.u.time1[i,j] * dx1
-                            den = dx1 + dx2
-                            meanvelf_old = num / den
+                        num = velocity.u.iter[i-1,j] * dx2 + velocity.u.iter[i,j] * dx1
+                        den = dx1 + dx2
+                        meanvelf_old = num / den
 
-                            relaxterm = rel * (velf_old - meanvelf_old)
-                        end
+                        relaxterm = rel * (velf_old - meanvelf_old)
 
                         u_rhieChow_Relax[i,j] = relaxterm
                     end
@@ -139,17 +133,15 @@ function compute_RhieChow_Relaxation(
                         dx1 = 0.5 * mesh.dx[i-1]
                         dx2 =  0.5 * mesh.dx[i]
 
-                        if relaxation
-                            rel = (1.0 - relaxU)
+                        rel = (1.0 - relaxU)
 
-                            velf_old = velocity.fValues.uFaceIter[i,j]
+                        velf_old = velocity.fValues.uFaceIter[i,j]
 
-                            num = velocity.u.time1[i-1,j] * dx2 + velocity.u.time1[i,j] * dx1
-                            den = dx1 + dx2
-                            meanvelf_old = num / den
+                        num = velocity.u.iter[i-1,j] * dx2 + velocity.u.iter[i,j] * dx1
+                        den = dx1 + dx2
+                        meanvelf_old = num / den
 
-                            relaxterm = rel * (velf_old - meanvelf_old)
-                        end
+                        relaxterm = rel * (velf_old - meanvelf_old)
 
                         u_rhieChow_Relax[i,j] = relaxterm
                     end
@@ -162,7 +154,7 @@ function compute_RhieChow_Relaxation(
     #Compute v
     if mesh.m1 != 1
         if threads
-            Base.Threads.@threads for i in i:mesh.l1
+            Base.Threads.@threads for i in 1:mesh.l1
                 for j in 2:mesh.m1
                     if velocity.v.onoff[i,j-1] && velocity.v.onoff[i,j]
                         dx1 = 0.0
@@ -176,17 +168,15 @@ function compute_RhieChow_Relaxation(
                         dx1 = 0.5 * mesh.dy[j-1]
                         dx2 =  0.5 * mesh.dy[j]
 
-                        if relaxation
-                            rel = (1.0 - relaxV)
+                        rel = (1.0 - relaxV)
 
-                            velf_old = velocity.fValues.vFaceIter[i,j]
+                        velf_old = velocity.fValues.vFaceIter[i,j]
 
-                            num = velocity.v.time1[i,j-1] * dx2 + velocity.v.time1[i,j] * dx1
-                            den = dx1 + dx2
-                            meanvelf_old = num / den
+                        num = velocity.v.iter[i,j-1] * dx2 + velocity.v.iter[i,j] * dx1
+                        den = dx1 + dx2
+                        meanvelf_old = num / den
 
-                            relaxterm = rel * (velf_old - meanvelf_old)
-                        end
+                        relaxterm = rel * (velf_old - meanvelf_old)
 
                         v_rhieChow_Relax[i,j] = relaxterm
                     end
@@ -194,7 +184,7 @@ function compute_RhieChow_Relaxation(
             end
 
         elseif !threads
-            for i in i:mesh.l1
+            for i in 1:mesh.l1
                 for j in 2:mesh.m1
                     if velocity.v.onoff[i,j-1] && velocity.v.onoff[i,j]
                         dx1 = 0.0
@@ -208,17 +198,15 @@ function compute_RhieChow_Relaxation(
                         dx1 = 0.5 * mesh.dy[j-1]
                         dx2 =  0.5 * mesh.dy[j]
 
-                        if relaxation
-                            rel = (1.0 - relaxV)
+                        rel = (1.0 - relaxV)
 
-                            velf_old = velocity.fValues.vFaceIter[i,j]
+                        velf_old = velocity.fValues.vFaceIter[i,j]
 
-                            num = velocity.v.time1[i,j-1] * dx2 + velocity.v.time1[i,j] * dx1
-                            den = dx1 + dx2
-                            meanvelf_old = num / den
+                        num = velocity.v.iter[i,j-1] * dx2 + velocity.v.iter[i,j] * dx1
+                        den = dx1 + dx2
+                        meanvelf_old = num / den
 
-                            relaxterm = rel * (velf_old - meanvelf_old)
-                        end
+                        relaxterm = rel * (velf_old - meanvelf_old)
 
                         v_rhieChow_Relax[i,j] = relaxterm
                     end
@@ -236,12 +224,13 @@ function compute_RhieChow_Relaxation(
     mesh::UnionCSMesh3D;
     relaxU::AbstractFloat = 1.0,
     relaxV::AbstractFloat = 1.0,
+    relaxW::AbstractFloat = 1.0,
     T::Type{<:AbstractFloat} = Float64,
     threads::Bool = false,
 )
-    u_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1, mesh.n1)
-    v_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1, mesh.n1)
-    w_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1, mesh.n1)
+    u_rhieChow_Relax = zeros(T, mesh.l1+1, mesh.m1, mesh.n1)
+    v_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1+1, mesh.n1)
+    w_rhieChow_Relax = zeros(T, mesh.l1, mesh.m1, mesh.n1+1)
 
     #Compute u
     if mesh.l1 != 1
@@ -261,17 +250,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dx[i-1]
                             dx2 =  0.5 * mesh.dx[i]
 
-                            if relaxation
-                                rel = (1.0 - relaxU)
+                            rel = (1.0 - relaxU)
 
-                                velf_old = velocity.fValues.uFaceIter[i,j,k]
+                            velf_old = velocity.fValues.uFaceIter[i,j,k]
 
-                                num = velocity.u.time1[i-1,j,k] * dx2 + velocity.u.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.u.iter[i-1,j,k] * dx2 + velocity.u.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             u_rhieChow_Relax[i,j,k] = relaxterm
                         end
@@ -295,17 +282,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dx[i-1]
                             dx2 =  0.5 * mesh.dx[i]
 
-                            if relaxation
-                                rel = (1.0 - relaxU)
+                            rel = (1.0 - relaxU)
 
-                                velf_old = velocity.fValues.uFaceIter[i,j,k]
+                            velf_old = velocity.fValues.uFaceIter[i,j,k]
 
-                                num = velocity.u.time1[i-1,j,k] * dx2 + velocity.u.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.u.iter[i-1,j,k] * dx2 + velocity.u.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             u_rhieChow_Relax[i,j,k] = relaxterm
                         end
@@ -319,7 +304,7 @@ function compute_RhieChow_Relaxation(
     #Compute v
     if mesh.m1 != 1
         if threads
-            Base.Threads.@threads for i in i:mesh.l1
+            Base.Threads.@threads for i in 1:mesh.l1
                 for j in 2:mesh.m1
                     for k in 1:mesh.n1
                         if velocity.v.onoff[i,j-1,k] && velocity.v.onoff[i,j,k]
@@ -334,17 +319,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dy[j-1]
                             dx2 =  0.5 * mesh.dy[j]
 
-                            if relaxation
-                                rel = (1.0 - relaxV)
+                            rel = (1.0 - relaxV)
 
-                                velf_old = velocity.fValues.vFaceIter[i,j,k]
+                            velf_old = velocity.fValues.vFaceIter[i,j,k]
 
-                                num = velocity.v.time1[i,j-1,k] * dx2 + velocity.v.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.v.iter[i,j-1,k] * dx2 + velocity.v.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             v_rhieChow_Relax[i,j,k] = relaxterm
                         end
@@ -353,7 +336,7 @@ function compute_RhieChow_Relaxation(
             end
 
         elseif !threads
-            for i in i:mesh.l1
+            for i in 1:mesh.l1
                 for j in 2:mesh.m1
                     for k in 1:mesh.n1
                         if velocity.v.onoff[i,j-1,k] && velocity.v.onoff[i,j,k]
@@ -368,17 +351,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dy[j-1]
                             dx2 =  0.5 * mesh.dy[j]
 
-                            if relaxation
-                                rel = (1.0 - relaxV)
+                            rel = (1.0 - relaxV)
 
-                                velf_old = velocity.fValues.vFaceIter[i,j,k]
+                            velf_old = velocity.fValues.vFaceIter[i,j,k]
 
-                                num = velocity.v.time1[i,j-1,k] * dx2 + velocity.v.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.v.iter[i,j-1,k] * dx2 + velocity.v.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             v_rhieChow_Relax[i,j,k] = relaxterm
                         end
@@ -392,7 +373,7 @@ function compute_RhieChow_Relaxation(
     #Compute w
     if mesh.n1 != 1
         if threads
-            Base.Threads.@threads for i in i:mesh.l1
+            Base.Threads.@threads for i in 1:mesh.l1
                 for j in 1:mesh.m1
                     for k in 2:mesh.n1
                         if velocity.w.onoff[i,j,k-1] && velocity.w.onoff[i,j,k]
@@ -407,17 +388,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dz[k-1]
                             dx2 =  0.5 * mesh.dz[k]
 
-                            if relaxation
-                                rel = (1.0 - relaxW)
+                            rel = (1.0 - relaxW)
 
-                                velf_old = velocity.fValues.wFaceIter[i,j,k]
+                            velf_old = velocity.fValues.wFaceIter[i,j,k]
 
-                                num = velocity.w.time1[i,j,k-1] * dx2 + velocity.w.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.w.iter[i,j,k-1] * dx2 + velocity.w.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             w_rhieChow_Relax[i,j,k] = relaxterm
                         end
@@ -426,7 +405,7 @@ function compute_RhieChow_Relaxation(
             end
 
         elseif !threads
-            Base.Threads.@threads for i in i:mesh.l1
+            Base.Threads.@threads for i in 1:mesh.l1
                 for j in 1:mesh.m1
                     for k in 2:mesh.n1
                         if velocity.w.onoff[i,j,k-1] && velocity.w.onoff[i,j,k]
@@ -441,17 +420,15 @@ function compute_RhieChow_Relaxation(
                             dx1 = 0.5 * mesh.dz[k-1]
                             dx2 =  0.5 * mesh.dz[k]
 
-                            if relaxation
-                                rel = (1.0 - relaxW)
+                            rel = (1.0 - relaxW)
 
-                                velf_old = velocity.fValues.wFaceIter[i,j,k]
+                            velf_old = velocity.fValues.wFaceIter[i,j,k]
 
-                                num = velocity.w.time1[i,j,k-1] * dx2 + velocity.w.time1[i,j,k] * dx1
-                                den = dx1 + dx2
-                                meanvelf_old = num / den
+                            num = velocity.w.iter[i,j,k-1] * dx2 + velocity.w.iter[i,j,k] * dx1
+                            den = dx1 + dx2
+                            meanvelf_old = num / den
 
-                                relaxterm = rel * (velf_old - meanvelf_old)
-                            end
+                            relaxterm = rel * (velf_old - meanvelf_old)
 
                             w_rhieChow_Relax[i,j,k] = relaxterm
                         end

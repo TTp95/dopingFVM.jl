@@ -137,6 +137,42 @@ function assign_globalIndex!(
     return nothing
 end
 
+function assign_globalIndex!(
+    vel::CSVelocity1D,
+    mesh::UnionCSMesh1D;
+    threads = false,
+)
+    assign_globalIndex!(vel.u, mesh; threads = threads)
+    assign_globalIndex!(vel.p, mesh; threads = threads)
+
+    return nothing
+end
+
+function assign_globalIndex!(
+    vel::CSVelocity2D,
+    mesh::UnionCSMesh2D;
+    threads = false,
+)
+    assign_globalIndex!(vel.u, mesh; threads = threads)
+    assign_globalIndex!(vel.v, mesh; threads = threads)
+    assign_globalIndex!(vel.p, mesh; threads = threads)
+
+    return nothing
+end
+
+function assign_globalIndex!(
+    vel::CSVelocity3D,
+    mesh::UnionCSMesh3D;
+    threads = false,
+)
+    assign_globalIndex!(vel.u, mesh; threads = threads)
+    assign_globalIndex!(vel.v, mesh; threads = threads)
+    assign_globalIndex!(vel.w, mesh; threads = threads)
+    assign_globalIndex!(vel.p, mesh; threads = threads)
+
+    return nothing
+end
+
 """
 
 """

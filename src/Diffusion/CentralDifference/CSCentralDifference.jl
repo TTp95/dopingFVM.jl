@@ -415,7 +415,7 @@ function _discretize_diffusion_centralDifference_(
     end
 
     #North Coefficents
-    if (j != mesh.l1) && (phi.onoff[i,j+1,k])
+    if (j != mesh.m1) && (phi.onoff[i,j+1,k])
         gamma = gamma_interpolation(
             [mesh.dy[j]; mesh.dy[j+1]], [material.Γ[i,j,k]; material.Γ[i,j+1,k]];
             interpolation = interpolation
@@ -542,7 +542,7 @@ function _discretize_diffusion_centralDifference_(
     end
 
     #North Coefficents
-    if (j != mesh.l1) && (phi.onoff[i,j+1,k])
+    if (j != mesh.m1) && (phi.onoff[i,j+1,k])
         gamma = material.Γ
         @inbounds an, b4 = _diffusion_centralDifference_neighbors_(
             gamma, [mesh.dy[j]; mesh.dy[j+1]], (mesh.dx[i] * mesh.dz[k])

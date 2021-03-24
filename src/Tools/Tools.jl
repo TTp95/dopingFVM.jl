@@ -26,6 +26,7 @@ export remplace_offSolution!
 
 export gamma_interpolation
 export density_interpolation
+export general_interpolation
 
 include("CSGlobalIndex.jl")
 
@@ -33,9 +34,11 @@ include("CSOrderIter.jl")
 
 include("CSOrderTime.jl")
 
+include("CSGammaInterpolation.jl")
+
 include("CSDensityInterpolation.jl")
 
-include("CSGammaInterpolation.jl")
+include("CSGeneralInterpolation.jl")
 
 include("CSPhiToVector.jl")
 

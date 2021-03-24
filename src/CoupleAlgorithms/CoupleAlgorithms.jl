@@ -10,14 +10,24 @@ module CoupleAlgorithms
 using Base.Threads
 
 using DocStringExtensions
+using SparseArrays
 
 using dopingFVM.Structures
 using dopingFVM.Tools
+using dopingFVM.Gradients
+using dopingFVM.Diffusion
+using dopingFVM.Convection
+using dopingFVM.Transient
+using dopingFVM.VelocityInterpolation
 
-#import
+export discretize_SIMPLE_PressureCorrection
+export _SIMPLE_PressureCorrection_Coefficients_
+export SIMPLE_correction!
 
-#export M
+include("./SIMPLE/CSPressureCorrectionDiscretization.jl")
 
-#include(".jl")
+include("./SIMPLE/CSPressureCorrectionCoefficients.jl")
+
+include("./SIMPLE/CSCorrectionSIMPLE.jl")
 
 end # module
