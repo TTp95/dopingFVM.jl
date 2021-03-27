@@ -1,7 +1,7 @@
 """
 
 """
-function density_interpolation(
+@inline function density_interpolation(
     lenghts::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}},
     values::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}};
     interpolation = 1

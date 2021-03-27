@@ -2,11 +2,12 @@
 
 
 """
-function create_SystemConfig(;
-    T::Type{AbstractFloat} = Float64,
+function create_SystemConfig(
+    ;
+    T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
 )
-    return SystemConfig(
+    return SystemConfig{T,N}(
         1,
         2,
         1,

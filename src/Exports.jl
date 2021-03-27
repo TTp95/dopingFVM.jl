@@ -74,7 +74,7 @@ end
 @publish StructuresConstructors create_Phi
 @publish StructuresConstructors create_FaceVelocity
 @publish StructuresConstructors create_Velocity
-@publish StructuresConstructors crete_DeltaTime
+@publish StructuresConstructors create_DeltaTime
 @publish StructuresConstructors create_SystemConfig
 @publish StructuresConstructors create_SystemControl
 @publish StructuresConstructors SystemTime
@@ -137,7 +137,6 @@ end
 @publish Bounds _evaluate_bounds!_
 
 @publish CoupleAlgorithms discretize_SIMPLE_PressureCorrection
-@publish CoupleAlgorithms _SIMPLE_PressureCorrection_Coefficients_
 @publish CoupleAlgorithms SIMPLE_correction!
 #@publish Turbulence
 

@@ -18,7 +18,7 @@ export create_Material
 export create_Phi
 export create_FaceVelocity
 export create_Velocity
-export crete_DeltaTime
+export create_DeltaTime
 export create_SystemConfig
 export create_SystemControl
 export create_SystemTime

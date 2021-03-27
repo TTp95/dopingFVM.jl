@@ -9,5 +9,4 @@ mutable struct DeltaTime{T<:AbstractFloat} <: TypeDopingFMV
     dt1::T
     dt2::T
     dt3::T
-    convergence::T
 end

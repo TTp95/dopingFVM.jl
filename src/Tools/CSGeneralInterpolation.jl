@@ -1,7 +1,7 @@
 """
 
 """
-function general_interpolation(
+@inline function general_interpolation(
     lenghts::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}},
     values::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}};
     interpolation = 1

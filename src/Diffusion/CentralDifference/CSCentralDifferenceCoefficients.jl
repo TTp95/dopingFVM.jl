@@ -3,10 +3,11 @@
 """
 function _diffusion_centralDifference_neighbors_(
     gamma::AbstractFloat,
-    lenghts::Union{Array{<:AbstractFloat,1}, Array{<:AbstractFloat,2}},
+    lenghts1::AbstractFloat,
+    lenghts2::AbstractFloat,
     area::AbstractFloat,
 )
-    dCF = 0.5 * (lenghts[1] + lenghts[2])
+    dCF = 0.5 * (lenghts1 + lenghts2)
     aF = -1.0 * gamma * (area / dCF)
     b = 0.0
 

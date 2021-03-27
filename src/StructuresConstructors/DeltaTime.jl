@@ -1,7 +1,14 @@
 """
-crete_DeltaTime(; T::Type{<:AbstractFloat} = Float64)
+create_DeltaTime(; T::Type{<:AbstractFloat} = Float64)
 
 """
-function crete_DeltaTime(; T::Type{<:AbstractFloat} = Float64)
-    return DeltaTime(T(0.0), T(0.0), T(0.0))
+function create_DeltaTime(; T::Type{<:AbstractFloat} = Float64)
+    return DeltaTime{T}(
+        false,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    )
 end

@@ -21,7 +21,6 @@ using dopingFVM.Transient
 using dopingFVM.VelocityInterpolation
 
 export discretize_SIMPLE_PressureCorrection
-export _SIMPLE_PressureCorrection_Coefficients_
 export SIMPLE_correction!
 
 include("./SIMPLE/CSPressureCorrectionDiscretization.jl")
