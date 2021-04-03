@@ -25,8 +25,6 @@ export SIMPLE_correction!
 
 include("./SIMPLE/CSPressureCorrectionDiscretization.jl")
 
-include("./SIMPLE/CSPressureCorrectionCoefficients.jl")
-
 include("./SIMPLE/CSCorrectionSIMPLE.jl")
 
 end # module

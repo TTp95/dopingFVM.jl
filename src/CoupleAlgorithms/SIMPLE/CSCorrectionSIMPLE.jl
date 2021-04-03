@@ -32,7 +32,7 @@ function SIMPLE_correction!(
     for i in 1:mesh.l1
         if phi.u.onoff[i]
             id = phi.u.gIndex[i]
-            array_DU[i] = mesh.vol[i]/AU[id,id]
+            array_DU[i] = 1.0/AU[id,id]
         else
             array_DU[i] = 0.0
         end
@@ -105,14 +105,14 @@ function SIMPLE_correction!(
         for j in 1:mesh.m1
             if phi.u.onoff[i,j]
                 id = phi.u.gIndex[i,j]
-                array_DUx[i,j] = mesh.vol[i,j]/AU[id,id]
+                array_DUx[i,j] = 1.0/AU[id,id]
             else
                 array_DUx[i,j] = 0.0
             end
 
             if phi.v.onoff[i,j]
                 id = phi.v.gIndex[i,j]
-                array_DUy[i,j] = mesh.vol[i,j]/AV[id,id]
+                array_DUy[i,j] = 1.0/AV[id,id]
             else
                 array_DUy[i,j] = 0.0
             end
@@ -170,6 +170,7 @@ function SIMPLE_correction!(
         end
     end
 
+
     return nothing
 end
 
@@ -221,21 +222,21 @@ function SIMPLE_correction!(
             for k in 1:mesh.n1
                 if phi.u.onoff[i,j,k]
                     id = phi.u.gIndex[i,j,k]
-                    array_DUx[i,j,k] = mesh.vol[i,j,k]/AU[id,id]
+                    array_DUx[i,j,k] = 1.0/AU[id,id]
                 else
                     array_DUx[i,j,k] = 0.0
                 end
 
                 if phi.v.onoff[i,j,k]
                     id = phi.v.gIndex[i,j,k]
-                    array_DUy[i,j,k] = mesh.vol[i,j,k]/AV[id,id]
+                    array_DUy[i,j,k] = 1.0/AV[id,id]
                 else
                     array_DUy[i,j,k] = 0.0
                 end
 
                 if phi.w.onoff[i,j,k]
                     id = phi.w.gIndex[i,j,k]
-                    array_DUz[i,j,k] = mesh.vol[i,j,k]/AW[id,id]
+                    array_DUz[i,j,k] = 1.0/AW[id,id]
                 else
                     array_DUz[i,j,k] = 0.0
                 end

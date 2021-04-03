@@ -24,6 +24,7 @@ function create_Phi(
     convergenceRelative = 0.0
     convergenceTime = 0.0
     tolerance = 0.0
+    key = ""
 
     return CSPhi1D{T,N}(
         eval,
@@ -41,6 +42,7 @@ function create_Phi(
         convergenceRelative,
         convergenceTime,
         tolerance,
+        key,
     )
 end
 
@@ -65,6 +67,7 @@ function create_Phi(
     convergenceRelative = 0.0
     convergenceTime = 0.0
     tolerance = 0.0
+    key = ""
 
     return CSPhi2D{T,N}(
         eval,
@@ -82,6 +85,7 @@ function create_Phi(
         convergenceRelative,
         convergenceTime,
         tolerance,
+        key,
     )
 end
 
@@ -106,6 +110,7 @@ function create_Phi(
     convergenceRelative = 0.0
     convergenceTime = 0.0
     tolerance = 0.0
+    key = ""
 
     return CSPhi3D{T,N}(
         eval,
@@ -123,6 +128,7 @@ function create_Phi(
         convergenceRelative,
         convergenceTime,
         tolerance,
+        key,
     )
 end
 

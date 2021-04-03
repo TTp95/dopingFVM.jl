@@ -10,6 +10,7 @@ mutable struct SystemControl{T <: AbstractFloat, N <: Signed} <: TypeDopingFMV
     iterationsTimeStep::N
     minIterations::N
     maxIterations::N
+    time::T
     timeSteps::N
     print::Bool
     printTime::T

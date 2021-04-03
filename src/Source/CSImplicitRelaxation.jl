@@ -220,8 +220,8 @@ function implicit_relaxation(
             for j in 1:mesh.m1
                 if phi.onoff[i,j]
                     id = phi.gIndex[i,j]
-                    @inbounds b[id] = ((1.0 - relax) / relax) * A[id,id] * phi.iter[i,j]
-                    @inbounds A[id,id]  = (A[id,id] / relax) - A[id,id]
+                    @inbounds br[id] = ((1.0 - relax) / relax) * A[id,id] * phi.iter[i,j]
+                    @inbounds Ar[id,id]  = (A[id,id] / relax) - A[id,id]
                 end
             end
         end

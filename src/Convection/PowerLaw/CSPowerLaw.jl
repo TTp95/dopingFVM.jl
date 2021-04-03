@@ -1,14 +1,19 @@
 """
 
 """
-function _discretize_convection_centralDifference_ end
+function _discretize_convection_powerlaw_ end
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity1D,
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
     mesh::UnionCSMesh1D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
@@ -17,6 +22,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if mthreads
 
@@ -47,6 +57,7 @@ function _discretize_convection_centralDifference_(
                 ae = 0.0
                 aec = 0.0
                 b2 = 0.0
+                mflux = 0.0
 
                 #West Coefficents
                 if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1])
@@ -54,13 +65,17 @@ function _discretize_convection_centralDifference_(
                         mesh.dx[i], mesh.dx[i-1], material.ρ[i], material.ρ[i-1];
                         interpolation = interpolation
                     )
-                    @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i], mesh.dx[i], mesh.dx[i-1], (1.0)
-                    )
+
+                    mflux = -1.0 * rho * velocityU[i] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i-1]]
+                    peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                    aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     n += 1
                     AI[n] = id
                     AJ[n] = phi.gIndex[i-1]
-                    AV[n] = (-1.0) * aw
+                    AV[n] = aw
                     b[id] += b1
                 end
 
@@ -70,9 +85,13 @@ function _discretize_convection_centralDifference_(
                         mesh.dx[i], mesh.dx[i+1], material.ρ[i], material.ρ[i+1];
                         interpolation = interpolation
                     )
-                    @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1], mesh.dx[i], mesh.dx[i+1], (1.0)
-                    )
+
+                    mflux = rho * velocityU[i+1] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i+1]]
+                    peclet = (mflux) / (-1.0 * diffCoef)
+
+                    ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     n += 1
                     AI[n] = id
                     AJ[n] = phi.gIndex[i+1]
@@ -82,7 +101,7 @@ function _discretize_convection_centralDifference_(
 
                 #Center Coefficent
                 if phi.bounds[i]
-                    @inbounds ac, b0 = _convection_centralDifference_central_(
+                    @inbounds ac, b0 = _convection_powerlaw_central_(
                         i,
                         velocityU,
                         phi,
@@ -93,13 +112,13 @@ function _discretize_convection_centralDifference_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + aec - awc
+                    AV[n] = ac - (ae + aw) + (aec + awc)
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + aec - awc
+                    AV[n] = ac - (ae + aw) + (aec + awc)
                 end
             end
         end
@@ -117,6 +136,7 @@ function _discretize_convection_centralDifference_(
                 ae = 0.0
                 aec = 0.0
                 b2 = 0.0
+                mflux = 0.0
 
                 #West Coefficents
                 if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1])
@@ -124,10 +144,14 @@ function _discretize_convection_centralDifference_(
                         mesh.dx[i], mesh.dx[i-1], material.ρ[i], material.ρ[i-1];
                         interpolation = interpolation
                     )
-                    @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i], mesh.dx[i], mesh.dx[i-1], (1.0)
-                    )
-                    A[id, phi.gIndex[i-1]] = (-1.0) * aw
+
+                    mflux = -1.0 * rho * velocityU[i] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i-1]]
+                    peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                    aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                    A[id, phi.gIndex[i-1]] = aw
                     b[id] += b1
                 end
 
@@ -137,16 +161,20 @@ function _discretize_convection_centralDifference_(
                         mesh.dx[i], mesh.dx[i+1], material.ρ[i], material.ρ[i+1];
                         interpolation = interpolation
                     )
-                    @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1], mesh.dx[i], mesh.dx[i+1], (1.0)
-                    )
+
+                    mflux = rho * velocityU[i+1] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i+1]]
+                    peclet = (mflux) / (-1.0 * diffCoef)
+
+                    ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     A[id, phi.gIndex[i+1]] = ae
                     b[id] += b2
                 end
 
                 #Center Coefficent
                 if phi.bounds[i]
-                    @inbounds ac, b0 = _convection_centralDifference_central_(
+                    @inbounds ac, b0 = _convection_powerlaw_central_(
                         i,
                         velocityU,
                         phi,
@@ -154,10 +182,10 @@ function _discretize_convection_centralDifference_(
                         mesh;
                         T = T,
                     )
-                    A[id, id] = ac + aec - awc
+                    A[id, id] = ac - (ae + aw) + (aec + awc)
                     b[id] += b0
                 else
-                    A[id, id] = ac + aec - awc
+                    A[id, id] = ac - (ae + aw) + (aec + awc)
                 end
             end
         end
@@ -170,12 +198,17 @@ function _discretize_convection_centralDifference_(
     return A, b
 end
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity1D,
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
     mesh::UnionCSMesh1D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
@@ -184,6 +217,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if sparrays
         n = 0
@@ -212,26 +250,35 @@ function _discretize_convection_centralDifference_(
                 ae = 0.0
                 aec = 0.0
                 b2 = 0.0
+                mflux = 0.0
 
                 #West Coefficents
                 if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1])
                     rho = material.ρ
-                    @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i], mesh.dx[i], mesh.dx[i-1], (1.0)
-                    )
+
+                    mflux = -1.0 * rho * velocityU[i] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i-1]]
+                    peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                    aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     n += 1
                     AI[n] = id
                     AJ[n] = phi.gIndex[i-1]
-                    AV[n] = (-1.0) * aw
+                    AV[n] = aw
                     b[id] += b1
                 end
 
                 #East Coefficents
                 if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1])
                     rho = material.ρ
-                    @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                    rho, velocityU[i+1], mesh.dx[i], mesh.dx[i+1], (1.0)
-                    )
+
+                    mflux = rho * velocityU[i+1] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i+1]]
+                    peclet = (mflux) / (-1.0 * diffCoef)
+
+                    ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     n += 1
                     AI[n] = id
                     AJ[n] = phi.gIndex[i+1]
@@ -241,7 +288,7 @@ function _discretize_convection_centralDifference_(
 
                 #Center Coefficent
                 if phi.bounds[i]
-                    @inbounds ac, b0 = _convection_centralDifference_central_(
+                    @inbounds ac, b0 = _convection_powerlaw_central_(
                         i,
                         velocityU,
                         phi,
@@ -252,13 +299,13 @@ function _discretize_convection_centralDifference_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + aec - awc
+                    AV[n] = ac - (ae + aw) + (aec + awc)
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + aec - awc
+                    AV[n] = ac - (ae + aw) + (aec + awc)
                 end
             end
         end
@@ -276,30 +323,39 @@ function _discretize_convection_centralDifference_(
                 ae = 0.0
                 aec = 0.0
                 b2 = 0.0
+                mflux = 0.0
 
                 #West Coefficents
                 if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1])
                     rho = material.ρ
-                    @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i], mesh.dx[i], mesh.dx[i-1], (1.0)
-                    )
-                    A[id, phi.gIndex[i-1]] = (-1.0) * aw
+
+                    mflux = -1.0 * rho * velocityU[i] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i-1]]
+                    peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                    aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                    A[id, phi.gIndex[i-1]] = aw
                     b[id] += b1
                 end
 
                 #East Coefficents
                 if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1])
                     rho = material.ρ
-                    @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                    rho, velocityU[i+1], mesh.dx[i], mesh.dx[i+1], (1.0)
-                    )
+
+                    mflux = rho * velocityU[i+1] * (1.0)
+                    diffCoef = Adiff[id, phi.gIndex[i+1]]
+                    peclet = (mflux) / (-1.0 * diffCoef)
+
+                    ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                     A[id, phi.gIndex[i+1]] = ae
                     b[id] += b2
                 end
 
                 #Center Coefficent
                 if phi.bounds[i]
-                    @inbounds ac, b0 = _convection_centralDifference_central_(
+                    @inbounds ac, b0 = _convection_powerlaw_central_(
                         i,
                         velocityU,
                         phi,
@@ -307,10 +363,10 @@ function _discretize_convection_centralDifference_(
                         mesh;
                         T = T,
                     )
-                    A[id, id] = ac + aec - awc
+                    A[id, id] = ac - (ae + aw) + (aec + awc)
                     b[id] += b0
                 else
-                    A[id, id] = ac + aec - awc
+                    A[id, id] = ac - (ae + aw) + (aec + awc)
                 end
             end
         end
@@ -323,12 +379,17 @@ function _discretize_convection_centralDifference_(
     return A, b
 end
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
     mesh::UnionCSMesh2D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
@@ -338,6 +399,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if sparrays
         n = 0
@@ -373,6 +439,7 @@ function _discretize_convection_centralDifference_(
                     an = 0.0
                     anc = 0.0
                     b4 = 0.0
+                    mflux = 0.0
 
                     #West Coefficents
                     if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j])
@@ -380,13 +447,17 @@ function _discretize_convection_centralDifference_(
                             mesh.dx[i], mesh.dx[i-1], material.ρ[i,j], material.ρ[i-1,j];
                             interpolation = interpolation
                         )
-                        @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i,j], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j])
-                        )
+
+                        mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i-1,j]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i-1,j]
-                        AV[n] = (-1.0) * aw
+                        AV[n] = aw
                         b[id] += b1
                     end
 
@@ -396,9 +467,13 @@ function _discretize_convection_centralDifference_(
                             mesh.dx[i], mesh.dx[i+1], material.ρ[i,j], material.ρ[i+1,j];
                             interpolation = interpolation
                         )
-                        @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1,j], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j])
-                        )
+
+                        mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i+1,j]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i+1,j]
@@ -412,13 +487,17 @@ function _discretize_convection_centralDifference_(
                             mesh.dy[j], mesh.dy[j-1], material.ρ[i,j], material.ρ[i,j-1];
                             interpolation = interpolation
                         )
-                        @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i])
-                        )
+
+                        mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j-1]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i,j-1]
-                        AV[n] = (-1.0) * as
+                        AV[n] = as
                         b[id] += b3
                     end
 
@@ -428,9 +507,13 @@ function _discretize_convection_centralDifference_(
                             mesh.dy[j], mesh.dy[j+1], material.ρ[i,j], material.ρ[i,j+1];
                             interpolation = interpolation
                         )
-                        @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j+1], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i])
-                        )
+
+                        mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j+1]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i,j+1]
@@ -440,7 +523,7 @@ function _discretize_convection_centralDifference_(
 
                     #Center Coefficent
                     if phi.bounds[i,j]
-                        @inbounds ac, b0 = _convection_centralDifference_central_(
+                        @inbounds ac, b0 = _convection_powerlaw_central_(
                             i,
                             j,
                             velocityU,
@@ -453,13 +536,13 @@ function _discretize_convection_centralDifference_(
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + aec - awc + anc - asc
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                         b[id] += b0
                     else
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + aec - awc + anc - asc
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                     end
                 end
             end
@@ -485,6 +568,7 @@ function _discretize_convection_centralDifference_(
                     an = 0.0
                     anc = 0.0
                     b4 = 0.0
+                    mflux = 0.0
 
                     #West Coefficents
                     if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j])
@@ -492,10 +576,14 @@ function _discretize_convection_centralDifference_(
                             mesh.dx[i], mesh.dx[i-1], material.ρ[i,j], material.ρ[i-1,j];
                             interpolation = interpolation
                         )
-                        @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i,j], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j])
-                        )
-                        A[id, phi.gIndex[i-1,j]] = (-1.0) * aw
+
+                        mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i-1,j]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                        A[id, phi.gIndex[i-1,j]] = aw
                         b[id] += b1
                     end
 
@@ -505,9 +593,13 @@ function _discretize_convection_centralDifference_(
                             mesh.dx[i], mesh.dx[i+1], material.ρ[i,j], material.ρ[i+1,j];
                             interpolation = interpolation
                         )
-                        @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1,j], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j])
-                        )
+
+                        mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i+1,j]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         A[id, phi.gIndex[i+1,j]] = ae
                         b[id] += b2
                     end
@@ -518,10 +610,14 @@ function _discretize_convection_centralDifference_(
                             mesh.dy[j], mesh.dy[j-1], material.ρ[i,j], material.ρ[i,j-1];
                             interpolation = interpolation
                         )
-                        @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i])
-                        )
-                        A[id, phi.gIndex[i,j-1]] = (-1.0) * as
+
+                        mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j-1]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                        A[id, phi.gIndex[i,j-1]] = as
                         b[id] += b3
                     end
 
@@ -531,16 +627,20 @@ function _discretize_convection_centralDifference_(
                             mesh.dy[j], mesh.dy[j+1], material.ρ[i,j], material.ρ[i,j+1];
                             interpolation = interpolation
                         )
-                        @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j+1], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i])
-                        )
+
+                        mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j+1]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         A[id, phi.gIndex[i,j+1]] = an
                         b[id] += b4
                     end
 
                     #Center Coefficent
                     if phi.bounds[i,j]
-                        @inbounds ac, b0 = _convection_centralDifference_central_(
+                        @inbounds ac, b0 = _convection_powerlaw_central_(
                             i,
                             j,
                             velocityU,
@@ -550,10 +650,10 @@ function _discretize_convection_centralDifference_(
                             mesh;
                             T = T,
                         )
-                        A[id, id] = ac + aec - awc + anc - asc
+                        A[id, id] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                         b[id] += b0
                     else
-                        A[id, id] = ac + aec - awc + anc - asc
+                        A[id, id] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                     end
                 end
             end
@@ -568,12 +668,17 @@ function _discretize_convection_centralDifference_(
 end
 
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
     mesh::UnionCSMesh2D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
@@ -583,6 +688,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if sparrays
         n = 0
@@ -618,26 +728,35 @@ function _discretize_convection_centralDifference_(
                     an = 0.0
                     anc = 0.0
                     b4 = 0.0
+                    mflux = 0.0
 
                     #West Coefficents
                     if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j])
                         rho = material.ρ
-                        @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i,j], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j])
-                        )
+
+                        mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i-1,j]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i-1,j]
-                        AV[n] = (-1.0) * aw
+                        AV[n] = aw
                         b[id] += b1
                     end
 
                     #East Coefficents
                     if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1,j])
                         rho = material.ρ
-                        @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1,j], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j])
-                        )
+
+                        mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i+1,j]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i+1,j]
@@ -648,22 +767,30 @@ function _discretize_convection_centralDifference_(
                     #South Coefficents
                     if (j != 1) && (mesh.m1 != 1) && (phi.onoff[i,j-1])
                         rho = material.ρ
-                        @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i])
-                        )
+
+                        mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j-1]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i,j-1]
-                        AV[n] = (-1.0) * as
+                        AV[n] = as
                         b[id] += b3
                     end
 
                     #North Coefficents
                     if (j != mesh.m1) && (mesh.m1 != 1) && (phi.onoff[i,j+1])
                         rho = material.ρ
-                        @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j+1], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i])
-                        )
+
+                        mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j+1]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         n += 1
                         AI[n] = id
                         AJ[n] = phi.gIndex[i,j+1]
@@ -673,7 +800,7 @@ function _discretize_convection_centralDifference_(
 
                     #Center Coefficent
                     if phi.bounds[i,j]
-                        @inbounds ac, b0 = _convection_centralDifference_central_(
+                        @inbounds ac, b0 = _convection_powerlaw_central_(
                             i,
                             j,
                             velocityU,
@@ -686,13 +813,13 @@ function _discretize_convection_centralDifference_(
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + aec - awc + anc - asc
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                         b[id] += b0
                     else
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + aec - awc + anc - asc
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                     end
                 end
             end
@@ -718,23 +845,32 @@ function _discretize_convection_centralDifference_(
                     an = 0.0
                     anc = 0.0
                     b4 = 0.0
+                    mflux = 0.0
 
                     #West Coefficents
                     if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j])
                         rho = material.ρ
-                        @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i,j], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j])
-                        )
-                        A[id, phi.gIndex[i-1,j]] = (-1.0) * aw
+
+                        mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i-1,j]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                        A[id, phi.gIndex[i-1,j]] = aw
                         b[id] += b1
                     end
 
                     #East Coefficents
                     if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1,j])
                         rho = material.ρ
-                        @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                        rho, velocityU[i+1,j], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j])
-                        )
+
+                        mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                        diffCoef = Adiff[id, phi.gIndex[i+1,j]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         A[id, phi.gIndex[i+1,j]] = ae
                         b[id] += b2
                     end
@@ -742,26 +878,34 @@ function _discretize_convection_centralDifference_(
                     #South Coefficents
                     if (j != 1) && (mesh.m1 != 1) && (phi.onoff[i,j-1])
                         rho = material.ρ
-                        @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i])
-                        )
-                        A[id, phi.gIndex[i,j-1]] = (-1.0) * as
+
+                        mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j-1]]
+                        peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                        as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                        A[id, phi.gIndex[i,j-1]] = as
                         b += b3
                     end
 
                     #North Coefficents
                     if (j != mesh.m1) && (mesh.m1 != 1) && (phi.onoff[i,j+1])
                         rho = material.ρ
-                        @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                            rho, velocityV[i,j+1], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i])
-                        )
+
+                        mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                        diffCoef = Adiff[id, phi.gIndex[i,j+1]]
+                        peclet = (mflux) / (-1.0 * diffCoef)
+
+                        an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                         A[id, phi.gIndex[i,j+1]] = an
                         b[id] += b4
                     end
 
                     #Center Coefficent
                     if phi.bounds[i,j]
-                        @inbounds ac, b0 = _convection_centralDifference_central_(
+                        @inbounds ac, b0 = _convection_powerlaw_central_(
                             i,
                             j,
                             velocityU,
@@ -771,10 +915,10 @@ function _discretize_convection_centralDifference_(
                             mesh;
                             T = T,
                         )
-                        A[id, id] = ac + aec - awc + anc - asc
+                        A[id, id] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                         b[id] += b0
                     else
-                        A[id, id] = ac + aec - awc + anc - asc
+                        A[id, id] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
                     end
                 end
             end
@@ -788,12 +932,17 @@ function _discretize_convection_centralDifference_(
     return A, b
 end
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity3D,
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
     mesh::UnionCSMesh3D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,3} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,3} = vel.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
@@ -804,6 +953,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if sparrays
         n = 0
@@ -846,6 +1000,7 @@ function _discretize_convection_centralDifference_(
                         at = 0.0
                         atc = 0.0
                         b6 = 0.0
+                        mflux = 0.0
 
                         #West Coefficents
                         if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j,k])
@@ -853,13 +1008,17 @@ function _discretize_convection_centralDifference_(
                                 mesh.dx[i], mesh.dx[i-1], material.ρ[i,j,k], material.ρ[i-1,j,k];
                                 interpolation = interpolation
                             )
-                            @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                                rho, velocityU[i,j,k], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i-1,j,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i-1,j,k]
-                            AV[n] = (-1.0) * aw
+                            AV[n] = aw
                             b[id] += b1
                         end
 
@@ -869,9 +1028,13 @@ function _discretize_convection_centralDifference_(
                                 mesh.dx[i], mesh.dx[i+1], material.ρ[i,j,k], material.ρ[i+1,j,k];
                                 interpolation = interpolation
                             )
-                            @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i+1,j,k], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i+1,j,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i+1,j,k]
@@ -885,13 +1048,17 @@ function _discretize_convection_centralDifference_(
                                 mesh.dy[j], mesh.dy[j-1], material.ρ[i,j,k], material.ρ[i,j-1,k];
                                 interpolation = interpolation
                             )
-                            @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j,k], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j-1,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j-1,k]
-                            AV[n] = (-1.0) * as
+                            AV[n] = as
                             b[id] += b3
                         end
 
@@ -901,9 +1068,13 @@ function _discretize_convection_centralDifference_(
                                 mesh.dy[j], mesh.dy[j+1], material.ρ[i,j,k], material.ρ[i,j+1,k];
                                 interpolation = interpolation
                             )
-                            @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j+1,k], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j+1,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j+1,k]
@@ -917,13 +1088,17 @@ function _discretize_convection_centralDifference_(
                                 mesh.dz[k], mesh.dz[k-1], material.ρ[i,j,k], material.ρ[i,j,k-1];
                                 interpolation = interpolation
                             )
-                            @inbounds ab, abc, b5 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k], mesh.dz[k], mesh.dz[k-1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k-1]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            ab, abc, b5 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j,k-1]
-                            AV[n] = (-1.0) * ab
+                            AV[n] = ab
                             b[id] += b5
                         end
 
@@ -933,9 +1108,13 @@ function _discretize_convection_centralDifference_(
                                 mesh.dz[k], mesh.dz[k+1], material.ρ[i,j,k], material.ρ[i,j,k+1];
                                 interpolation = interpolation
                             )
-                            @inbounds at, atc, b6 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k+1], mesh.dz[k], mesh.dz[k+1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k+1]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            at, atc, b6 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j,k+1]
@@ -945,7 +1124,7 @@ function _discretize_convection_centralDifference_(
 
                         #Center Coefficent
                         if phi.bounds[i,j,k]
-                            @inbounds ac, b0 = _convection_centralDifference_central_(
+                            @inbounds ac, b0 = _convection_powerlaw_central_(
                                 i,
                                 j,
                                 k,
@@ -960,13 +1139,13 @@ function _discretize_convection_centralDifference_(
                             n += 1
                             AI[n] = id
                             AJ[n] = id
-                            AV[n] = ac + aec - awc + anc - asc + atc - abc
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                             b[id] += b0
                         else
                             n += 1
                             AI[n] = id
                             AJ[n] = id
-                            AV[n] = ac + aec - awc + anc - asc + atc - abc
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                         end
                     end
                 end
@@ -1000,6 +1179,7 @@ function _discretize_convection_centralDifference_(
                         at = 0.0
                         atc = 0.0
                         b6 = 0.0
+                        mflux = 0.0
 
                         #West Coefficents
                         if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j,k])
@@ -1007,10 +1187,14 @@ function _discretize_convection_centralDifference_(
                                 mesh.dx[i], mesh.dx[i-1], material.ρ[i,j,k], material.ρ[i-1,j,k];
                                 interpolation = interpolation
                             )
-                            @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                                rho, velocityU[i,j,k], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j] * mesh.dz[k])
-                            )
-                            A[id, phi.gIndex[i-1,j,k]] = (-1.0) * aw
+
+                            mflux = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i-1,j,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i-1,j,k]] = aw
                             b[id] += b1
                         end
 
@@ -1020,9 +1204,13 @@ function _discretize_convection_centralDifference_(
                                 mesh.dx[i], mesh.dx[i+1], material.ρ[i,j,k], material.ρ[i+1,j,k];
                                 interpolation = interpolation
                             )
-                            @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i+1,j,k], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i+1,j,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i+1,j,k]] = ae
                             b[id] += b2
                         end
@@ -1033,10 +1221,14 @@ function _discretize_convection_centralDifference_(
                                 mesh.dy[j], mesh.dy[j-1], material.ρ[i,j,k], material.ρ[i,j-1,k];
                                 interpolation = interpolation
                             )
-                            @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j,k], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i] * mesh.dz[k])
-                            )
-                            A[id, phi.gIndex[i,j-1,k]] = (-1.0) * as
+
+                            mflux = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j-1,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i,j-1,k]] = as
                             b[id] += b3
                         end
 
@@ -1046,9 +1238,13 @@ function _discretize_convection_centralDifference_(
                                 mesh.dy[j], mesh.dy[j+1], material.ρ[i,j,k], material.ρ[i,j+1,k];
                                 interpolation = interpolation
                             )
-                            @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j+1,k], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j+1,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i,j+1,k]] = an
                             b[id] += b4
                         end
@@ -1059,10 +1255,14 @@ function _discretize_convection_centralDifference_(
                                 mesh.dz[k], mesh.dz[k-1], material.ρ[i,j,k], material.ρ[i,j,k-1];
                                 interpolation = interpolation
                             )
-                            @inbounds ab, abc, b5 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k], mesh.dz[k], mesh.dz[k-1], (mesh.dx[i] * mesh.dy[j])
-                            )
-                            A[id, phi.gIndex[i,j,k-1]] = (-1.0) * ab
+
+                            mflux = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k-1]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            ab, abc, b5 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i,j,k-1]] = ab
                             b[id] += b5
                         end
 
@@ -1072,16 +1272,20 @@ function _discretize_convection_centralDifference_(
                                 mesh.dz[k], mesh.dz[k+1], material.ρ[i,j,k], material.ρ[i,j,k+1];
                                 interpolation = interpolation
                             )
-                            @inbounds at, atc, b6 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k+1], mesh.dz[k], mesh.dz[k+1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k+1]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            at, atc, b6 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i,j,k+1]] = at
                             b[id] += b6
                         end
 
                         #Center Coefficent
                         if phi.bounds[i,j,k]
-                            @inbounds ac, b0 = _convection_centralDifference_central_(
+                            @inbounds ac, b0 = _convection_powerlaw_central_(
                                 i,
                                 j,
                                 k,
@@ -1093,10 +1297,10 @@ function _discretize_convection_centralDifference_(
                                 mesh;
                                 T = T,
                             )
-                            A[id, id] = ac + aec - awc + anc - asc + atc - abc
+                            A[id, id] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                             b[id] += b0
                         else
-                            A[id, id] = ac + aec - awc + anc - asc + atc - abc
+                            A[id, id] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                         end
                     end
                 end
@@ -1111,12 +1315,17 @@ function _discretize_convection_centralDifference_(
     return A, b
 end
 
-function _discretize_convection_centralDifference_(
+function _discretize_convection_powerlaw_(
     vel::CSVelocity3D,
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::UnionCSConstantMaterial,
     mesh::UnionCSMesh3D;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,3} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,3} = vel.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
@@ -1127,6 +1336,11 @@ function _discretize_convection_centralDifference_(
     interpolation::Signed = 1,
 )
     n_equations = maximum_globalIndex(phi)
+
+    sizeDiffx, sizeDiffy = size(Adiff)
+    if (sizeDiffx != sizeDiffy) || (sizeDiffx != n_equations)
+        error("Error in size of the diffusión coeficient matrix!")
+    end
 
     if sparrays
         n = 0
@@ -1169,26 +1383,35 @@ function _discretize_convection_centralDifference_(
                         at = 0.0
                         atc = 0.0
                         b6 = 0.0
+                        mflux = 0.0
 
                         #West Coefficents
                         if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j,k])
                             rho = material.ρ
-                            @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                                rho, velocityU[i,j,k], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i-1,j,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i-1,j,k]
-                            AV[n] = (-1.0) * aw
+                            AV[n] = aw
                             b[id] += b1
                         end
 
                         #East Coefficents
                         if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1,j,k])
                             rho = material.ρ
-                            @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i+1,j,k], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i+1,j,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i+1,j,k]
@@ -1199,22 +1422,30 @@ function _discretize_convection_centralDifference_(
                         #South Coefficents
                         if (j != 1) && (mesh.m1 != 1) && (phi.onoff[i,j-1,k])
                             rho = material.ρ
-                            @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j,k], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j-1,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j-1,k]
-                            AV[n] = (-1.0) * as
+                            AV[n] = as
                             b[id] += b3
                         end
 
                         #North Coefficents
                         if (j != mesh.m1) && (mesh.m1 != 1) && (phi.onoff[i,j+1,k])
                             rho = material.ρ
-                            @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j+1,k], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j+1,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j+1,k]
@@ -1225,22 +1456,30 @@ function _discretize_convection_centralDifference_(
                         #Bottom Coefficents
                         if (k != 1) && (mesh.n1 != 1) && (phi.onoff[i,j,k-1])
                             rho = material.ρ
-                            @inbounds ab, abc, b5 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k], mesh.dz[k], mesh.dz[k-1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k-1]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            ab, abc, b5 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j,k-1]
-                            AV[n] = (-1.0) * ab
+                            AV[n] = ab
                             b[id] += b5
                         end
 
                         #Top Coefficents
                         if (k != mesh.n1) && (mesh.n1 != 1) && (phi.onoff[i,j,k+1])
                             rho = material.ρ
-                            @inbounds at, atc, b6 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k+1], mesh.dz[k], mesh.dz[k+1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k+1]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            at, atc, b6 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             n += 1
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j,k+1]
@@ -1250,7 +1489,7 @@ function _discretize_convection_centralDifference_(
 
                         #Center Coefficent
                         if phi.bounds[i,j,k]
-                            @inbounds ac, b0 = _convection_centralDifference_central_(
+                            @inbounds ac, b0 = _convection_powerlaw_central_(
                                 i,
                                 j,
                                 k,
@@ -1265,13 +1504,13 @@ function _discretize_convection_centralDifference_(
                             n += 1
                             AI[n] = id
                             AJ[n] = id
-                            AV[n] = ac + aec - awc + anc - asc + atc - abc
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                             b[id] += b0
                         else
                             n += 1
                             AI[n] = id
                             AJ[n] = id
-                            AV[n] = ac + aec - awc + anc - asc + atc - abc
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                         end
                     end
                 end
@@ -1305,23 +1544,32 @@ function _discretize_convection_centralDifference_(
                         at = 0.0
                         atc = 0.0
                         b6 = 0.0
+                        mflux = 0.0
 
                         #West Coefficents
                         if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j,k])
                             rho = material.ρ
-                            @inbounds aw, awc, b1 = _convection_centralDifference_neighbors_(
-                                rho, velocityU[i,j,k], mesh.dx[i], mesh.dx[i-1], (mesh.dy[j] * mesh.dz[k])
-                            )
-                            A[id, phi.gIndex[i-1,j,k]] = (-1.0) * aw
+
+                            mflux = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i-1,j,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            aw, awc, b1 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i-1,j,k]] = aw
                             b[id] += b1
                         end
 
                         #East Coefficents
                         if (i != mesh.l1) && (mesh.l1 != 1)  && (phi.onoff[i+1,j,k])
                             rho = material.ρ
-                            @inbounds ae, aec, b2 = _convection_centralDifference_neighbors_(
-                            rho, velocityU[i+1,j,k], mesh.dx[i], mesh.dx[i+1], (mesh.dy[j] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i+1,j,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            ae, aec, b2 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i+1,j,k]] = ae
                             b[id] += b2
                         end
@@ -1329,19 +1577,27 @@ function _discretize_convection_centralDifference_(
                         #South Coefficents
                         if (j != 1) && (mesh.m1 != 1) && (phi.onoff[i,j-1,k])
                             rho = material.ρ
-                            @inbounds as, asc, b3 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j,k], mesh.dy[j], mesh.dy[j-1], (mesh.dx[i] * mesh.dz[k])
-                            )
-                            A[id, phi.gIndex[i,j-1,k]] = (-1.0) * as
+
+                            mflux = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j-1,k]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            as, asc, b3 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i,j-1,k]] = as
                             b[id] += b3
                         end
 
                         #North Coefficents
                         if (j != mesh.m1) && (mesh.m1 != 1) && (phi.onoff[i,j+1,k])
                             rho = material.ρ
-                            @inbounds an, anc, b4 = _convection_centralDifference_neighbors_(
-                                rho, velocityV[i,j+1,k], mesh.dy[j], mesh.dy[j+1], (mesh.dx[i] * mesh.dz[k])
-                            )
+
+                            mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
+                            diffCoef = Adiff[id, phi.gIndex[i,j+1,k]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            an, anc, b4 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i,j+1,k]] = an
                             b[id] += b4
                         end
@@ -1349,26 +1605,34 @@ function _discretize_convection_centralDifference_(
                         #Bottom Coefficents
                         if (k != 1) && (mesh.n1 != 1) && (phi.onoff[i,j,k-1])
                             rho = material.ρ
-                            @inbounds ab, abc, b5 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k], mesh.dz[k], mesh.dz[k-1], (mesh.dx[i] * mesh.dy[j])
-                            )
-                            A[id, phi.gIndex[i,j,k-1]] = (-1.0) * ab
+
+                            mflux = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k-1]]
+                            peclet = (-1.0 * mflux) / (-1.0 * diffCoef)
+
+                            ab, abc, b5 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
+                            A[id, phi.gIndex[i,j,k-1]] = ab
                             b[id] += b5
                         end
 
                         #Top Coefficents
                         if (k != mesh.n1) && (mesh.n1 != 1) && (phi.onoff[i,j,k+1])
                             rho = material.ρ
-                            @inbounds at, atc, b6 = _convection_centralDifference_neighbors_(
-                                rho, velocityW[i,j,k+1], mesh.dz[k], mesh.dz[k+1], (mesh.dx[i] * mesh.dy[j])
-                            )
+
+                            mflux = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
+                            diffCoef = Adiff[id, phi.gIndex[i,j,k+1]]
+                            peclet = (mflux) / (-1.0 * diffCoef)
+
+                            at, atc, b6 = _convection_powerlaw_neighbors_(mflux, diffCoef, peclet)
+
                             A[id, phi.gIndex[i,j,k+1]] = at
                             b[id] += b6
                         end
 
                         #Center Coefficent
                         if phi.bounds[i,j,k]
-                            @inbounds ac, b0 = _convection_centralDifference_central_(
+                            @inbounds ac, b0 = _convection_powerlaw_central_(
                                 i,
                                 j,
                                 k,
@@ -1380,10 +1644,10 @@ function _discretize_convection_centralDifference_(
                                 mesh;
                                 T = T,
                             )
-                            A[id, id] = ac + aec - awc + anc - asc + atc - abc
+                            A[id, id] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                             b[id] += b0
                         else
-                            A[id, phi.gIndex[i,j,k]] = ac + aec - awc + anc - asc + atc - abc
+                            A[id, phi.gIndex[i,j,k]] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
                         end
                     end
                 end

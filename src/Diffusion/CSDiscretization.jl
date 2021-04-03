@@ -9,6 +9,7 @@ function discretize_diffusion(
     material::UnionCSMaterialAll,
     mesh::UnionCSMesh;
     T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
     mthreads::Bool = false,
     sparrays::Bool = true,
     scheme::Signed = 1,
@@ -21,6 +22,7 @@ function discretize_diffusion(
             material,
             mesh,;
             T = T,
+            N = N,
             mthreads = mthreads,
             sparrays = sparrays,
             interpolation = interpolation,

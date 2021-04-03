@@ -17,13 +17,11 @@ function _discretize_diffusion_centralDifference_(
     n_equations = maximum_globalIndex(phi)
 
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (3 * n_equations))
-        AJ = zeros(T, (3 * n_equations))
+        AI = zeros(N, (3 * n_equations))
+        AJ = zeros(N, (3 * n_equations))
         AV = zeros(T, (3 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)
@@ -178,13 +176,11 @@ function _discretize_diffusion_centralDifference_(
     n_equations = maximum_globalIndex(phi)
 
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (3 * n_equations))
-        AJ = zeros(T, (3 * n_equations))
+        AI = zeros(N, (3 * n_equations))
+        AJ = zeros(N, (3 * n_equations))
         AV = zeros(T, (3 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)
@@ -326,15 +322,12 @@ function _discretize_diffusion_centralDifference_(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # For multi-threading is required to force sparrays output
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (5 * n_equations))
-        AJ = zeros(T, (5 * n_equations))
+        AI = zeros(N, (5 * n_equations))
+        AJ = zeros(N, (5 * n_equations))
         AV = zeros(T, (5 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)
@@ -561,15 +554,12 @@ function _discretize_diffusion_centralDifference_(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # For multi-threading is required to force sparrays output
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (5 * n_equations))
-        AJ = zeros(T, (5 * n_equations))
+        AI = zeros(N, (5 * n_equations))
+        AJ = zeros(N, (5 * n_equations))
         AV = zeros(T, (5 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)
@@ -773,15 +763,12 @@ function _discretize_diffusion_centralDifference_(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # For multi-threading is required to force sparrays output
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (7 * n_equations))
-        AJ = zeros(T, (7 * n_equations))
+        AI = zeros(N, (7 * n_equations))
+        AJ = zeros(N, (7 * n_equations))
         AV = zeros(T, (7 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)
@@ -1082,15 +1069,12 @@ function _discretize_diffusion_centralDifference_(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # For multi-threading is required to force sparrays output
     if mthreads
-        sparrays = true
-    end
 
-    if sparrays
+    elseif sparrays
         n = 0
-        AI = zeros(T, (7 * n_equations))
-        AJ = zeros(T, (7 * n_equations))
+        AI = zeros(N, (7 * n_equations))
+        AJ = zeros(N, (7 * n_equations))
         AV = zeros(T, (7 * n_equations))
     elseif !sparrays
         A = zeros(T, n_equations, n_equations)

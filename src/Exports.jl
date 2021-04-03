@@ -65,6 +65,7 @@ end
 @publish Structures UnionCSMesh2D
 @publish Structures UnionCSMesh3D
 @publish Structures UnionCSPhi
+@publish Structures UnionCSVelocity
 @publish Structures UnionCSMesh
 @publish Structures UnionCSConstantMaterial
 @publish Structures UnionCSMaterialAll
@@ -122,6 +123,7 @@ end
 @publish Source implicit_relaxation
 
 @publish Gradients pressure_phi_gradient
+@publish Gradients array_gradient
 
 @publish Transient discretize_time
 
@@ -138,11 +140,14 @@ end
 
 @publish CoupleAlgorithms discretize_SIMPLE_PressureCorrection
 @publish CoupleAlgorithms SIMPLE_correction!
+
 #@publish Turbulence
 
 #@publish TurbulenceCoupleAlgorithms
 
-#@publish VisualizationData
+@publish VisualizationData check_folder
+@publish VisualizationData plot_paraviewVTK
+@publish VisualizationData plot_paraviewPVD
 
 #@publish dopingSolver
 

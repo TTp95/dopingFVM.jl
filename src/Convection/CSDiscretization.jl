@@ -3,7 +3,7 @@
 """
 function discretize_convection end
 
-function discretize_convection(
+@inline function discretize_convection(
     vel::CSVelocity1D,
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
@@ -16,9 +16,10 @@ function discretize_convection(
     } = [0.0 0.0; 0.0 0.0;],
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
-    sparse::Bool = true,
-    scheme::Signed = 2,
+    N::Type{<:Signed} = Int64,
+    mthreads::Bool = false,
+    sparrays::Bool = true,
+    scheme::Signed = 5,
     interpolation::Signed = 1,
 )
     if (scheme == 1)
@@ -28,11 +29,88 @@ function discretize_convection(
             bounds,
             material,
             mesh;
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 2)
+        A, b = _discretize_convection_upwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 3)
+        A, b = _discretize_convection_downwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 4)
+        A, b = _discretize_convection_hybrid_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
             Adiff = Adiff,
             velocityU = velocityU,
             T = T,
-            threads = threads,
-            sparse = sparse,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 5)
+        A, b = _discretize_convection_powerlaw_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            Adiff = Adiff,
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 6)
+        A, b = _discretize_convection_secondorderupwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -43,7 +121,7 @@ function discretize_convection(
     return A, b
 end
 
-function discretize_convection(
+@inline function discretize_convection(
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
@@ -57,9 +135,10 @@ function discretize_convection(
     velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
-    sparse::Bool = true,
-    scheme::Signed = 2,
+    N::Type{<:Signed} = Int64,
+    mthreads::Bool = false,
+    sparrays::Bool = true,
+    scheme::Signed = 5,
     interpolation::Signed = 1,
 )
     if (scheme == 1)
@@ -69,12 +148,94 @@ function discretize_convection(
             bounds,
             material,
             mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 2)
+        A, b = _discretize_convection_upwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 3)
+        A, b = _discretize_convection_downwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 4)
+        A, b = _discretize_convection_hybrid_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
             Adiff = Adiff,
             velocityU = velocityU,
             velocityV = velocityV,
             T = T,
-            threads = threads,
-            sparse = sparse,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 5)
+        A, b = _discretize_convection_powerlaw_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            Adiff = Adiff,
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 6)
+        A, b = _discretize_convection_secondorderupwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -85,7 +246,7 @@ function discretize_convection(
     return A, b
 end
 
-function discretize_convection(
+@inline function discretize_convection(
     vel::CSVelocity3D,
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
@@ -100,9 +261,10 @@ function discretize_convection(
     velocityV::Array{<:AbstractFloat,3} = vel.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
-    sparse::Bool = true,
-    scheme::Signed = 2,
+    N::Type{<:Signed} = Int64,
+    mthreads::Bool = false,
+    sparrays::Bool = true,
+    scheme::Signed = 5,
     interpolation::Signed = 1,
 )
     if (scheme == 1)
@@ -112,12 +274,100 @@ function discretize_convection(
             bounds,
             material,
             mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 2)
+        A, b = _discretize_convection_upwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 3)
+        A, b = _discretize_convection_downwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 4)
+        A, b = _discretize_convection_hybrid_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
             Adiff = Adiff,
             velocityU = velocityU,
             velocityV = velocityV,
+            velocityW = velocityW,
             T = T,
-            threads = threads,
-            sparse = sparse,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 5)
+        A, b = _discretize_convection_powerlaw_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            Adiff = Adiff,
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 6)
+        A, b = _discretize_convection_secondorderupwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            mthreads = mthreads,
+            sparrays = sparrays,
             interpolation = interpolation,
         )
 

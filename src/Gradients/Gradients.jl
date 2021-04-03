@@ -15,7 +15,10 @@ using dopingFVM.Structures
 using dopingFVM.Tools
 
 export pressure_phi_gradient
+export array_gradient
 
 include("CSPressurePhiGradient.jl")
+
+include("CSArrayGradient.jl")
 
 end # module

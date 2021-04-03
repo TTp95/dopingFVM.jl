@@ -8,14 +8,19 @@ $(EXPORTS)
 module VisualizationData
 
 using DocStringExtensions
+using WriteVTK
 
 using dopingFVM.Structures
 using dopingFVM.Tools
 
-#import
+export check_folder
+export plot_paraviewVTK
+export plot_paraviewPVD
 
-#export M
+include("CheckFolder.jl")
 
-#include(".jl")
+include("CSParaviewVTK.jl")
+
+include("CSParaviewPVD.jl")
 
 end # module

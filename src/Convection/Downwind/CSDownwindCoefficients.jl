@@ -1,27 +1,22 @@
 """
 
 """
-function _convection_centralDifference_neighbors_(
-    rho::AbstractFloat,
-    velf::AbstractFloat,
-    lenghts1::AbstractFloat,
-    lenghts2::AbstractFloat,
-    area::AbstractFloat,
-    )
-    g = (lenghts1) / (lenghts1 + lenghts2)
-
-    aF =  rho * velf * area * g
-    aFc =  rho * velf * area * (1.0 - g)
+@inline function _convection_downwind_neighbors_(
+    mflux::AbstractFloat,
+)
+    aF =  max(mflux, 0.0)
+    aFc =  -1.0 * max((-1.0 * mflux), 0.0)
     b = 0.0
 
     return aF, aFc, b
 end
+
 """
 
 """
-function _convection_centralDifference_central_ end
+function _convection_downwind_central_ end
 
-function _convection_centralDifference_central_(
+function _convection_downwind_central_(
     i::Signed,
     velocityU::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
@@ -34,7 +29,7 @@ function _convection_centralDifference_central_(
     bx = zeros(T, nbounds)
 
     for nn in  1:nbounds
-        @inbounds ax[nn], bx[nn] =  _convection_centralDifference_bounds_(
+        @inbounds ax[nn], bx[nn] =  _convection_downwind_bounds_(
             i,
             velocityU,
             phi,
@@ -50,7 +45,7 @@ function _convection_centralDifference_central_(
 end
 
 
-function _convection_centralDifference_central_(
+function _convection_downwind_central_(
     i::Signed,
     j::Signed,
     velocityU::Array{<:AbstractFloat,2},
@@ -65,7 +60,7 @@ function _convection_centralDifference_central_(
     bx = zeros(T, nbounds)
 
     for nn in  1:nbounds
-        @inbounds ax[nn], bx[nn] =  _convection_centralDifference_bounds_(
+        @inbounds ax[nn], bx[nn] =  _convection_downwind_bounds_(
             i,
             j,
             velocityU,
@@ -82,7 +77,7 @@ function _convection_centralDifference_central_(
     return aC, b
 end
 
-function _convection_centralDifference_central_(
+function _convection_downwind_central_(
     i::Signed,
     j::Signed,
     k::Signed,
@@ -99,7 +94,7 @@ function _convection_centralDifference_central_(
     bx = zeros(T, nbounds)
 
     for nn in  1:nbounds
-        @inbounds ax[nn], bx[nn] =  _convection_centralDifference_bounds_(
+        @inbounds ax[nn], bx[nn] =  _convection_downwind_bounds_(
             i,
             j,
             k,

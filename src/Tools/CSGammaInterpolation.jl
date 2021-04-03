@@ -6,7 +6,7 @@
     lenghts2::AbstractFloat,
     values1::AbstractFloat,
     values2::AbstractFloat;
-    interpolation = 2
+    interpolation = 2,
 )
     #Inicializate value
     value = 0.0

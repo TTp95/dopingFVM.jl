@@ -28,6 +28,8 @@ export gamma_interpolation
 export density_interpolation
 export general_interpolation
 
+export find_bondValue
+
 include("CSGlobalIndex.jl")
 
 include("CSOrderIter.jl")
@@ -45,5 +47,7 @@ include("CSPhiToVector.jl")
 include("CSVectorToPhi.jl")
 
 include("CSReemplaceOffSolution.jl")
+
+include("CSFindBondValue.jl")
 
 end # module

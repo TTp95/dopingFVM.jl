@@ -19,6 +19,8 @@ UnionCSMesh = Union{
 
 UnionCSPhi = Union{CSPhi1D, CSPhi2D, CSPhi3D}
 
+UnionCSVelocity = Union{CSVelocity1D, CSVelocity2D, CSVelocity3D}
+
 UnionCSMaterial = Union{CSMaterial1D, CSMaterial2D, CSMaterial3D}
 
 UnionCSConstantMaterial = Union{CSMaterialConstant, CSMaterialConstantImmutable}
