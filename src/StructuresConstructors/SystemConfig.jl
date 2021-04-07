@@ -9,9 +9,13 @@ function create_SystemConfig(
 )
     return SystemConfig{T,N}(
         1,
-        2,
+        5,
+        1,
+        1,
         1,
         2,
         1,
+        true,
+        false,
     )
 end

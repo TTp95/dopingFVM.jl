@@ -13,6 +13,7 @@ using DocStringExtensions
 
 using dopingFVM.Structures
 using dopingFVM.Tools
+using dopingFVM.Bounds
 
 #import
 

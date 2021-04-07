@@ -14,6 +14,7 @@ using SparseArrays
 
 using dopingFVM.Structures
 using dopingFVM.Tools
+using dopingFVM.Bounds
 
 export discretize_diffusion
 export _discretize_diffusion_centralDifference_

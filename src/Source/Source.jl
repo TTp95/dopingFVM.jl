@@ -14,6 +14,7 @@ using SparseArrays
 
 using dopingFVM.Structures
 using dopingFVM.Tools
+using dopingFVM.Bounds
 
 export discretize_source
 export discretize_bodyForcesRhieChow

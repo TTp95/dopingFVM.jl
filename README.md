@@ -66,8 +66,12 @@ add https://github.com/TTp95/dopingFVM.jl#master
 
 
 # To Do List
--[x] Done.
--[] Planned.
+- [ ] Crear plots agregando bordes
+- [ ] Terminar salida archivos transientes PVD
+- [ ] cambiar systemconfig a controlconfig
+- [ ] evaluar posibilidad de cambiar time.time1,2,3 a un vector time.dt DeltaTime
+- [ ] falta sumario, función error relativo imprimir, imprimir enunciado e imprimir cambio de paso de tiempo con el error relativo escrito
+- [ ] en caso que la implementación sea steady, que en pantalla diga steady y no el tiempo...
 
 
 # Citation

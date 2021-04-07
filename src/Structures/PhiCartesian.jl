@@ -18,6 +18,10 @@ mutable struct CSPhi1D{T <: AbstractFloat, N <: Signed} <: PhiCartesianStructure
     convergenceRelative::T
     convergenceTime::T
     tolerance::T
+    errorI::T
+    errorR::T
+    errorT::T
+    residual::T
     key::String
 end
 
@@ -41,6 +45,10 @@ mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     convergenceRelative::T
     convergenceTime::T
     tolerance::T
+    errorI::T
+    errorR::T
+    errorT::T
+    residual::T
     key::String
 end
 
@@ -64,6 +72,10 @@ mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
     convergenceRelative::T
     convergenceTime::T
     tolerance::T
+    errorI::T
+    errorR::T
+    errorT::T
+    residual::T
     key::String
 end
 

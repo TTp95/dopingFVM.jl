@@ -3,7 +3,7 @@ CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 
 """
 mutable struct DeltaTime{T<:AbstractFloat} <: TypeDopingFMV
-    Transient::Bool
+    transient::Bool
     initialTime::T
     finalTime::T
     dt1::T

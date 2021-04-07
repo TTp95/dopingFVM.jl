@@ -12,12 +12,12 @@ function find_bondValue(
     bcord::Char,
 )
 
-    boundvalue = 0.0
+    boundvalue = phi.eval[i,j]
 
-    if (bcord == 'w')
+    if (bcord == 'w') || (bcord == 'W')
         p1 = 'w'
         p2 = 'W'
-    elseif (bcord == 'e')
+    elseif (bcord == 'e') || (bcord == 'E')
         p1 = 'e'
         p2 = 'E'
     end
@@ -31,7 +31,7 @@ function find_bondValue(
             end
         end
     else
-        boundvalue = 0.0
+        boundvalue = phi.eval[i]
     end
 
     return boundvalue
@@ -47,18 +47,18 @@ function find_bondValue(
     bcord::Char,
 )
 
-    boundvalue = 0.0
+    boundvalue = phi.eval[i,j]
 
-    if (bcord == 'w')
+    if (bcord == 'w') || (bcord == 'W')
         p1 = 'w'
         p2 = 'W'
-    elseif (bcord == 'e')
+    elseif (bcord == 'e') || (bcord == 'E')
         p1 = 'e'
         p2 = 'E'
-    elseif (bcord == 's')
+    elseif (bcord == 's') || (bcord == 'S')
         p1 = 's'
         p2 = 'S'
-    elseif (bcord == 'n')
+    elseif (bcord == 'n') || (bcord == 'N')
         p1 = 'n'
         p2 = 'N'
     end
@@ -72,7 +72,7 @@ function find_bondValue(
             end
         end
     else
-        boundvalue = 0.0
+        boundvalue = phi.eval[i,j]
     end
 
     return boundvalue
@@ -89,24 +89,24 @@ function find_bondValue(
     bcord::Char,
 )
 
-    boundvalue = 0.0
+    boundvalue = phi.eval[i,j,k]
 
-    if (bcord == 'w')
+    if (bcord == 'w') || (bcord == 'w')
         p1 = 'w'
         p2 = 'W'
-    elseif (bcord == 'e')
+    elseif (bcord == 'e') || (bcord == 'E')
         p1 = 'e'
         p2 = 'E'
-    elseif (bcord == 's')
+    elseif (bcord == 's') || (bcord == 'S')
         p1 = 's'
         p2 = 'S'
-    elseif (bcord == 'n')
+    elseif (bcord == 'n') || (bcord == 'N')
         p1 = 'n'
         p2 = 'N'
-    elseif (bcord == 'b')
+    elseif (bcord == 'b') || (bcord == 'B')
         p1 = 'b'
         p2 = 'B'
-    elseif (bcord == 't')
+    elseif (bcord == 't') || (bcord == 'T')
         p1 = 't'
         p2 = 'T'
     end
@@ -120,7 +120,7 @@ function find_bondValue(
             end
         end
     else
-        boundvalue = 0.0
+        boundvalue = phi.eval[i,j,k]
     end
 
     return boundvalue

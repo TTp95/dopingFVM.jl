@@ -67,6 +67,7 @@ end
 @publish Structures UnionCSPhi
 @publish Structures UnionCSVelocity
 @publish Structures UnionCSMesh
+@publish Structures UnionCSMaterial
 @publish Structures UnionCSConstantMaterial
 @publish Structures UnionCSMaterialAll
 
@@ -78,7 +79,7 @@ end
 @publish StructuresConstructors create_DeltaTime
 @publish StructuresConstructors create_SystemConfig
 @publish StructuresConstructors create_SystemControl
-@publish StructuresConstructors SystemTime
+@publish StructuresConstructors create_SystemTime
 
 @publish MeshGenerator create_uniform_Mesh
 @publish MeshGenerator create_nonuniform_Mesh
@@ -105,13 +106,37 @@ end
 @publish Tools density_interpolation
 @publish Tools general_interpolation
 
+@publish Tools SystemTime_cpu
+@publish Tools SystemTime_properties
+@publish Tools SystemTime_discretize
+@publish Tools SystemTime_solver
+@publish Tools SystemTime_convergence
+@publish Tools SystemTime_print
+
+@publish Tools assign_dt!
+@publish Tools push_dt!
+
+@publish Bounds create_BoundsDict
+@publish Bounds bounds_template
+@publish Bounds assign_bounds!
+@publish Bounds evaluate_bounds!
+@publish Bounds _evaluate_bounds!_
+@publish Bounds find_bondValue
+
 @publish Convergence convergence_iter
-@publish Convergence convergence_relative_iter
+@publish Convergence convergence_iter!
+@publish Convergence convergence_relativeIter
+@publish Convergence convergence_relativeIter!
 @publish Convergence convergence_time
+@publish Convergence convergence_time!
 @publish Convergence mass_conservation
 @publish Convergence check_iterConvergence
+@publish Convergence check_iterConvergence!
 @publish Convergence check_timeConvergence
-@publish Convergence check_timeConvergenceRelavite
+@publish Convergence check_timeConvergence!
+@publish Convergence check_relativeConvergence
+@publish Convergence check_relativeConvergence!
+@publish Convergence assign_convergenceParameters!
 
 @publish Diffusion discretize_diffusion
 
@@ -124,6 +149,7 @@ end
 
 @publish Gradients pressure_phi_gradient
 @publish Gradients array_gradient
+@publish Gradients array_coordGradient
 
 @publish Transient discretize_time
 
@@ -132,14 +158,13 @@ end
 @publish VelocityInterpolation compute_RhieChow_BodyForces
 @publish VelocityInterpolation compute_RhieChow_Time
 
-@publish Bounds create_BoundsDict
-@publish Bounds bounds_template
-@publish Bounds assign_bounds!
-@publish Bounds evaluate_bounds!
-@publish Bounds _evaluate_bounds!_
-
 @publish CoupleAlgorithms discretize_SIMPLE_PressureCorrection
 @publish CoupleAlgorithms SIMPLE_correction!
+@publish CoupleAlgorithms discretize_PPC_pressureEquation
+@publish CoupleAlgorithms divergence_velocityToArray
+@publish CoupleAlgorithms velocityProjection_PPC_Incremental!
+@publish CoupleAlgorithms velocityProjection_PPC_nonIncremental!
+@publish CoupleAlgorithms velocityProjection_PPC_Rotational!
 
 #@publish Turbulence
 
@@ -148,6 +173,10 @@ end
 @publish VisualizationData check_folder
 @publish VisualizationData plot_paraviewVTK
 @publish VisualizationData plot_paraviewPVD
+
+@publish Print print_consoleError
+
+#@publish Solvers
 
 #@publish dopingSolver
 

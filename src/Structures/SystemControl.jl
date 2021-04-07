@@ -12,11 +12,15 @@ mutable struct SystemControl{T <: AbstractFloat, N <: Signed} <: TypeDopingFMV
     maxIterations::N
     time::T
     timeSteps::N
+    plot::Bool
     print::Bool
-    printTime::T
-    printConsoleIterations::N
-    lastPrintTime::T
-    lastPrintConsoleIterations::T
-    SolvedtimeStep::Bool
-    SolvedProblem::Bool
+    inspect::Bool
+    plotTime::T
+    printIterations::N
+    printInspect::N
+    lastPlot::T
+    lastPrint::N
+    lastInspect::N
+    solvedTimeStep::Bool
+    solvedProblem::Bool
 end

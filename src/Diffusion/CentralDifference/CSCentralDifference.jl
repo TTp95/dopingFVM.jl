@@ -894,9 +894,6 @@ function _discretize_diffusion_centralDifference_(
                             AI[n] = id
                             AJ[n] = phi.gIndex[i,j,k+1]
                             AV[n] = at
-                            push!(AI, id)
-                            push!(AJ, phi.gIndex[i,j,k+1])
-                            push!(AV, at)
                             b[id] += b6
                         end
 

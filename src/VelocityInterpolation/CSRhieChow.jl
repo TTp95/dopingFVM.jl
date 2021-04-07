@@ -1,5 +1,5 @@
 """
-
+Posiblemente revisar que pasa si no
 """
 function compute_RhieChow! end
 
@@ -89,6 +89,8 @@ function compute_RhieChow!(
 
                 elseif !velocity.u.onoff[i-1] && !velocity.u.onoff[i]
                     velocity.fValues.uFace[i] = 0.0
+                else
+                    velocity.fValues.uFace[i] = 0.0
                 end
             end
 
@@ -166,6 +168,8 @@ function compute_RhieChow!(
                     velocity.fValues.uFace[i] = mean - pressure
 
                 elseif !velocity.u.onoff[i-1] && !velocity.u.onoff[i]
+                    velocity.fValues.uFace[i] = 0.0
+                else
                     velocity.fValues.uFace[i] = 0.0
                 end
             end
@@ -269,6 +273,8 @@ function compute_RhieChow!(
 
                     elseif !velocity.u.onoff[i-1,j] && !velocity.u.onoff[i,j]
                         velocity.fValues.uFace[i,j] = 0.0
+                    else
+                        velocity.fValues.uFace[i,j] = 0.0
                     end
                 end
             end
@@ -348,6 +354,8 @@ function compute_RhieChow!(
                         velocity.fValues.uFace[i,j] = mean - pressure
 
                     elseif !velocity.u.onoff[i-1,j] && !velocity.u.onoff[i,j]
+                        velocity.fValues.uFace[i,j] = 0.0
+                    else
                         velocity.fValues.uFace[i,j] = 0.0
                     end
                 end
@@ -434,6 +442,8 @@ function compute_RhieChow!(
 
                     elseif !velocity.v.onoff[i,j-1] && !velocity.v.onoff[i,j]
                         velocity.fValues.vFace[i,j] = 0.0
+                    else
+                        velocity.fValues.vFace[i,j] = 0.0
                     end
                 end
             end
@@ -514,6 +524,8 @@ function compute_RhieChow!(
 
                     elseif !velocity.v.onoff[i,j-1] && !velocity.v.onoff[i,j]
                         velocity.fValues.vFace[i,j] = 0.0
+                    else
+                        velocity.fValues.uFace[i,j] = 0.0
                     end
                 end
             end
@@ -623,6 +635,8 @@ function compute_RhieChow!(
 
                         elseif !velocity.u.onoff[i-1,j,k] && !velocity.u.onoff[i,j,k]
                             velocity.fValues.uFace[i,j,k] = 0.0
+                        else
+                            velocity.fValues.uFace[i,j,k] = 0.0
                         end
                     end
                 end
@@ -704,6 +718,8 @@ function compute_RhieChow!(
                             velocity.fValues.uFace[i,j,k] = mean - pressure
 
                         elseif !velocity.u.onoff[i-1,j,k] && !velocity.u.onoff[i,j,k]
+                            velocity.fValues.uFace[i,j,k] = 0.0
+                        else
                             velocity.fValues.uFace[i,j,k] = 0.0
                         end
                     end
@@ -792,6 +808,8 @@ function compute_RhieChow!(
 
                         elseif !velocity.v.onoff[i,j-1,k] && !velocity.v.onoff[i,j,k]
                             velocity.fValues.vFace[i,j,k] = 0.0
+                        else
+                            velocity.fValues.vFace[i,j,k] = 0.0
                         end
                     end
                 end
@@ -873,6 +891,8 @@ function compute_RhieChow!(
                             velocity.fValues.vFace[i,j,k] = mean - pressure
 
                         elseif !velocity.v.onoff[i,j-1,k] && !velocity.v.onoff[i,j,k]
+                            velocity.fValues.vFace[i,j,k] = 0.0
+                        else
                             velocity.fValues.vFace[i,j,k] = 0.0
                         end
                     end
@@ -961,6 +981,8 @@ function compute_RhieChow!(
 
                         elseif !velocity.w.onoff[i,j,k-1] && !velocity.w.onoff[i,j,k]
                             velocity.fValues.wFace[i,j,k] = 0.0
+                        else
+                            velocity.fValues.wFace[i,j,k] = 0.0
                         end
                     end
                 end
@@ -1042,6 +1064,8 @@ function compute_RhieChow!(
                             velocity.fValues.wFace[i,j,k] = mean - pressure
 
                         elseif !velocity.w.onoff[i,j,k-1] && !velocity.w.onoff[i,j,k]
+                            velocity.fValues.wFace[i,j,k] = 0.0
+                        else
                             velocity.fValues.wFace[i,j,k] = 0.0
                         end
                     end

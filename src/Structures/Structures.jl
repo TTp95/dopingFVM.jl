@@ -69,6 +69,7 @@ export UnionCSMesh3D
 export UnionCSPhi
 export UnionCSVelocity
 export UnionCSMesh
+export UnionCSMaterial
 export UnionCSConstantMaterial
 export UnionCSMaterialAll
 

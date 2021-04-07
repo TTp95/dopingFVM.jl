@@ -20,6 +20,7 @@ export create_BoundsDict
 export bounds_template
 export assign_bounds!
 export _evaluate_bounds!_
+export find_bondValue
 
 include("CSBoundsDictionary.jl")
 
@@ -30,5 +31,7 @@ include("CSAssignBounds.jl")
 include("CSEvaluation.jl")
 
 include("CSEvaluateBounds.jl")
+
+include("CSFindBondValue.jl")
 
 end # module

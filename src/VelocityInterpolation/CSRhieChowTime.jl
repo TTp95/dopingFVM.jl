@@ -67,11 +67,11 @@ function compute_RhieChow_Time(
 
                     if (scheme == 1) #euler
                         num = materialtime1.ρ[i-1] * mesh.vol[i-1]
-                        den = deltat[1]
+                        den = deltat.dt1
                         a = num / den
 
                         num = materialtime1.ρ[i] * mesh.vol[i]
-                        den = deltat[1]
+                        den = deltat.dt1
                         b  = num / den
 
                         num = a * dx2 + b * dx1
@@ -87,9 +87,9 @@ function compute_RhieChow_Time(
                         rhieChow_Time[i] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                     elseif (scheme == 2) #CN
-                        a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                        a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                        a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                        a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                        a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                        a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                         #coef1
                         a = a2 * materialtime1.ρ[i-1] * mesh.vol[i-1]
@@ -127,9 +127,9 @@ function compute_RhieChow_Time(
                         rhieChow_Time[i] = term1 + term2
 
                     elseif (scheme == 3) #BDF2
-                        a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                        a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                        a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                        a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                        a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                        a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                         #coef1
                         a = a2 * materialtime1.ρ[i-1] * mesh.vol[i-1]
@@ -219,11 +219,11 @@ function compute_RhieChow_Time(
 
                     if (scheme == 1) #euler
                         num = materialtime1.ρ[i-1] * mesh.vol[i-1]
-                        den = deltat[1]
+                        den = deltat.dt1
                         a = num / den
 
                         num = materialtime1.ρ[i] * mesh.vol[i]
-                        den = deltat[1]
+                        den = deltat.dt1
                         b  = num / den
 
                         num = a * dx2 + b * dx1
@@ -239,9 +239,9 @@ function compute_RhieChow_Time(
                         rhieChow_Time[i] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                     elseif (scheme == 2) #CN
-                        a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                        a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                        a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                        a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                        a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                        a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                         #coef1
                         a = a2 * materialtime1.ρ[i-1] * mesh.vol[i-1]
@@ -279,9 +279,9 @@ function compute_RhieChow_Time(
                         rhieChow_Time[i] = term1 + term2
 
                     elseif (scheme == 3) #BDF2
-                        a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                        a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                        a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                        a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                        a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                        a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                         #coef1
                         a = a2 * materialtime1.ρ[i-1] * mesh.vol[i-1]
@@ -405,11 +405,11 @@ function compute_RhieChow_Time(
 
                         if (scheme == 1) #euler
                             num = materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             a = num / den
 
                             num = materialtime1.ρ[i,j] * mesh.vol[i,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             b  = num / den
 
                             num = a * dx2 + b * dx1
@@ -425,9 +425,9 @@ function compute_RhieChow_Time(
                             u_rhieChow_Time[i,j] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                         elseif (scheme == 2) #CN
-                            a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                            a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                            a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                            a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                            a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
@@ -465,9 +465,9 @@ function compute_RhieChow_Time(
                             u_rhieChow_Time[i,j] = term1 + term2
 
                         elseif (scheme == 3) #BDF2
-                            a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                            a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                            a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                            a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                            a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
@@ -558,11 +558,11 @@ function compute_RhieChow_Time(
 
                         if (scheme == 1) #euler
                             num = materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             a = num / den
 
                             num = materialtime1.ρ[i,j] * mesh.vol[i,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             b  = num / den
 
                             num = a * dx2 + b * dx1
@@ -578,9 +578,9 @@ function compute_RhieChow_Time(
                             u_rhieChow_Time[i,j] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                         elseif (scheme == 2) #CN
-                            a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                            a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                            a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                            a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                            a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
@@ -618,9 +618,9 @@ function compute_RhieChow_Time(
                             u_rhieChow_Time[i,j] = term1 + term2
 
                         elseif (scheme == 3) #BDF2
-                            a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                            a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                            a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                            a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                            a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i-1,j] * mesh.vol[i-1,j]
@@ -716,11 +716,11 @@ function compute_RhieChow_Time(
 
                         if (scheme == 1) #euler
                             num = materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
-                            den = deltat[1]
+                            den = deltat.dt1
                             a = num / den
 
                             num = materialtime1.ρ[i,j] * mesh.vol[i,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             b  = num / den
 
                             num = a * dx2 + b * dx1
@@ -736,9 +736,9 @@ function compute_RhieChow_Time(
                             v_rhieChow_Time[i,j] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                         elseif (scheme == 2) #CN
-                            a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                            a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                            a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                            a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                            a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
@@ -776,9 +776,9 @@ function compute_RhieChow_Time(
                             v_rhieChow_Time[i,j] = term1 + term2
 
                         elseif (scheme == 3) #BDF2
-                            a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                            a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                            a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                            a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                            a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
@@ -869,11 +869,11 @@ function compute_RhieChow_Time(
 
                         if (scheme == 1) #euler
                             num = materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
-                            den = deltat[1]
+                            den = deltat.dt1
                             a = num / den
 
                             num = materialtime1.ρ[i,j] * mesh.vol[i,j]
-                            den = deltat[1]
+                            den = deltat.dt1
                             b  = num / den
 
                             num = a * dx2 + b * dx1
@@ -889,9 +889,9 @@ function compute_RhieChow_Time(
                             v_rhieChow_Time[i,j] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                         elseif (scheme == 2) #CN
-                            a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                            a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                            a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                            a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                            a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
@@ -929,9 +929,9 @@ function compute_RhieChow_Time(
                             v_rhieChow_Time[i,j] = term1 + term2
 
                         elseif (scheme == 3) #BDF2
-                            a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                            a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                            a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                            a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                            a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                            a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                             #coef1
                             a = a2 * materialtime1.ρ[i,j-1] * mesh.vol[i,j-1]
@@ -1062,11 +1062,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1082,9 +1082,9 @@ function compute_RhieChow_Time(
                                 u_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
@@ -1122,9 +1122,9 @@ function compute_RhieChow_Time(
                                 u_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
@@ -1217,11 +1217,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1237,9 +1237,9 @@ function compute_RhieChow_Time(
                                 u_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
@@ -1277,9 +1277,9 @@ function compute_RhieChow_Time(
                                 u_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i-1,j,k] * mesh.vol[i-1,j,k]
@@ -1377,11 +1377,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1397,9 +1397,9 @@ function compute_RhieChow_Time(
                                 v_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
@@ -1437,9 +1437,9 @@ function compute_RhieChow_Time(
                                 v_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
@@ -1532,11 +1532,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1552,9 +1552,9 @@ function compute_RhieChow_Time(
                                 v_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
@@ -1592,9 +1592,9 @@ function compute_RhieChow_Time(
                                 v_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j-1,k] * mesh.vol[i,j-1,k]
@@ -1694,11 +1694,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1714,9 +1714,9 @@ function compute_RhieChow_Time(
                                 w_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
@@ -1754,9 +1754,9 @@ function compute_RhieChow_Time(
                                 w_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
@@ -1849,11 +1849,11 @@ function compute_RhieChow_Time(
 
                             if (scheme == 1) #euler
                                 num = materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 a = num / den
 
                                 num = materialtime1.ρ[i,j,k] * mesh.vol[i,j,k]
-                                den = deltat[1]
+                                den = deltat.dt1
                                 b  = num / den
 
                                 num = a * dx2 + b * dx1
@@ -1869,9 +1869,9 @@ function compute_RhieChow_Time(
                                 w_rhieChow_Time[i,j,k] = (coef1 * Df / Vf) * (-1.0) * (fValue_old1 - meantime1)
 
                             elseif (scheme == 2) #CN
-                                a1 = ( deltat[2] / (deltat[1] * (deltat[1] + deltat[2])))
-                                a2 = ( (deltat[2] - deltat[1]) / (deltat[1] + deltat[2]) )
-                                a3 = ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
+                                a2 = ( (deltat.dt2 - deltat.dt1) / (deltat.dt1 + deltat.dt2) )
+                                a3 = ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
@@ -1909,9 +1909,9 @@ function compute_RhieChow_Time(
                                 w_rhieChow_Time[i,j,k] = term1 + term2
 
                             elseif (scheme == 3) #BDF2
-                                a1 = ( 1.0 / deltat[1] ) + ( 1.0 / (deltat[1] + deltat[2]))
-                                a2 = (( 1.0 / deltat[1] ) + ( 1.0 / deltat[2]))
-                                a3 = -1.0 * ( deltat[1] / (deltat[2] * (deltat[1] + deltat[2])))
+                                a1 = ( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+                                a2 = (( 1.0 / deltat.dt1 ) + ( 1.0 / deltat.dt2))
+                                a3 = -1.0 * ( deltat.dt1 / (deltat.dt2 * (deltat.dt1 + deltat.dt2)))
 
                                 #coef1
                                 a = a2 * materialtime1.ρ[i,j,k-1] * mesh.vol[i,j,k-1]
