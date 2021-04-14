@@ -10,6 +10,7 @@ function discretize_PPC_pressureEquation(
     material::UnionCSMaterialAll;
     velocityU::Array{<:AbstractFloat,1} = velocity.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
     sparrays::Bool = true,
     mthreads::Bool = false,
     transientScheme::Signed = 1,
@@ -47,6 +48,7 @@ function discretize_PPC_pressureEquation(
     velocityU::Array{<:AbstractFloat,2} = velocity.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = velocity.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
     sparrays::Bool = true,
     mthreads::Bool = false,
     transientScheme::Signed = 1,
@@ -86,6 +88,7 @@ function discretize_PPC_pressureEquation(
     velocityV::Array{<:AbstractFloat,3} = velocity.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = velocity.fValues.wFace,
     T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
     sparrays::Bool = true,
     mthreads::Bool = false,
     transientScheme::Signed = 1,

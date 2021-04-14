@@ -4,280 +4,65 @@
 function order_time! end
 
 function order_time!(
-    phi::CSPhi1D,
-    mesh::UnionCSMesh1D;
-    threads = false,
+    phi::UnionCSPhi,
 )
-
-    if threads
-        Base.Threads.@threads for i in 1:mesh.l1
-            @inbounds phi.time3[i] = phi.time2[i]
-            @inbounds phi.time2[i] = phi.time1[i]
-            @inbounds phi.time1[i] = phi.eval[i]
-        end
-    elseif !threads
-        for i in 1:mesh.l1
-            @inbounds phi.time3[i] = phi.time2[i]
-            @inbounds phi.time2[i] = phi.time1[i]
-            @inbounds phi.time1[i] = phi.eval[i]
-        end
-    end
-
-    return nothing
-end
-
-function order_time!(
-    phi::CSPhi2D,
-    mesh::UnionCSMesh2D;
-    threads = false,
-)
-
-    if threads
-        Base.Threads.@threads for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                @inbounds phi.time3[i,j] = phi.time2[i,j]
-                @inbounds phi.time2[i,j] = phi.time1[i,j]
-                @inbounds phi.time1[i,j] = phi.eval[i,j]
-            end
-        end
-    elseif !threads
-        for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                @inbounds phi.time3[i,j] = phi.time2[i,j]
-                @inbounds phi.time2[i,j] = phi.time1[i,j]
-                @inbounds phi.time1[i,j] = phi.eval[i,j]
-            end
-        end
-    end
-
-    return nothing
-end
-
-function order_time!(
-    phi::CSPhi3D,
-    mesh::UnionCSMesh3D;
-    threads = false,
-)
-
-    if threads
-        Base.Threads.@threads for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                for k in 1:mesh.n1
-                    @inbounds phi.time3[i,j,k] = phi.time2[i,j,k]
-                    @inbounds phi.time2[i,j,k] = phi.time1[i,j,k]
-                    @inbounds phi.time1[i,j,k] = phi.eval[i,j,k]
-                end
-            end
-        end
-    elseif !threads
-        for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                for k in 1:mesh.n1
-                    @inbounds phi.time3[i,j,k] = phi.time2[i,j,k]
-                    @inbounds phi.time2[i,j,k] = phi.time1[i,j,k]
-                    @inbounds phi.time1[i,j,k] = phi.eval[i,j,k]
-                end
-            end
-        end
-    end
+    phi.time3 .= phi.time2
+    phi.time2 .= phi.time1
+    phi.time1 .= phi.eval
 
     return nothing
 end
 
 function order_time!(
     phi::CSVelocity1D,
-    mesh::UnionCSMesh1D;
-    threads = false,
 )
-    order_time!(phi.u, mesh; threads=threads)
-    order_time!(phi.p, mesh; threads=threads)
+    order_time!(phi.u)
+    order_time!(phi.p)
 
-    if threads
-        Base.Threads.@threads for i in 1:(mesh.l1 + 1)
-            @inbounds phi.fValues.uFaceTime3[i] = phi.fValues.uFaceTime2[i]
-            @inbounds phi.fValues.uFaceTime2[i] = phi.fValues.uFaceTime1[i]
-            @inbounds phi.fValues.uFaceTime1[i] = phi.fValues.uFace[i]
-        end
-    elseif !threads
-        for i in 1:(mesh.l1 + 1)
-            @inbounds phi.fValues.uFaceTime3[i] = phi.fValues.uFaceTime2[i]
-            @inbounds phi.fValues.uFaceTime2[i] = phi.fValues.uFaceTime1[i]
-            @inbounds phi.fValues.uFaceTime1[i] = phi.fValues.uFace[i]
-        end
-    end
+    phi.fValues.uFaceTime3 .= phi.fValues.uFaceTime2
+    phi.fValues.uFaceTime2 .= phi.fValues.uFaceTime1
+    phi.fValues.uFaceTime1 .= phi.fValues.uFace
 
     return nothing
 end
 
 function order_time!(
     phi::CSVelocity2D,
-    mesh::UnionCSMesh2D;
-    threads = false,
 )
-    order_time!(phi.u, mesh; threads=threads)
-    order_time!(phi.v, mesh; threads=threads)
-    order_time!(phi.p, mesh; threads=threads)
+    order_time!(phi.u)
+    order_time!(phi.v)
+    order_time!(phi.p)
 
-    if threads
-        Base.Threads.@threads for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                if (i == mesh.m1)
-                    @inbounds phi.fValues.uFaceTime3[i,j] = phi.fValues.uFaceTime2[i,j]
-                    @inbounds phi.fValues.uFaceTime2[i,j] = phi.fValues.uFaceTime1[i,j]
-                    @inbounds phi.fValues.uFaceTime1[i,j] = phi.fValues.uFace[i,j]
-                    @inbounds phi.fValues.uFaceTime3[i+1,j] = phi.fValues.uFaceTime2[i+1,j]
-                    @inbounds phi.fValues.uFaceTime2[i+1,j] = phi.fValues.uFaceTime1[i+1,j]
-                    @inbounds phi.fValues.uFaceTime1[i+1,j] = phi.fValues.uFace[i+1,j]
-                else
-                    @inbounds phi.fValues.uFaceTime3[i,j] = phi.fValues.uFaceTime2[i,j]
-                    @inbounds phi.fValues.uFaceTime2[i,j] = phi.fValues.uFaceTime1[i,j]
-                    @inbounds phi.fValues.uFaceTime1[i,j] = phi.fValues.uFace[i,j]
-                end
-                if (i == mesh.l1)
-                    @inbounds phi.fValues.vFaceTime3[i,j] = phi.fValues.vFaceTime2[i,j]
-                    @inbounds phi.fValues.vFaceTime2[i,j] = phi.fValues.vFaceTime1[i,j]
-                    @inbounds phi.fValues.vFaceTime1[i,j] = phi.fValues.vFace[i,j]
-                    @inbounds phi.fValues.vFaceTime3[i,j+1] = phi.fValues.vFaceTime2[i,j+1]
-                    @inbounds phi.fValues.vFaceTime2[i,j+1] = phi.fValues.vFaceTime1[i,j+1]
-                    @inbounds phi.fValues.vFaceTime1[i,j+1] = phi.fValues.vFace[i,j+1]
-                else
-                    @inbounds phi.fValues.vFaceTime3[i,j] = phi.fValues.vFaceTime2[i,j]
-                    @inbounds phi.fValues.vFaceTime2[i,j] = phi.fValues.vFaceTime1[i,j]
-                    @inbounds phi.fValues.vFaceTime1[i,j] = phi.fValues.vFace[i,j]
-                end
-            end
-        end
-    elseif !threads
-        for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                if (i == mesh.m1)
-                    @inbounds phi.fValues.uFaceTime3[i,j] = phi.fValues.uFaceTime2[i,j]
-                    @inbounds phi.fValues.uFaceTime2[i,j] = phi.fValues.uFaceTime1[i,j]
-                    @inbounds phi.fValues.uFaceTime1[i,j] = phi.fValues.uFace[i,j]
-                    @inbounds phi.fValues.uFaceTime3[i+1,j] = phi.fValues.uFaceTime2[i+1,j]
-                    @inbounds phi.fValues.uFaceTime2[i+1,j] = phi.fValues.uFaceTime1[i+1,j]
-                    @inbounds phi.fValues.uFaceTime1[i+1,j] = phi.fValues.uFace[i+1,j]
-                else
-                    @inbounds phi.fValues.uFaceTime3[i,j] = phi.fValues.uFaceTime2[i,j]
-                    @inbounds phi.fValues.uFaceTime2[i,j] = phi.fValues.uFaceTime1[i,j]
-                    @inbounds phi.fValues.uFaceTime1[i,j] = phi.fValues.uFace[i,j]
-                end
-                if (i == mesh.l1)
-                    @inbounds phi.fValues.vFaceTime3[i,j] = phi.fValues.vFaceTime2[i,j]
-                    @inbounds phi.fValues.vFaceTime2[i,j] = phi.fValues.vFaceTime1[i,j]
-                    @inbounds phi.fValues.vFaceTime1[i,j] = phi.fValues.vFace[i,j]
-                    @inbounds phi.fValues.vFaceTime3[i,j+1] = phi.fValues.vFaceTime2[i,j+1]
-                    @inbounds phi.fValues.vFaceTime2[i,j+1] = phi.fValues.vFaceTime1[i,j+1]
-                    @inbounds phi.fValues.vFaceTime1[i,j+1] = phi.fValues.vFace[i,j+1]
-                else
-                    @inbounds phi.fValues.vFaceTime3[i,j] = phi.fValues.vFaceTime2[i,j]
-                    @inbounds phi.fValues.vFaceTime2[i,j] = phi.fValues.vFaceTime1[i,j]
-                    @inbounds phi.fValues.vFaceTime1[i,j] = phi.fValues.vFace[i,j]
-                end
-            end
-        end
-    end
+    phi.fValues.uFaceTime3 .= phi.fValues.uFaceTime2
+    phi.fValues.uFaceTime2 .= phi.fValues.uFaceTime1
+    phi.fValues.uFaceTime1 .= phi.fValues.uFace
+
+    phi.fValues.vFaceTime3 .= phi.fValues.vFaceTime2
+    phi.fValues.vFaceTime2 .= phi.fValues.vFaceTime1
+    phi.fValues.vFaceTime1 .= phi.fValues.vFace
 
     return nothing
 end
 
 function order_time!(
     phi::CSVelocity3D,
-    mesh::UnionCSMesh3D;
-    threads = false,
 )
-    order_time!(phi.u, mesh; threads=threads)
-    order_time!(phi.v, mesh; threads=threads)
-    order_time!(phi.w, mesh; threads=threads)
-    order_time!(phi.p, mesh; threads=threads)
+    order_time!(phi.u)
+    order_time!(phi.v)
+    order_time!(phi.w)
+    order_time!(phi.p)
 
-    if threads
-        Base.Threads.@threads for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                for k in 1:mesh.n1
-                    if (i == mesh.l1)
-                        @inbounds phi.fValues.uFaceTime3[i,j,k] = phi.fValues.uFaceTime2[i,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i,j,k] = phi.fValues.uFaceTime1[i,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i,j,k] = phi.fValues.uFace[i,j,k]
-                        @inbounds phi.fValues.uFaceTime3[i+1,j,k] = phi.fValues.uFaceTime2[i+1,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i+1,j,k] = phi.fValues.uFaceTime1[i+1,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i+1,j,k] = phi.fValues.uFace[i+1,j,k]
-                    else
-                        @inbounds phi.fValues.uFaceTime3[i,j,k] = phi.fValues.uFaceTime2[i,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i,j,k] = phi.fValues.uFaceTime1[i,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i,j,k] = phi.fValues.uFace[i,j,k]
-                    end
-                    if (j == mesh.m1)
-                        @inbounds phi.fValues.vFaceTime3[i,j,k] = phi.fValues.vFaceTime2[i,j,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j,k] = phi.fValues.vFaceTime1[i,j,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j,k] = phi.fValues.vFace[i,j,k]
-                        @inbounds phi.fValues.vFaceTime3[i,j+1,k] = phi.fValues.vFaceTime2[i,j+1,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j+1,k] = phi.fValues.vFaceTime1[i,j+1,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j+1,k] = phi.fValues.vFace[i,j+1,k]
-                    else
-                        @inbounds phi.fValues.vFaceTime3[i,j,k] = phi.fValues.vFaceTime2[i,j,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j,k] = phi.fValues.vFaceTime1[i,j,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j,k] = phi.fValues.vFace[i,j,k]
-                    end
-                    if (k == mesh.n1)
-                        @inbounds phi.fValues.wFaceTime3[i,j,k] = phi.fValues.wFaceTime2[i,j,k]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k] = phi.fValues.wFaceTime1[i,j,k]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k] = phi.fValues.wFace[i,j,k]
-                        @inbounds phi.fValues.wFaceTime3[i,j,k+1] = phi.fValues.wFaceTime2[i,j,k+1]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k+1] = phi.fValues.wFaceTime1[i,j,k+1]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k+1] = phi.fValues.wFace[i,j,k+1]
-                    else
-                        @inbounds phi.fValues.wFaceTime3[i,j,k] = phi.fValues.wFaceTime2[i,j,k]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k] = phi.fValues.wFaceTime1[i,j,k]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k] = phi.fValues.wFace[i,j,k]
-                    end
-                end
-            end
-        end
-    elseif !threads
-        for i in 1:mesh.l1
-            for j in 1:mesh.m1
-                for k in 1:mesh.n1
-                    if (i == mesh.l1)
-                        @inbounds phi.fValues.uFaceTime3[i,j,k] = phi.fValues.uFaceTime2[i,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i,j,k] = phi.fValues.uFaceTime1[i,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i,j,k] = phi.fValues.uFace[i,j,k]
-                        @inbounds phi.fValues.uFaceTime3[i+1,j,k] = phi.fValues.uFaceTime2[i+1,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i+1,j,k] = phi.fValues.uFaceTime1[i+1,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i+1,j,k] = phi.fValues.uFace[i+1,j,k]
-                    else
-                        @inbounds phi.fValues.uFaceTime3[i,j,k] = phi.fValues.uFaceTime2[i,j,k]
-                        @inbounds phi.fValues.uFaceTime2[i,j,k] = phi.fValues.uFaceTime1[i,j,k]
-                        @inbounds phi.fValues.uFaceTime1[i,j,k] = phi.fValues.uFace[i,j,k]
-                    end
-                    if (j == mesh.m1)
-                        @inbounds phi.fValues.vFaceTime3[i,j,k] = phi.fValues.vFaceTime2[i,j,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j,k] = phi.fValues.vFaceTime1[i,j,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j,k] = phi.fValues.vFace[i,j,k]
-                        @inbounds phi.fValues.vFaceTime3[i,j+1,k] = phi.fValues.vFaceTime2[i,j+1,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j+1,k] = phi.fValues.vFaceTime1[i,j+1,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j+1,k] = phi.fValues.vFace[i,j+1,k]
-                    else
-                        @inbounds phi.fValues.vFaceTime3[i,j,k] = phi.fValues.vFaceTime2[i,j,k]
-                        @inbounds phi.fValues.vFaceTime2[i,j,k] = phi.fValues.vFaceTime1[i,j,k]
-                        @inbounds phi.fValues.vFaceTime1[i,j,k] = phi.fValues.vFace[i,j,k]
-                    end
-                    if (k == mesh.n1)
-                        @inbounds phi.fValues.wFaceTime3[i,j,k] = phi.fValues.wFaceTime2[i,j,k]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k] = phi.fValues.wFaceTime1[i,j,k]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k] = phi.fValues.wFace[i,j,k]
-                        @inbounds phi.fValues.wFaceTime3[i,j,k+1] = phi.fValues.wFaceTime2[i,j,k+1]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k+1] = phi.fValues.wFaceTime1[i,j,k+1]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k+1] = phi.fValues.wFace[i,j,k+1]
-                    else
-                        @inbounds phi.fValues.wFaceTime3[i,j,k] = phi.fValues.wFaceTime2[i,j,k]
-                        @inbounds phi.fValues.wFaceTime2[i,j,k] = phi.fValues.wFaceTime1[i,j,k]
-                        @inbounds phi.fValues.wFaceTime1[i,j,k] = phi.fValues.wFace[i,j,k]
-                    end
-                end
-            end
-        end
-    end
+    phi.fValues.uFaceTime3 .= phi.fValues.uFaceTime2
+    phi.fValues.uFaceTime2 .= phi.fValues.uFaceTime1
+    phi.fValues.uFaceTime1 .= phi.fValues.uFace
+
+    phi.fValues.vFaceTime3 .= phi.fValues.vFaceTime2
+    phi.fValues.vFaceTime2 .= phi.fValues.vFaceTime1
+    phi.fValues.vFaceTime1 .= phi.fValues.vFace
+
+    phi.fValues.wFaceTime3 .= phi.fValues.wFaceTime2
+    phi.fValues.wFaceTime2 .= phi.fValues.wFaceTime1
+    phi.fValues.wFaceTime1 .= phi.fValues.wFace
 
     return nothing
 end

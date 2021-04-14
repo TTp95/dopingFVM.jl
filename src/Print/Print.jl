@@ -15,7 +15,12 @@ using dopingFVM.Structures
 using dopingFVM.Tools
 
 export print_consoleError
+export printf_consoleError
+export print_summary
 
-include("PrintConsole.jl")
+include("PrintConsoleError.jl")
+include("PrintfConsoleError.jl")
+
+include("PrintSummary.jl")
 
 end # module

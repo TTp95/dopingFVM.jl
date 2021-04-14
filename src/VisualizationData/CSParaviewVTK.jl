@@ -57,7 +57,7 @@ function plot_paraviewVTK(
             vtkfile["$(args[x].key)", VTKPointData()] =  args[x].eval
 
         elseif (typeof(args[x]) <: AbstractArray)
-            vtkfile["$(args[x].key)", VTKPointData()] =  args[x].eval
+            vtkfile["array_$(x)", VTKPointData()] =  args[x]
 
         else
             error("Argumment number $(x + 2) incompatible...")

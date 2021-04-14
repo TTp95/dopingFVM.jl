@@ -89,34 +89,6 @@ function compute_RhieChow_Relaxation(
     #Compute u
     if mesh.l1 != 1
         if threads
-            Base.Threads.@threads for i in 2:mesh.l1
-                for j in 1:mesh.m1
-                    if velocity.u.onoff[i-1,j] && velocity.u.onoff[i,j]
-                        dx1 = 0.0
-                        dx2 =  0.0
-                        rel = 0.0
-                        velf_old = 0.0
-                        meanvelf_old = 0.0
-                        relaxterm = 0.0
-
-                        #parameters
-                        dx1 = 0.5 * mesh.dx[i-1]
-                        dx2 =  0.5 * mesh.dx[i]
-
-                        rel = (1.0 - relaxU)
-
-                        velf_old = velocity.fValues.uFaceIter[i,j]
-
-                        num = velocity.u.iter[i-1,j] * dx2 + velocity.u.iter[i,j] * dx1
-                        den = dx1 + dx2
-                        meanvelf_old = num / den
-
-                        relaxterm = rel * (velf_old - meanvelf_old)
-
-                        u_rhieChow_Relax[i,j] = relaxterm
-                    end
-                end
-            end
 
         elseif !threads
             for i in 2:mesh.l1
@@ -154,34 +126,6 @@ function compute_RhieChow_Relaxation(
     #Compute v
     if mesh.m1 != 1
         if threads
-            Base.Threads.@threads for i in 1:mesh.l1
-                for j in 2:mesh.m1
-                    if velocity.v.onoff[i,j-1] && velocity.v.onoff[i,j]
-                        dx1 = 0.0
-                        dx2 =  0.0
-                        rel = 0.0
-                        velf_old = 0.0
-                        meanvelf_old = 0.0
-                        relaxterm = 0.0
-
-                        #parameters
-                        dx1 = 0.5 * mesh.dy[j-1]
-                        dx2 =  0.5 * mesh.dy[j]
-
-                        rel = (1.0 - relaxV)
-
-                        velf_old = velocity.fValues.vFaceIter[i,j]
-
-                        num = velocity.v.iter[i,j-1] * dx2 + velocity.v.iter[i,j] * dx1
-                        den = dx1 + dx2
-                        meanvelf_old = num / den
-
-                        relaxterm = rel * (velf_old - meanvelf_old)
-
-                        v_rhieChow_Relax[i,j] = relaxterm
-                    end
-                end
-            end
 
         elseif !threads
             for i in 1:mesh.l1

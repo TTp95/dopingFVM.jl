@@ -29,7 +29,7 @@ function velocityProjection_PPC_Rotational!(
     array_field = zeros(T, mesh.l1)
     array_gradFieldx = zeros(T, mesh.l1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = threads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
     vector_fieldx = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
@@ -49,13 +49,13 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx))
+    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
 
     return nothing
 end
 
 function velocityProjection_PPC_Rotational!(
-    field::Array{<:AbstractFloat,2},
+    field::Array{<:AbstractFloat,1},
     velocity::CSVelocity2D,
     mesh::UnionCSMesh2D,
     deltat::DeltaTime,
@@ -82,7 +82,7 @@ function velocityProjection_PPC_Rotational!(
     array_gradFieldx = zeros(T, mesh.l1, mesh.m1)
     array_gradFieldy = zeros(T, mesh.l1, mesh.m1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = threads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
     vector_fieldx, vector_fieldy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
@@ -104,14 +104,14 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx))
-    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy))
+    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
+    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy) ./ mesh.vol)
 
     return nothing
 end
 
 function velocityProjection_PPC_Rotational!(
-    field::Array{<:AbstractFloat,3},
+    field::Array{<:AbstractFloat,1},
     velocity::CSVelocity3D,
     mesh::UnionCSMesh3D,
     deltat::DeltaTime,
@@ -140,7 +140,7 @@ function velocityProjection_PPC_Rotational!(
     array_gradFieldy = zeros(T, mesh.l1, mesh.m1, mesh.n1)
     array_gradFieldz = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = threads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
     vector_fieldx, vector_fieldy, vector_fieldz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
 
@@ -164,9 +164,9 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx))
-    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy))
-    velocity.w.eval .= velocity.w.eval - (coef * (material.ρ .* array_gradFieldz))
+    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
+    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy) ./ mesh.vol)
+    velocity.w.eval .= velocity.w.eval - (coef * (material.ρ .* array_gradFieldz) ./ mesh.vol)
 
     return nothing
 end

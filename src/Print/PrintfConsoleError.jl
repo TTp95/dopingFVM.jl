@@ -1,7 +1,7 @@
 """
 
 """
-function print_consoleError(
+function printf_consoleError(
     system::SystemControl,
     args...;
     mass::AbstractFloat = -1.0,

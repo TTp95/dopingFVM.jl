@@ -175,6 +175,8 @@ end
 @publish VisualizationData plot_paraviewPVD
 
 @publish Print print_consoleError
+@publish Print printf_consoleError
+@publish Print print_summary
 
 #@publish Solvers
 

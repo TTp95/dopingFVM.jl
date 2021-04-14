@@ -14,7 +14,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -29,8 +29,8 @@ function _projection_PC_velocity_divergence_(
     end
 
     for i in 1:mesh.l1
-        if phi.onoff[i,j]
-            id = phi.gIndex[i,j]
+        if velocity.p.onoff[i,j]
+            id = velocity.p.gIndex[i,j]
 
             # Aux variables
             rhow = 0.0
@@ -82,7 +82,7 @@ function _projection_PC_velocity_divergence_(
 
                 end
 
-                bdiv[id] += coef * (rhoe * velocityU[i+1] - rhow * velocityU[i])
+                bdiv[id] += coef * (rhow * velocityU[i] - rhoe * velocityU[i+1])
 
             end
 
@@ -104,7 +104,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -120,8 +120,8 @@ function _projection_PC_velocity_divergence_(
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
-            if phi.onoff[i,j]
-                id = phi.gIndex[i,j]
+            if velocity.p.onoff[i,j]
+                id = velocity.p.gIndex[i,j]
 
                 # Aux variables
                 rhow = 0.0
@@ -173,7 +173,7 @@ function _projection_PC_velocity_divergence_(
 
                     end
 
-                    bdiv[id] += coef * (rhoe * velocityU[i+1,j] - rhow * velocityU[i,j])
+                    bdiv[id] += coef * (rhow * velocityU[i,j] - rhoe * velocityU[i+1,j]) * mesh.dy[j]
 
                 end
 
@@ -219,7 +219,7 @@ function _projection_PC_velocity_divergence_(
 
                     end
 
-                    bdiv[id] += coef * (rhon * velocityV[i,j+1] - rhos * velocityV[i,j])
+                    bdiv[id] += coef * (rhos * velocityV[i,j] - rhon * velocityV[i,j+1]) * mesh.dx[i]
 
                 end
 
@@ -243,7 +243,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -260,8 +260,8 @@ function _projection_PC_velocity_divergence_(
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             for k in 1:mesh.n1
-                if phi.onoff[i,j,k]
-                    id = phi.gIndex[i,j,k]
+                if velocity.p.onoff[i,j,k]
+                    id = velocity.p.gIndex[i,j,k]
 
                     # Aux variables
                     rhow = 0.0
@@ -313,7 +313,7 @@ function _projection_PC_velocity_divergence_(
 
                         end
 
-                        bdiv[id] += coef * (rhoe * velocityU[i+1,j,k] - rhow * velocityU[i,j,k])
+                        bdiv[id] += coef * (rhow * velocityU[i,j,k] - rhoe * velocityU[i+1,j,k]) * (mesh.dy[j] * mesh.dz[k])
 
                     end
 
@@ -359,7 +359,7 @@ function _projection_PC_velocity_divergence_(
 
                         end
 
-                        bdiv[id] += coef * (rhon * velocityV[i,j+1,k] - rhos * velocityV[i,j,k])
+                        bdiv[id] += coef * (rhos * velocityV[i,j,k] - rhon * velocityV[i,j+1,k]) * (mesh.dx[i] * mesh.dz[k])
 
                     end
 
@@ -405,7 +405,7 @@ function _projection_PC_velocity_divergence_(
 
                         end
 
-                        bdiv[id] += coef * (rhot * velocityW[i,j,k+1] - rhob * velocityW[i,j,k])
+                        bdiv[id] += coef * (rhob * velocityW[i,j,k] - rhot * velocityW[i,j,k+1]) * (mesh.dx[i] * mesh.dy[j])
 
                     end
 
@@ -428,7 +428,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -443,8 +443,8 @@ function _projection_PC_velocity_divergence_(
     end
 
     for i in 1:mesh.l1
-        if phi.onoff[i,j]
-            id = phi.gIndex[i,j]
+        if velocity.p.onoff[i,j]
+            id = velocity.p.gIndex[i,j]
 
             if (mesh.l1 != 1)
                 bdiv[id] += coef * material.ρ * (velocityU[i+1] - velocityU[i])
@@ -468,7 +468,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -484,8 +484,8 @@ function _projection_PC_velocity_divergence_(
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
-            if phi.onoff[i,j]
-                id = phi.gIndex[i,j]
+            if velocity.p.onoff[i,j]
+                id = velocity.p.gIndex[i,j]
 
                 # Component x - velocity u
                 if (mesh.l1 != 1)
@@ -517,7 +517,7 @@ function _projection_PC_velocity_divergence_(
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
 )
-    n_equations = maximum_globalIndex(phi)
+    n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
@@ -534,8 +534,8 @@ function _projection_PC_velocity_divergence_(
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             for k in 1:mesh.n1
-                if phi.onoff[i,j,k]
-                    id = phi.gIndex[i,j,k]
+                if velocity.p.onoff[i,j,k]
+                    id = velocity.p.gIndex[i,j,k]
 
                     # Component x - velocity u
                     if (mesh.l1 != 1)

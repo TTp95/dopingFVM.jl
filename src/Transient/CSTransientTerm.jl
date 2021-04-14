@@ -13,8 +13,8 @@ function discretize_time(
     materialtime2::UnionCSMaterial = material,
     materialtime3::UnionCSMaterial = material,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
-    sparse::Bool = true,
+    mthreads::Bool = false,
+    sparrays::Bool = true,
     scheme::Signed = 1,
     forceScheme::Bool = false,
 )
@@ -23,11 +23,14 @@ function discretize_time(
             phi,
             mesh,
             deltat,
-            material;
-            materialtime1 = materialtime1,
+            phi.time1,
+            phi.gIndex,
+            phi.onoff,
+            material.ρ,
+            materialtime1.ρ;
             T = T,
-            threads = threads,
-            sparse = sparse,
+            mthreads = mthreads,
+            sparrays = sparrays,
         )
 
     elseif (scheme == 2) # CrankNicolson
@@ -36,12 +39,16 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
-                materialtime1 = materialtime1,
-                materialtime2 = materialtime2,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
 
         elseif (system.timeSteps == 1)
@@ -49,11 +56,14 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
-                materialtime1 = materialtime1,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
         end
 
@@ -63,12 +73,16 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
-                materialtime1 = materialtime1,
-                materialtime2 = materialtime2,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
 
         elseif (system.timeSteps == 1)
@@ -76,11 +90,14 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
-                materialtime1 = materialtime1,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
         end
 
@@ -92,14 +109,14 @@ function discretize_time(
 end
 
 function discretize_time(
-    phi:: UnionCSPhi,
+    phi::UnionCSPhi,
     mesh::UnionCSMesh,
     deltat::DeltaTime,
     material::UnionCSConstantMaterial,
     system::SystemControl;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
-    sparse::Bool = true,
+    mthreads::Bool = false,
+    sparrays::Bool = true,
     scheme::Signed = 1,
     forceScheme::Bool = false,
 )
@@ -108,10 +125,13 @@ function discretize_time(
             phi,
             mesh,
             deltat,
-            material;
+            phi.time1,
+            phi.gIndex,
+            phi.onoff,
+            material.ρ;
             T = T,
-            threads = threads,
-            sparse = sparse,
+            mthreads = mthreads,
+            sparrays = sparrays,
         )
 
     elseif (scheme == 2) # CrankNicolson
@@ -120,10 +140,14 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
 
         elseif (system.timeSteps == 1)
@@ -131,10 +155,13 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
         end
 
@@ -144,10 +171,14 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
 
         elseif (system.timeSteps == 1)
@@ -155,10 +186,13 @@ function discretize_time(
                 phi,
                 mesh,
                 deltat,
-                material;
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
                 T = T,
-                threads = threads,
-                sparse = sparse,
+                mthreads = mthreads,
+                sparrays = sparrays,
             )
         end
 

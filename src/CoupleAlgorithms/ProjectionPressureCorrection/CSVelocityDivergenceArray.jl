@@ -15,8 +15,8 @@ function divergence_velocityToArray(
     divArray = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
     for i in 1:mesh.l1
-        if phi.onoff[i,j]
-            id = phi.gIndex[i,j]
+        if velocity.p.onoff[i,j]
+            id = velocity.p.gIndex[i,j]
 
             # Aux variables
             gammaw = 0.0
@@ -88,12 +88,12 @@ function divergence_velocityToArray(
     mthreads::Bool = false,
     interpolation::Signed = 2,
 )
-    divArray = zeros(T, mesh.l1, mesh.m1, mesh.n1)
+    divArray = zeros(T, mesh.l1, mesh.m1)
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
-            if phi.onoff[i,j]
-                id = phi.gIndex[i,j]
+            if velocity.p.onoff[i,j]
+                id = velocity.p.gIndex[i,j]
 
                 # Aux variables
                 gammaw = 0.0
@@ -218,8 +218,8 @@ function divergence_velocityToArray(
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             for k in 1:mesh.n1
-                if phi.onoff[i,j,k]
-                    id = phi.gIndex[i,j,k]
+                if velocity.p.onoff[i,j,k]
+                    id = velocity.p.gIndex[i,j,k]
 
                     # Aux variables
                     gammaw = 0.0
@@ -387,8 +387,8 @@ function divergence_velocityToArray(
     divArray = zeros(T, mesh.l1)
 
     for i in 1:mesh.l1
-        if phi.onoff[i,j]
-            id = phi.gIndex[i,j]
+        if velocity.p.onoff[i,j]
+            id = velocity.p.gIndex[i,j]
 
             if (mesh.l1 != 1)
                 divArray[i,j] += material.Γ * (velocityU[i+1] - velocityU[i]) / mesh.dx[i]
@@ -414,8 +414,8 @@ function divergence_velocityToArray(
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
-            if phi.onoff[i,j]
-                id = phi.gIndex[i,j]
+            if velocity.p.onoff[i,j]
+                id = velocity.p.gIndex[i,j]
 
                 # Component x - velocity u
                 if (mesh.l1 != 1)
@@ -450,7 +450,7 @@ function divergence_velocityToArray(
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             for k in 1:mesh.n1
-                if phi.onoff[i,j,k]
+                if velocity.p.onoff[i,j,k]
 
                     # Component x - velocity u
                     if (mesh.l1 != 1)
