@@ -9,6 +9,7 @@ function velocityProjection_PPC_Incremental!(
     mesh::UnionCSMesh1D,
     deltat::DeltaTime,
     material::UnionCSMaterialAll;
+    pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
     sparrays::Bool = true,
     mthreads::Bool = false,
@@ -34,7 +35,7 @@ function velocityProjection_PPC_Incremental!(
     vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx, T = T, threads = mthreads)
 
     # Pressure
-    velocity.p.eval .= array_field + velocity.p.time1
+    velocity.p.eval .= array_field + pressure
 
     # Velocity Projection
     velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx ./ mesh.vol))
@@ -91,6 +92,7 @@ function velocityProjection_PPC_Incremental!(
     mesh::UnionCSMesh3D,
     deltat::DeltaTime,
     material::UnionCSMaterialAll;
+    pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
     sparrays::Bool = true,
     mthreads::Bool = false,
@@ -120,7 +122,7 @@ function velocityProjection_PPC_Incremental!(
     vector_to_phi!(vector_fieldz, velocity.p, mesh; phisolution = array_gradFieldz, T = T, threads = mthreads)
 
     # Pressure
-    velocity.p.eval .= array_field + velocity.p.time1
+    velocity.p.eval .= array_field + pressure
 
     # Velocity Projection
     velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx ./ mesh.vol))
