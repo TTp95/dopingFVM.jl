@@ -101,6 +101,59 @@ function discretize_time(
             )
         end
 
+    elseif (scheme == 4) # BDF3
+        if (system.timeSteps >= 3) || forceScheme
+            A, b = discretize_BDF3_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.time3,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ,
+                materialtime3.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 2)
+            A, b = discretize_BDF2_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 1)
+            A, b = discretize_euler_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+        end
+
     else
         error("Time scheme: $(scheme) unimplemented")
     end
@@ -196,6 +249,52 @@ function discretize_time(
             )
         end
 
+    elseif (scheme == 4) # BDF3
+        if (system.timeSteps >= 3) || forceScheme
+            A, b = discretize_BDF3_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.time3,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 2)
+            A, b = discretize_BDF2_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 1)
+            A, b = discretize_euler_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+        end
     else
         error("Time scheme: $(scheme) unimplemented")
     end

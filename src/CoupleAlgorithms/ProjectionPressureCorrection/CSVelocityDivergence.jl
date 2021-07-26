@@ -19,11 +19,13 @@ function _projection_PC_velocity_divergence_(
     bdiv = zeros(T, n_equations)
 
     if (transientScheme == 1)
-        coef = 1.0/deltat.dt1
+        coef = (1.0 / deltat.dt1)
     elseif (transientScheme == 2)
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end
@@ -114,6 +116,8 @@ function _projection_PC_velocity_divergence_(
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end
@@ -253,6 +257,8 @@ function _projection_PC_velocity_divergence_(
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end
@@ -438,6 +444,8 @@ function _projection_PC_velocity_divergence_(
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end
@@ -478,6 +486,8 @@ function _projection_PC_velocity_divergence_(
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end
@@ -527,6 +537,8 @@ function _projection_PC_velocity_divergence_(
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
         coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
+    elseif (transientScheme == 4)
+        coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
     else
         error("Transient scheme unimplemented...")
     end

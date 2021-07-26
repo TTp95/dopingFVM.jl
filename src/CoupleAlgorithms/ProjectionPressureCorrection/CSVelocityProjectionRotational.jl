@@ -9,6 +9,7 @@ function velocityProjection_PPC_Rotational!(
     mesh::UnionCSMesh1D,
     deltat::DeltaTime,
     material::UnionCSMaterialAll;
+    pressure::AbstractArray = velocity.p.time1,
     velocityU::Array{<:AbstractFloat,1} = velocity.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     sparrays::Bool = true,
@@ -46,7 +47,7 @@ function velocityProjection_PPC_Rotational!(
     )
 
     # Pressure
-    velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
+    velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
     velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
@@ -60,6 +61,7 @@ function velocityProjection_PPC_Rotational!(
     mesh::UnionCSMesh2D,
     deltat::DeltaTime,
     material::UnionCSMaterialAll;
+    pressure::AbstractArray = velocity.p.time1,
     velocityU::Array{<:AbstractFloat,2} = velocity.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = velocity.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
@@ -101,7 +103,7 @@ function velocityProjection_PPC_Rotational!(
     )
 
     # Pressure
-    velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
+    velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
     velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
@@ -116,6 +118,7 @@ function velocityProjection_PPC_Rotational!(
     mesh::UnionCSMesh3D,
     deltat::DeltaTime,
     material::UnionCSMaterialAll;
+    pressure::AbstractArray = velocity.p.time1,
     velocityU::Array{<:AbstractFloat,3} = velocity.fValues.uFace,
     velocityV::Array{<:AbstractFloat,3} = velocity.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = velocity.fValues.wFace,
@@ -161,7 +164,7 @@ function velocityProjection_PPC_Rotational!(
     )
 
     # Pressure
-    velocity.p.eval .= array_field + velocity.p.time1 - array_div_vel
+    velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
     velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)

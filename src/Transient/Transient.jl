@@ -29,4 +29,6 @@ include("CSCrankNicolson.jl")
 
 include("CSBDF2.jl")
 
+include("CSBDF3.jl")
+
 end # module
