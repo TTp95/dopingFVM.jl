@@ -50,7 +50,7 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
+    velocity.u.eval .= velocity.u.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldx) ./ mesh.vol)
 
     return nothing
 end
@@ -106,8 +106,8 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
-    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy) ./ mesh.vol)
+    velocity.u.eval .= velocity.u.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldx) ./ mesh.vol)
+    velocity.v.eval .= velocity.v.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldy) ./ mesh.vol)
 
     return nothing
 end
@@ -167,9 +167,9 @@ function velocityProjection_PPC_Rotational!(
     velocity.p.eval .= array_field + pressure - array_div_vel
 
     # Velocity Projection
-    velocity.u.eval .= velocity.u.eval - (coef * (material.ρ .* array_gradFieldx) ./ mesh.vol)
-    velocity.v.eval .= velocity.v.eval - (coef * (material.ρ .* array_gradFieldy) ./ mesh.vol)
-    velocity.w.eval .= velocity.w.eval - (coef * (material.ρ .* array_gradFieldz) ./ mesh.vol)
+    velocity.u.eval .= velocity.u.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldx) ./ mesh.vol)
+    velocity.v.eval .= velocity.v.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldy) ./ mesh.vol)
+    velocity.w.eval .= velocity.w.eval - (coef * ((1.0 ./ material.ρ) .* array_gradFieldz) ./ mesh.vol)
 
     return nothing
 end

@@ -160,6 +160,8 @@ end
 
 @publish CoupleAlgorithms discretize_SIMPLE_PressureCorrection
 @publish CoupleAlgorithms SIMPLE_correction!
+@publish CoupleAlgorithms discretize_SIMPLEC_PressureCorrection
+@publish CoupleAlgorithms SIMPLEC_correction!
 @publish CoupleAlgorithms discretize_PPC_pressureEquation
 @publish CoupleAlgorithms divergence_velocityToArray
 @publish CoupleAlgorithms velocityProjection_PPC_Incremental!

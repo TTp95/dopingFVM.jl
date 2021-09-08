@@ -17,6 +17,7 @@ function discretize_time(
     sparrays::Bool = true,
     scheme::Signed = 1,
     forceScheme::Bool = false,
+    nonUniform::Bool = false,
 )
     if (scheme == 1) # euler
         A, b = discretize_euler_time(
@@ -101,9 +102,62 @@ function discretize_time(
             )
         end
 
-    elseif (scheme == 4) # BDF3
+    elseif ((scheme == 4) && (!nonUniform))# BDF3 uniform time step
         if (system.timeSteps >= 3) || forceScheme
             A, b = discretize_BDF3_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.time3,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ,
+                materialtime3.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 2)
+            A, b = discretize_BDF2_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ,
+                materialtime2.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 1)
+            A, b = discretize_euler_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ,
+                materialtime1.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+        end
+
+    elseif ((scheme == 4) && (nonUniform))# BDF3 + non uniform time step
+        if (system.timeSteps >= 3) || forceScheme
+            A, b = discretize_BDF3_nonUniform_time(
                 phi,
                 mesh,
                 deltat,
@@ -172,6 +226,7 @@ function discretize_time(
     sparrays::Bool = true,
     scheme::Signed = 1,
     forceScheme::Bool = false,
+    nonUniform::Bool = false,
 )
     if (scheme == 1) # euler
         A, b = discretize_euler_time(
@@ -249,9 +304,56 @@ function discretize_time(
             )
         end
 
-    elseif (scheme == 4) # BDF3
+    elseif ((scheme == 4) && (!nonUniform))# BDF3 uniform time step
         if (system.timeSteps >= 3) || forceScheme
             A, b = discretize_BDF3_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.time3,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 2)
+            A, b = discretize_BDF2_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.time2,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+
+        elseif (system.timeSteps == 1)
+            A, b = discretize_euler_time(
+                phi,
+                mesh,
+                deltat,
+                phi.time1,
+                phi.gIndex,
+                phi.onoff,
+                material.ρ;
+                T = T,
+                mthreads = mthreads,
+                sparrays = sparrays,
+            )
+        end
+
+    elseif ((scheme == 4) && (nonUniform))# BDF3 + non uniform time step
+        if (system.timeSteps >= 3) || forceScheme
+            A, b = discretize_BDF3_nonUniform_time(
                 phi,
                 mesh,
                 deltat,

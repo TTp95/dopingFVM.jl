@@ -115,6 +115,7 @@ function compute_RhieChow!(
         _compute_RhieChow!_(
             AU,
             AV,
+            AW,
             mesh,
             velocity.u.gIndex,
             velocity.v.gIndex,
@@ -132,22 +133,23 @@ function compute_RhieChow!(
         )
     else
         _compute_RhieChow_threads!_(
-        AU,
-        AV,
-        mesh,
-        velocity.u.gIndex,
-        velocity.v.gIndex,
-        velocity.w.gIndex,
-        velocity.u.onoff,
-        velocity.v.onoff,
-        velocity.w.onoff,
-        pressure_value,
-        velocity.u.eval,
-        velocity.v.eval,
-        velocity.w.eval,
-        velocity.fValues.uFace,
-        velocity.fValues.vFace,
-        velocity.fValues.wFace,
+            AU,
+            AV,
+            AW,
+            mesh,
+            velocity.u.gIndex,
+            velocity.v.gIndex,
+            velocity.w.gIndex,
+            velocity.u.onoff,
+            velocity.v.onoff,
+            velocity.w.onoff,
+            pressure_value,
+            velocity.u.eval,
+            velocity.v.eval,
+            velocity.w.eval,
+            velocity.fValues.uFace,
+            velocity.fValues.vFace,
+            velocity.fValues.wFace,
         )
     end
 
@@ -210,11 +212,11 @@ function _compute_RhieChow!_(
 
                 if (i == 2)
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] #+ dx1
                     a1 = num / den
                 elseif !onoff_u[i-2]
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] #+ dx1
                     a1 = num / den
                 else
                     num = value_p[i] - value_p[i-2]
@@ -224,11 +226,11 @@ function _compute_RhieChow!_(
 
                 if (i == mesh.l1)
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] #+ dx2
                     a2 = num / den
                 elseif !onoff_u[i+1]
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] #+ dx2
                     a2 = num / den
                 else
                     num = value_p[i+1] - value_p[i-1]
@@ -311,11 +313,11 @@ function _compute_RhieChow!_(
 
                     if (i == 2)
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] #+ dx1
                         a1 = num / den
                     elseif !onoff_u[i-2,j]
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] #+ dx1
                         a1 = num / den
                     else
                         num = value_p[i,j] - value_p[i-2,j]
@@ -325,11 +327,11 @@ function _compute_RhieChow!_(
 
                     if (i == mesh.l1)
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] #+ dx2
                         a2 = num / den
                     elseif !onoff_u[i+1,j]
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] #+ dx2
                         a2 = num / den
                     else
                         num = value_p[i+1,j] - value_p[i-1,j]
@@ -395,11 +397,11 @@ function _compute_RhieChow!_(
 
                     if (j == 2)
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] #+ dx1
                         a1 = num / den
                     elseif !onoff_v[i,j-2]
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] #+ dx1
                         a1 = num / den
                     else
                         num = value_p[i,j] - value_p[i,j-2]
@@ -409,11 +411,11 @@ function _compute_RhieChow!_(
 
                     if (j == mesh.m1)
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] #+ dx2
                         a2 = num / den
                     elseif !onoff_v[i,j+1]
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] #+ dx2
                         a2 = num / den
                     else
                         num = value_p[i,j+1] - value_p[i,j-1]
@@ -503,11 +505,11 @@ function _compute_RhieChow!_(
 
                         if (i == 2)
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] #+ dx1
                             a1 = num / den
                         elseif !onoff_u[i-2,j,k]
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] #+ dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i-2,j,k]
@@ -517,11 +519,11 @@ function _compute_RhieChow!_(
 
                         if (i == mesh.l1)
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] #+ dx2
                             a2 = num / den
                         elseif !onoff_u[i+1,j,k]
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] #+ dx2
                             a2 = num / den
                         else
                             num = value_p[i+1,j,k] - value_p[i-1,j,k]
@@ -589,11 +591,11 @@ function _compute_RhieChow!_(
 
                         if (j == 2)
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] #+ dx1
                             a1 = num / den
                         elseif !onoff_v[i,j-2,k]
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] #+ dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i,j-2,k]
@@ -603,11 +605,11 @@ function _compute_RhieChow!_(
 
                         if (j == mesh.m1)
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] #+ dx2
                             a2 = num / den
                         elseif !onoff_v[i,j+1,k]
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] #+ dx2
                             a2 = num / den
                         else
                             num = value_p[i,j+1,k] - value_p[i,j-1,k]
@@ -675,11 +677,11 @@ function _compute_RhieChow!_(
 
                         if (k == 2)
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] #+ dx1
                             a1 = num / den
                         elseif !onoff_w[i,j,k-2]
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] #+ dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i,j,k-2]
@@ -689,11 +691,11 @@ function _compute_RhieChow!_(
 
                         if (k == mesh.n1)
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] #+ dx2
                             a2 = num / den
                         elseif !onoff_w[i,j,k+1]
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] #+ dx2
                             a2 = num / den
                         else
                             num = value_p[i,j,k+1] - value_p[i,j,k-1]
@@ -776,11 +778,11 @@ function _compute_RhieChow_threads!_(
 
                 if (i == 2)
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] + dx1
                     a1 = num / den
                 elseif !onoff_u[i-2]
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] + dx1
                     a1 = num / den
                 else
                     num = value_p[i] - value_p[i-2]
@@ -790,11 +792,11 @@ function _compute_RhieChow_threads!_(
 
                 if (i == mesh.l1)
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] + dx2
                     a2 = num / den
                 elseif !onoff_u[i+1]
                     num = value_p[i] - value_p[i-1]
-                    den = mesh.x[i] - mesh.x[i-1]
+                    den = mesh.x[i] - mesh.x[i-1] + dx2
                     a2 = num / den
                 else
                     num = value_p[i+1] - value_p[i-1]
@@ -876,11 +878,11 @@ function _compute_RhieChow_threads!_(
 
                     if (i == 2)
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] + dx1
                         a1 = num / den
                     elseif !onoff_u[i-2,j]
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] + dx1
                         a1 = num / den
                     else
                         num = value_p[i,j] - value_p[i-2,j]
@@ -890,11 +892,11 @@ function _compute_RhieChow_threads!_(
 
                     if (i == mesh.l1)
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] + dx2
                         a2 = num / den
                     elseif !onoff_u[i+1,j]
                         num = value_p[i,j] - value_p[i-1,j]
-                        den = mesh.x[i] - mesh.x[i-1]
+                        den = mesh.x[i] - mesh.x[i-1] + dx2
                         a2 = num / den
                     else
                         num = value_p[i+1,j] - value_p[i-1,j]
@@ -960,11 +962,11 @@ function _compute_RhieChow_threads!_(
 
                     if (j == 2)
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] + dx1
                         a1 = num / den
                     elseif !onoff_v[i,j-2]
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] + dx1
                         a1 = num / den
                     else
                         num = value_p[i,j] - value_p[i,j-2]
@@ -974,11 +976,11 @@ function _compute_RhieChow_threads!_(
 
                     if (j == mesh.m1)
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] + dx2
                         a2 = num / den
                     elseif !onoff_v[i,j+1]
                         num = value_p[i,j] - value_p[i,j-1]
-                        den = mesh.y[j] - mesh.y[j-1]
+                        den = mesh.y[j] - mesh.y[j-1] + dx2
                         a2 = num / den
                     else
                         num = value_p[i,j+1] - value_p[i,j-1]
@@ -1069,11 +1071,11 @@ function _compute_RhieChow_threads!_(
 
                         if (i == 2)
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] + dx1
                             a1 = num / den
                         elseif !onoff_u[i-2,j,k]
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] + dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i-2,j,k]
@@ -1083,11 +1085,11 @@ function _compute_RhieChow_threads!_(
 
                         if (i == mesh.l1)
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] + dx2
                             a2 = num / den
                         elseif !onoff_u[i+1,j,k]
                             num = value_p[i,j,k] - value_p[i-1,j,k]
-                            den = mesh.x[i] - mesh.x[i-1]
+                            den = mesh.x[i] - mesh.x[i-1] + dx2
                             a2 = num / den
                         else
                             num = value_p[i+1,j,k] - value_p[i-1,j,k]
@@ -1155,11 +1157,11 @@ function _compute_RhieChow_threads!_(
 
                         if (j == 2)
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] + dx1
                             a1 = num / den
                         elseif !onoff_v[i,j-2,k]
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] + dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i,j-2,k]
@@ -1169,11 +1171,11 @@ function _compute_RhieChow_threads!_(
 
                         if (j == mesh.m1)
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] + dx2
                             a2 = num / den
                         elseif !onoff_v[i,j+1,k]
                             num = value_p[i,j,k] - value_p[i,j-1,k]
-                            den = mesh.y[j] - mesh.y[j-1]
+                            den = mesh.y[j] - mesh.y[j-1] + dx2
                             a2 = num / den
                         else
                             num = value_p[i,j+1,k] - value_p[i,j-1,k]
@@ -1241,11 +1243,11 @@ function _compute_RhieChow_threads!_(
 
                         if (k == 2)
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] + dx1
                             a1 = num / den
                         elseif !onoff_w[i,j,k-2]
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] + dx1
                             a1 = num / den
                         else
                             num = value_p[i,j,k] - value_p[i,j,k-2]
@@ -1255,11 +1257,11 @@ function _compute_RhieChow_threads!_(
 
                         if (k == mesh.n1)
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] + dx2
                             a2 = num / den
                         elseif !onoff_w[i,j,k+1]
                             num = value_p[i,j,k] - value_p[i,j,k-1]
-                            den = mesh.z[k] - mesh.z[k-1]
+                            den = mesh.z[k] - mesh.z[k-1] + dx2
                             a2 = num / den
                         else
                             num = value_p[i,j,k+1] - value_p[i,j,k-1]

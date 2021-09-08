@@ -20,6 +20,9 @@ export discretize_time
 export discretize_euler_time
 export discretize_crankNicolson_time
 export discretize_BDF2_time
+export discretize_BDF3_time
+export BDF3nonUniformCoeficients
+export discretize_BDF3_nonUniform_time
 
 include("CSTransientTerm.jl")
 
