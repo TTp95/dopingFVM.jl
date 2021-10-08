@@ -1,8 +1,8 @@
 """
-CSMesh1D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh1D{T<:AbstractFloat, N <: Signed} <: StructuredMesh
 
 """
-mutable struct CSMesh1D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+mutable struct CSMesh1D{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     dx::Array{T,1}
     vol::Array{T,1}
@@ -10,10 +10,10 @@ mutable struct CSMesh1D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructure
 end
 
 """
-CSMesh2D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh2D{T<:AbstractFloat, N <: Signed} <: MeshStructured
 
 """
-mutable struct CSMesh2D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+mutable struct CSMesh2D{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     y::Array{T,1}
     dx::Array{T,1}
@@ -24,10 +24,10 @@ mutable struct CSMesh2D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructure
 end
 
 """
-CSMesh3D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh3D{T<:AbstractFloat, N <: Signed} <: MeshStructured
 
 """
-mutable struct CSMesh3D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+mutable struct CSMesh3D{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     y::Array{T,1}
     z::Array{T,1}
@@ -41,10 +41,10 @@ mutable struct CSMesh3D{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructure
 end
 
 """
-CSMesh1D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh1D{T<:AbstractFloat, N <: Signed} <: MeshStructured
 
 """
-struct CSMesh1DImmutable{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+struct CSMesh1DImmutable{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     dx::Array{T,1}
     vol::Array{T,1}
@@ -52,10 +52,10 @@ struct CSMesh1DImmutable{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructur
 end
 
 """
-CSMesh2D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh2D{T<:AbstractFloat, N <: Signed} <: MeshStructured
 
 """
-struct CSMesh2DImmutable{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+struct CSMesh2DImmutable{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     y::Array{T,1}
     dx::Array{T,1}
@@ -66,10 +66,10 @@ struct CSMesh2DImmutable{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructur
 end
 
 """
-CSMesh3D{T<:AbstractFloat, N <: Signed} <: CartesianStructuredMesh
+CSMesh3DImmutable{T<:AbstractFloat, N <: Signed} <: MeshStructured
 
 """
-struct CSMesh3DImmutable{T<:AbstractFloat, N <: Signed} <: MeshCartesianStructured
+struct CSMesh3DImmutable{T<:AbstractFloat, N <: Signed} <: MeshStructured
     x::Array{T,1}
     y::Array{T,1}
     z::Array{T,1}

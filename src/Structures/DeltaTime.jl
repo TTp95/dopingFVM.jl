@@ -1,5 +1,5 @@
 """
-CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+DeltaTime{T<:AbstractFloat} <: TypeDopingFMV
 
 """
 mutable struct DeltaTime{T<:AbstractFloat} <: TypeDopingFMV

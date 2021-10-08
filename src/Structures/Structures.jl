@@ -17,27 +17,9 @@ export MaterialStructured
 export BoundsStructured
 export DeltaTime
 
-export MeshCartesianStructured
-export PhiCartesianStructured
-export MaterialCartesianStructured
-
-export MeshPolarStructured
-export PhiPolarStructured
-export MaterialPolarStructured
-
-export MeshCylindricalStructured
-export PhiCylindricalStructured
-export MaterialCylindricalStructured
-
-export MeshSphericalStructured
-export PhiSphericalStructured
-export MaterialSphericalStructured
-
 export CSMaterial1D
 export CSMaterial2D
 export CSMaterial3D
-export CSMaterialConstant
-export CSMaterialConstantImmutable
 
 export CSMesh1D
 export CSMesh2D
@@ -45,9 +27,6 @@ export CSMesh3D
 export CSMesh1DImmutable
 export CSMesh2DImmutable
 export CSMesh3DImmutable
-
-export CSMaterialConstant
-export CSMaterialConstantImmutable
 
 export CSPhi1D
 export CSPhi2D

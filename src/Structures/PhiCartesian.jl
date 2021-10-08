@@ -1,8 +1,8 @@
 """
-CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+CSPhi1D{T<:AbstractFloat, N <: Signed} <: PhiStructured
 
 """
-mutable struct CSPhi1D{T <: AbstractFloat, N <: Signed} <: PhiCartesianStructured
+mutable struct CSPhi1D{T <: AbstractFloat, N <: Signed} <: PhiStructured
     eval::Array{T,1}
     iter::Array{T,1}
     time1::Array{T,1}
@@ -26,10 +26,10 @@ mutable struct CSPhi1D{T <: AbstractFloat, N <: Signed} <: PhiCartesianStructure
 end
 
 """
-CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiStructured
 
 """
-mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiStructured
     eval::Array{T,2}
     iter::Array{T,2}
     time1::Array{T,2}
@@ -53,10 +53,10 @@ mutable struct CSPhi2D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 end
 
 """
-CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiStructured
 
 """
-mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
+mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiStructured
     eval::Array{T,3}
     iter::Array{T,3}
     time1::Array{T,3}
@@ -80,10 +80,10 @@ mutable struct CSPhi3D{T<:AbstractFloat, N <: Signed} <: PhiCartesianStructured
 end
 
 """
-CSFaceVelocity1D{T<:AbstractFloat} <: PhiCartesianStructured
+CSFaceVelocity1D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSFaceVelocity1D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSFaceVelocity1D{T<:AbstractFloat} <: PhiStructured
     uFace::Array{T,1}
     uFaceIter::Array{T,1}
     uFaceTime1::Array{T,1}
@@ -92,10 +92,10 @@ struct CSFaceVelocity1D{T<:AbstractFloat} <: PhiCartesianStructured
 end
 
 """
-CSFaceVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
+CSFaceVelocity2D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSFaceVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSFaceVelocity2D{T<:AbstractFloat} <: PhiStructured
     uFace::Array{T,2}
     vFace::Array{T,2}
     uFaceIter::Array{T,2}
@@ -109,10 +109,10 @@ struct CSFaceVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
 end
 
 """
-CSFaceVelocity3D{T<:AbstractFloat} <: PhiCartesianStructured
+CSFaceVelocity3D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSFaceVelocity3D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSFaceVelocity3D{T<:AbstractFloat} <: PhiStructured
     uFace::Array{T,3}
     vFace::Array{T,3}
     wFace::Array{T,3}
@@ -131,20 +131,20 @@ struct CSFaceVelocity3D{T<:AbstractFloat} <: PhiCartesianStructured
 end
 
 """
-CSVelocity1D{T<:AbstractFloat} <: PhiCartesianStructured
+CSVelocity1D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSVelocity1D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSVelocity1D{T<:AbstractFloat} <: PhiStructured
     u::CSPhi1D
     p::CSPhi1D
     fValues::CSFaceVelocity1D
 end
 
 """
-CSVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
+CSVelocity2D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSVelocity2D{T<:AbstractFloat} <: PhiStructured
     u::CSPhi2D
     v::CSPhi2D
     p::CSPhi2D
@@ -152,10 +152,10 @@ struct CSVelocity2D{T<:AbstractFloat} <: PhiCartesianStructured
 end
 
 """
-CSVelocity3D{T<:AbstractFloat} <: PhiCartesianStructured
+CSVelocity3D{T<:AbstractFloat} <: PhiStructured
 
 """
-struct CSVelocity3D{T<:AbstractFloat} <: PhiCartesianStructured
+struct CSVelocity3D{T<:AbstractFloat} <: PhiStructured
     u::CSPhi3D
     v::CSPhi3D
     w::CSPhi3D
