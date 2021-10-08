@@ -49,8 +49,6 @@ export UnionCSPhi
 export UnionCSVelocity
 export UnionCSMesh
 export UnionCSMaterial
-export UnionCSConstantMaterial
-export UnionCSMaterialAll
 
 include("AbstractTypes.jl")
 

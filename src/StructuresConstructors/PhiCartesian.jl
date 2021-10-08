@@ -257,7 +257,6 @@ function create_Velocity(
     mesh::UnionCSMesh1D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    template::Bool = true,
 )
     #allocate variables
     u = create_Phi(mesh; T=T, N=N)
@@ -275,7 +274,6 @@ function create_Velocity(
     mesh::UnionCSMesh2D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    template::Bool = true,
 )
     #allocate variables
     u = create_Phi(mesh; T=T, N=N)
@@ -295,7 +293,6 @@ function create_Velocity(
     mesh::UnionCSMesh3D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    template::Bool = true,
 )
     #allocate variables
     u = create_Phi(mesh; T=T, N=N)
