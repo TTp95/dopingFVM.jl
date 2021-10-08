@@ -18,7 +18,6 @@ using dopingFVM.Bounds
 
 export compute_RhieChow!
 export _compute_RhieChow!_
-export _compute_RhieChow_threads!_
 export compute_RhieChow_Relaxation # cambiar a function!()
 export compute_RhieChow_BodyForces
 export compute_RhieChow_Time
@@ -30,7 +29,5 @@ include("CSRhieChowRelax.jl")
 include("CSRhieChowSource.jl")
 
 include("CSRhieChowTime.jl")
-
-include("CSRhieChowTimeConstant.jl")
 
 end # module
