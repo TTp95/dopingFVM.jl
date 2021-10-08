@@ -6,7 +6,6 @@ function create_uniform_Mesh(
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     dimenssion = length(lengths)
@@ -14,17 +13,17 @@ function create_uniform_Mesh(
     if (dimenssion==1)
         mesh = create_uniform_Mesh1D(
             lengths, volumes;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     elseif (dimenssion==2)
         mesh = create_uniform_Mesh2D(
             lengths, volumes;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     elseif (dimenssion==3)
         mesh = create_uniform_Mesh3D(
             lengths, volumes;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     else
         error("input parameters generate a $(dimenssion)D mesh")
@@ -41,7 +40,6 @@ function create_uniform_Mesh1D(
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     #Inicializate variables
@@ -67,14 +65,8 @@ function create_uniform_Mesh1D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            @inbounds global vol[i] = dx[i]
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            @inbounds global vol[i] = dx[i]
-        end
+    for i in 1:l1
+        @inbounds global vol[i] = dx[i]
     end
 
     if mutable
@@ -92,7 +84,6 @@ function create_uniform_Mesh2D(
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     #Inicializate variables
@@ -136,17 +127,9 @@ function create_uniform_Mesh2D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            for j in 1:m1
-                @inbounds global vol[i,j] = dx[i] * dy[j]
-            end
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            for j in 1:m1
-                @inbounds global vol[i,j] = dx[i] * dy[j]
-            end
+    for i in 1:l1
+        for j in 1:m1
+            @inbounds global vol[i,j] = dx[i] * dy[j]
         end
     end
 
@@ -165,7 +148,6 @@ function create_uniform_Mesh3D(
     volumes::Array{<:Signed,1};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     #Inicializate variables
@@ -227,20 +209,10 @@ function create_uniform_Mesh3D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            for j in 1:m1
-                for k in 1:n1
-                    @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
-                end
-            end
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            for j in 1:m1
-                for k in 1:n1
-                    @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
-                end
+    for i in 1:l1
+        for j in 1:m1
+            for k in 1:n1
+                @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
             end
         end
     end

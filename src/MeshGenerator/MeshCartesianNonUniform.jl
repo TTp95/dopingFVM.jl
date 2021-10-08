@@ -9,7 +9,6 @@ function create_nonuniform_Mesh(
     zoneFactors::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     dimenssion = length(zoneNumbers)
@@ -20,7 +19,7 @@ function create_nonuniform_Mesh(
             zoneLengths,
             zoneVolumes,
             zoneFactors;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     elseif (dimenssion==2)
         mesh = create_nonuniform_Mesh2D(
@@ -28,7 +27,7 @@ function create_nonuniform_Mesh(
             zoneLengths,
             zoneVolumes,
             zoneFactors;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     elseif (dimenssion==3)
         mesh = create_nonuniform_Mesh3D(
@@ -36,7 +35,7 @@ function create_nonuniform_Mesh(
             zoneLengths,
             zoneVolumes,
             zoneFactors;
-            T=T, N=N, threads=threads, mutable=mutable,
+            T=T, N=N, mutable=mutable,
         )
     else
         error("input parameters generate a $(dimenssion)D mesh")
@@ -55,7 +54,6 @@ function create_nonuniform_Mesh1D(
     zoneFactors::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     l1 = Int(sum(zoneVolumes[1,:]))       #Last volume in x-direction
@@ -99,14 +97,8 @@ function create_nonuniform_Mesh1D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            @inbounds global vol[i] = dx[i]
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            @inbounds global vol[i] = dx[i]
-        end
+    for i in 1:l1
+        @inbounds global vol[i] = dx[i]
     end
 
     if mutable
@@ -126,7 +118,6 @@ function create_nonuniform_Mesh2D(
     zoneFactors::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     l1 = Int(sum(zoneVolumes[1,:]))       #Last volume in x-direction
@@ -205,17 +196,9 @@ function create_nonuniform_Mesh2D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            for j in 1:m1
-                @inbounds global vol[i,j] = dx[i] * dy[j]
-            end
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            for j in 1:m1
-                @inbounds global vol[i,j] = dx[i] * dy[j]
-            end
+    for i in 1:l1
+        for j in 1:m1
+            @inbounds global vol[i,j] = dx[i] * dy[j]
         end
     end
 
@@ -236,7 +219,6 @@ function create_nonuniform_Mesh3D(
     zoneFactors::Union{Array{<:AbstractFloat,2}, Array{<:AbstractFloat,1}};
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads::Bool = false,
     mutable::Bool = false,
 )
     l1 = Int(sum(zoneVolumes[1,:]))       #Last volume in x-direction
@@ -350,20 +332,10 @@ function create_nonuniform_Mesh3D(
     end
 
     #Compute the volume of each control volume
-    if !threads
-        for i in 1:l1
-            for j in 1:m1
-                for k in 1:n1
-                    @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
-                end
-            end
-        end
-    elseif threads
-        Base.Threads.@threads for i in 1:l1
-            for j in 1:m1
-                for k in 1:n1
-                    @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
-                end
+    for i in 1:l1
+        for j in 1:m1
+            for k in 1:n1
+                @inbounds global vol[i,j,k] = dx[i] * dy[j] * dz[k]
             end
         end
     end
