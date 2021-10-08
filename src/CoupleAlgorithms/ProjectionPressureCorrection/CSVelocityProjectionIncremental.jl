@@ -8,11 +8,9 @@ function velocityProjection_PPC_Incremental!(
     velocity::CSVelocity1D,
     mesh::UnionCSMesh1D,
     deltat::DeltaTime,
-    material::UnionCSMaterialAll;
+    material::UnionCSMaterial;
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
-    sparrays::Bool = true,
-    mthreads::Bool = false,
     transientScheme::Signed = 1,
 )
     if (transientScheme == 1)
@@ -30,11 +28,11 @@ function velocityProjection_PPC_Incremental!(
     array_field = zeros(T, mesh.l1)
     array_gradFieldx = zeros(T, mesh.l1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field)
 
-    vector_fieldx = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_fieldx = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T)
 
-    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx, T = T, threads = mthreads)
+    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx)
 
     # Pressure
     velocity.p.eval .= array_field + pressure
@@ -50,11 +48,9 @@ function velocityProjection_PPC_Incremental!(
     velocity::CSVelocity2D,
     mesh::UnionCSMesh2D,
     deltat::DeltaTime,
-    material::UnionCSMaterialAll;
+    material::UnionCSMaterial;
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
-    sparrays::Bool = true,
-    mthreads::Bool = false,
     transientScheme::Signed = 1,
 )
     if (transientScheme == 1)
@@ -73,12 +69,12 @@ function velocityProjection_PPC_Incremental!(
     array_gradFieldx = zeros(T, mesh.l1, mesh.m1)
     array_gradFieldy = zeros(T, mesh.l1, mesh.m1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field)
 
-    vector_fieldx, vector_fieldy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_fieldx, vector_fieldy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T)
 
-    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx, T = T, threads = mthreads)
-    vector_to_phi!(vector_fieldy, velocity.p, mesh; phisolution = array_gradFieldy, T = T, threads = mthreads)
+    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx)
+    vector_to_phi!(vector_fieldy, velocity.p, mesh; phisolution = array_gradFieldy)
 
     # Pressure
     velocity.p.eval .= array_field + pressure
@@ -95,11 +91,9 @@ function velocityProjection_PPC_Incremental!(
     velocity::CSVelocity3D,
     mesh::UnionCSMesh3D,
     deltat::DeltaTime,
-    material::UnionCSMaterialAll;
+    material::UnionCSMaterial;
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
-    sparrays::Bool = true,
-    mthreads::Bool = false,
     transientScheme::Signed = 1,
 )
     if (transientScheme == 1)
@@ -119,13 +113,13 @@ function velocityProjection_PPC_Incremental!(
     array_gradFieldy = zeros(T, mesh.l1, mesh.m1, mesh.n1)
     array_gradFieldz = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
-    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_to_phi!(field, velocity.p, mesh; phisolution = array_field)
 
-    vector_fieldx, vector_fieldy, vector_fieldz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T, threads = mthreads)
+    vector_fieldx, vector_fieldy, vector_fieldz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_field, T = T)
 
-    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx, T = T, threads = mthreads)
-    vector_to_phi!(vector_fieldy, velocity.p, mesh; phisolution = array_gradFieldy, T = T, threads = mthreads)
-    vector_to_phi!(vector_fieldz, velocity.p, mesh; phisolution = array_gradFieldz, T = T, threads = mthreads)
+    vector_to_phi!(vector_fieldx, velocity.p, mesh; phisolution = array_gradFieldx)
+    vector_to_phi!(vector_fieldy, velocity.p, mesh; phisolution = array_gradFieldy)
+    vector_to_phi!(vector_fieldz, velocity.p, mesh; phisolution = array_gradFieldz)
 
     # Pressure
     velocity.p.eval .= array_field + pressure

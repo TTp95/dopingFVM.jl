@@ -14,25 +14,26 @@ function SIMPLEC_correction!(
     mesh::UnionCSMesh1D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1)
     array_DU = zeros(T, mesh.l1)
     array_gradpc = zeros(T, mesh.l1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pc = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pc = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pc, velocity.p, mesh; phisolution = array_gradpc, T = T, threads = threads)
+    vector_to_phi!(vector_pc, velocity.p, mesh; phisolution = array_gradpc)
+
+    AUsum = sum(AU, dims = 2)
 
     for i in 1:mesh.l1
         if velocity.u.onoff[i]
             id = velocity.u.gIndex[i]
-            array_DU[i] = 1.0/AU[id,id]
+            array_DU[i] = 1.0/AUsum[id]
         else
             array_DU[i] = 0.0
         end
@@ -47,8 +48,8 @@ function SIMPLEC_correction!(
     # Face Velocity
     for i in 2:mesh.l1
         if velocity.u.onoff[i] && velocity.u.onoff[i-1]
-            D1 = mesh.vol[i]/AU[velocity.u.gIndex[i],velocity.u.gIndex[i]]
-            D2 = mesh.vol[i-1]/AU[velocity.u.gIndex[i-1],velocity.u.gIndex[i-1]]
+            D1 = mesh.vol[i]/AUsum[velocity.u.gIndex[i]]
+            D2 = mesh.vol[i-1]/AUsum[velocity.u.gIndex[i-1]]
 
             num = D1 * (mesh.dx[i-1] * 0.5) + D2 * (mesh.dx[i] * 0.5)
             den = 0.5 * (mesh.dx[i-1] + mesh.dx[i])
@@ -83,7 +84,6 @@ function SIMPLEC_correction!(
     mesh::UnionCSMesh2D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1, mesh.m1)
     array_DUx = zeros(T, mesh.l1, mesh.m1)
@@ -92,14 +92,14 @@ function SIMPLEC_correction!(
     array_gradpcy = zeros(T, mesh.l1, mesh.m1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pcx, vector_pcy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pcx, vector_pcy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx, T = T, threads = threads)
-    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy, T = T, threads = threads)
+    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx)
+    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy)
 
     AUsum = sum(AU, dims = 2)
     AVsum = sum(AV, dims = 2)
@@ -198,7 +198,6 @@ function SIMPLEC_correction!(
     mesh::UnionCSMesh3D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1, mesh.m1, mesh.n1)
     array_DUx = zeros(T, mesh.l1, mesh.m1, mesh.n1)
@@ -209,37 +208,40 @@ function SIMPLEC_correction!(
     array_gradpcz = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pcx, vector_pcy, vector_pcz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pcx, vector_pcy, vector_pcz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx, T = T, threads = threads)
-    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy, T = T, threads = threads)
-    vector_to_phi!(vector_pcz, velocity.p, mesh; phisolution = array_gradpcz, T = T, threads = threads)
+    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx)
+    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy)
+    vector_to_phi!(vector_pcz, velocity.p, mesh; phisolution = array_gradpcz)
 
+    AUsum = sum(AU, dims = 2)
+    AVsum = sum(AV, dims = 2)
+    AWsum = sum(AW, dims = 2)
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             for k in 1:mesh.n1
                 if velocity.u.onoff[i,j,k]
                     id = velocity.u.gIndex[i,j,k]
-                    array_DUx[i,j,k] = 1.0/AU[id,id]
+                    array_DUx[i,j,k] = 1.0/AUsum[id]
                 else
                     array_DUx[i,j,k] = 0.0
                 end
 
                 if velocity.v.onoff[i,j,k]
                     id = velocity.v.gIndex[i,j,k]
-                    array_DUy[i,j,k] = 1.0/AV[id,id]
+                    array_DUy[i,j,k] = 1.0/AVsum[id]
                 else
                     array_DUy[i,j,k] = 0.0
                 end
 
                 if velocity.w.onoff[i,j,k]
                     id = velocity.w.gIndex[i,j,k]
-                    array_DUz[i,j,k] = 1.0/AW[id,id]
+                    array_DUz[i,j,k] = 1.0/AWsum[id]
                 else
                     array_DUz[i,j,k] = 0.0
                 end
@@ -260,8 +262,8 @@ function SIMPLEC_correction!(
         for j in 1:mesh.m1
             for k in 1:mesh.n1
                 if velocity.u.onoff[i,j,k] && velocity.u.onoff[i-1,j,k]
-                    D1 = mesh.vol[i,j,k]/AU[velocity.u.gIndex[i,j,k],velocity.u.gIndex[i,j,k]]
-                    D2 = mesh.vol[i-1,j,k]/AU[velocity.u.gIndex[i-1,j,k],velocity.u.gIndex[i-1,j,k]]
+                    D1 = mesh.vol[i,j,k]/AUsum[velocity.u.gIndex[i,j,k]]
+                    D2 = mesh.vol[i-1,j,k]/AUsum[velocity.u.gIndex[i-1,j,k]]
 
                     num = D1 * (mesh.dx[i-1] * 0.5) + D2 * (mesh.dx[i] * 0.5)
                     den = 0.5 * (mesh.dx[i-1] + mesh.dx[i])
@@ -284,8 +286,8 @@ function SIMPLEC_correction!(
         for j in 2:mesh.m1
             for k in 1:mesh.n1
                 if velocity.v.onoff[i,j,k] && velocity.v.onoff[i,j-1,k]
-                    D1 = mesh.vol[i,j,k]/AV[velocity.v.gIndex[i,j,k],velocity.v.gIndex[i,j,k]]
-                    D2 = mesh.vol[i,j-1,k]/AV[velocity.v.gIndex[i,j-1,k],velocity.v.gIndex[i,j-1,k]]
+                    D1 = mesh.vol[i,j,k]/AVsum[velocity.v.gIndex[i,j,k]]
+                    D2 = mesh.vol[i,j-1,k]/AVsum[velocity.v.gIndex[i,j-1,k]]
 
                     num = D1 * (mesh.dy[j-1] * 0.5) + D2 * (mesh.dy[j] * 0.5)
                     den = 0.5 * (mesh.dy[j-1] + mesh.dy[j])
@@ -308,8 +310,8 @@ function SIMPLEC_correction!(
         for j in 1:mesh.m1
             for k in 2:mesh.n1
                 if velocity.w.onoff[i,j,k] && velocity.w.onoff[i,j,k-1]
-                    D1 = mesh.vol[i,j,k]/AW[velocity.w.gIndex[i,j,k],velocity.w.gIndex[i,j,k]]
-                    D2 = mesh.vol[i,j,k-1]/AW[velocity.w.gIndex[i,j,k-1],velocity.w.gIndex[i,j,k-1]]
+                    D1 = mesh.vol[i,j,k]/AWsum[velocity.w.gIndex[i,j,k]]
+                    D2 = mesh.vol[i,j,k-1]/AWsum[velocity.w.gIndex[i,j,k-1]]
 
                     num = D1 * (mesh.dz[k-1] * 0.5) + D2 * (mesh.dz[k] * 0.5)
                     den = 0.5 * (mesh.dz[k-1] + mesh.dz[k])

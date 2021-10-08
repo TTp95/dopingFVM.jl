@@ -9,22 +9,17 @@ function divergence_velocityToArray(
     material::CSMaterial1D;
     velocityU::Array{<:AbstractFloat,1} = velocity.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
     interpolation::Signed = 2,
 )
     divArray = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
     for i in 1:mesh.l1
-        if velocity.p.onoff[i,j]
-            id = velocity.p.gIndex[i,j]
+        if velocity.p.onoff[i]
+            id = velocity.p.gIndex[i]
 
             # Aux variables
             gammaw = 0.0
             gammae = 0.0
-            gammas = 0.0
-            gamman = 0.0
-            gammab = 0.0
-            gammat = 0.0
 
             # Component x - velocity u
             if (mesh.l1 != 1)
@@ -85,7 +80,6 @@ function divergence_velocityToArray(
     velocityU::Array{<:AbstractFloat,2} = velocity.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = velocity.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
     interpolation::Signed = 2,
 )
     divArray = zeros(T, mesh.l1, mesh.m1)
@@ -100,8 +94,6 @@ function divergence_velocityToArray(
                 gammae = 0.0
                 gammas = 0.0
                 gamman = 0.0
-                gammab = 0.0
-                gammat = 0.0
 
                 # Component x - velocity u
                 if (mesh.l1 != 1)
@@ -210,7 +202,6 @@ function divergence_velocityToArray(
     velocityV::Array{<:AbstractFloat,3} = velocity.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = velocity.fValues.wFace,
     T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
     interpolation::Signed = 2,
 )
     divArray = zeros(T, mesh.l1, mesh.m1, mesh.n1)
@@ -365,106 +356,6 @@ function divergence_velocityToArray(
 
                         divArray[i,j] += (gammat * velocityW[i,j,k+1] - gammab * velocityW[i,j,k]) / mesh.dz[k]
 
-                    end
-
-                end
-            end
-        end
-    end
-
-    return divArray
-end
-
-function divergence_velocityToArray(
-    velocity::CSVelocity1D,
-    mesh::UnionCSMesh1D,
-    material::UnionCSConstantMaterial;
-    velocityU::Array{<:AbstractFloat,1} = velocity.fValues.uFace,
-    T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
-    interpolation::Signed = 2,
-)
-    divArray = zeros(T, mesh.l1)
-
-    for i in 1:mesh.l1
-        if velocity.p.onoff[i,j]
-            id = velocity.p.gIndex[i,j]
-
-            if (mesh.l1 != 1)
-                divArray[i,j] += material.Γ * (velocityU[i+1] - velocityU[i]) / mesh.dx[i]
-            end
-
-        end
-    end
-
-    return divArray
-end
-
-function divergence_velocityToArray(
-    velocity::CSVelocity2D,
-    mesh::UnionCSMesh2D,
-    material::UnionCSConstantMaterial;
-    velocityU::Array{<:AbstractFloat,2} = velocity.fValues.uFace,
-    velocityV::Array{<:AbstractFloat,2} = velocity.fValues.vFace,
-    T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
-    interpolation::Signed = 2,
-)
-    divArray = zeros(T, mesh.l1, mesh.m1)
-
-    for i in 1:mesh.l1
-        for j in 1:mesh.m1
-            if velocity.p.onoff[i,j]
-                id = velocity.p.gIndex[i,j]
-
-                # Component x - velocity u
-                if (mesh.l1 != 1)
-                    divArray[i,j] += material.Γ * (velocityU[i+1,j] - velocityU[i,j]) / mesh.dx[i]
-                end
-
-                # Component y - velocity v
-                if (mesh.m1 != 1)
-                    divArray[i,j] += material.Γ * (velocityV[i,j+1] - velocityV[i,j]) / mesh.dy[j]
-                end
-
-            end
-        end
-    end
-
-    return divArray
-end
-
-function divergence_velocityToArray(
-    velocity::CSVelocity3D,
-    mesh::UnionCSMesh3D,
-    material::UnionCSConstantMaterial;
-    velocityU::Array{<:AbstractFloat,3} = velocity.fValues.uFace,
-    velocityV::Array{<:AbstractFloat,3} = velocity.fValues.vFace,
-    velocityW::Array{<:AbstractFloat,3} = velocity.fValues.wFace,
-    T::Type{<:AbstractFloat} = Float64,
-    mthreads::Bool = false,
-    interpolation::Signed = 2,
-)
-    divArray = zeros(T, mesh.l1, mesh.m1, mesh.n1)
-
-    for i in 1:mesh.l1
-        for j in 1:mesh.m1
-            for k in 1:mesh.n1
-                if velocity.p.onoff[i,j,k]
-
-                    # Component x - velocity u
-                    if (mesh.l1 != 1)
-                        divArray[i,j] += material.Γ * (velocityU[i+1,j,k] - velocityU[i,j,k]) / mesh.dx[i]
-                    end
-
-                    # Component y - velocity v
-                    if (mesh.m1 != 1)
-                        divArray[i,j] += material.Γ * (velocityV[i,j+1,k] - velocityV[i,j,k]) / mesh.dy[j]
-                    end
-
-                    # Component z - velocity w
-                    if (mesh.n1 != 1)
-                        divArray[i,j] += material.Γ * (velocityW[i,j,k+1] - velocityW[i,j,k]) / mesh.dz[k]
                     end
 
                 end

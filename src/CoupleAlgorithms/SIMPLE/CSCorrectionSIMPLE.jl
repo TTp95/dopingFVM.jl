@@ -14,20 +14,19 @@ function SIMPLE_correction!(
     mesh::UnionCSMesh1D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1)
     array_DU = zeros(T, mesh.l1)
     array_gradpc = zeros(T, mesh.l1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pc = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pc = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pc, velocity.p, mesh; phisolution = array_gradpc, T = T, threads = threads)
+    vector_to_phi!(vector_pc, velocity.p, mesh; phisolution = array_gradpc)
 
     for i in 1:mesh.l1
         if velocity.u.onoff[i]
@@ -83,7 +82,6 @@ function SIMPLE_correction!(
     mesh::UnionCSMesh2D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1, mesh.m1)
     array_DUx = zeros(T, mesh.l1, mesh.m1)
@@ -92,14 +90,14 @@ function SIMPLE_correction!(
     array_gradpcy = zeros(T, mesh.l1, mesh.m1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pcx, vector_pcy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pcx, vector_pcy = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx, T = T, threads = threads)
-    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy, T = T, threads = threads)
+    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx)
+    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy)
 
     for i in 1:mesh.l1
         for j in 1:mesh.m1
@@ -195,7 +193,6 @@ function SIMPLE_correction!(
     mesh::UnionCSMesh3D;
     relaxP = 1.0,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     array_pc = zeros(T, mesh.l1, mesh.m1, mesh.n1)
     array_DUx = zeros(T, mesh.l1, mesh.m1, mesh.n1)
@@ -206,15 +203,15 @@ function SIMPLE_correction!(
     array_gradpcz = zeros(T, mesh.l1, mesh.m1, mesh.n1)
 
     # vector to array
-    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_to_phi!(x, velocity.p, mesh; phisolution = array_pc)
 
     # pressure correction gradient (result = vector)
-    vector_pcx, vector_pcy, vector_pcz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T, threads = threads)
+    vector_pcx, vector_pcy, vector_pcz = pressure_phi_gradient(velocity.p, mesh; phisolution = array_pc, T = T)
 
     # vector to array (easy manipulation for next step)
-    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx, T = T, threads = threads)
-    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy, T = T, threads = threads)
-    vector_to_phi!(vector_pcz, velocity.p, mesh; phisolution = array_gradpcz, T = T, threads = threads)
+    vector_to_phi!(vector_pcx, velocity.p, mesh; phisolution = array_gradpcx)
+    vector_to_phi!(vector_pcy, velocity.p, mesh; phisolution = array_gradpcy)
+    vector_to_phi!(vector_pcz, velocity.p, mesh; phisolution = array_gradpcz)
 
 
     for i in 1:mesh.l1
