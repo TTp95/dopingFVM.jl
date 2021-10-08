@@ -8,7 +8,6 @@ function array_gradient(
     phi::CSPhi1D,
     mesh::UnionCSMesh1D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -62,7 +61,6 @@ function array_gradient(
     phi::CSPhi2D,
     mesh::UnionCSMesh2D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -159,7 +157,6 @@ function array_gradient(
     phi::CSPhi3D,
     mesh::UnionCSMesh3D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -299,7 +296,6 @@ function array_gradient(
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh1D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -409,7 +405,6 @@ function array_gradient(
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh2D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -608,7 +603,6 @@ function array_gradient(
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh3D;
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 

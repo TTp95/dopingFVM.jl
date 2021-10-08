@@ -8,7 +8,6 @@ function pressure_phi_gradient(
     mesh::UnionCSMesh1D;
     phisolution::Array{<:AbstractFloat,1} = phi.eval,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -62,7 +61,6 @@ function pressure_phi_gradient(
     mesh::UnionCSMesh2D;
     phisolution::Array{<:AbstractFloat,2} = phi.eval,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -160,7 +158,6 @@ function pressure_phi_gradient(
     mesh::UnionCSMesh3D;
     phisolution::Array{<:AbstractFloat,3} = phi.eval,
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 

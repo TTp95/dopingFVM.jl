@@ -7,13 +7,11 @@ function array_coordGradient(
     arrayG::Array{<:AbstractFloat,1},
     phi::CSPhi1D,
     mesh::UnionCSMesh1D;
-    coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
-    bx = zeros(T, n_equations)
+    bcord = zeros(T, n_equations)
 
     for i in 1:mesh.l1
         if phi.onoff[i]
@@ -64,7 +62,6 @@ function array_coordGradient(
     mesh::UnionCSMesh2D;
     coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -161,7 +158,6 @@ function array_coordGradient(
     mesh::UnionCSMesh3D;
     coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -297,9 +293,7 @@ function array_coordGradient(
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     mesh::UnionCSMesh1D;
-    coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -410,7 +404,6 @@ function array_coordGradient(
     mesh::UnionCSMesh2D;
     coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -609,7 +602,6 @@ function array_coordGradient(
     mesh::UnionCSMesh3D;
     coord::Char = 'x',
     T::Type{<:AbstractFloat} = Float64,
-    threads::Bool = false,
 )
     n_equations = maximum_globalIndex(phi)
 
