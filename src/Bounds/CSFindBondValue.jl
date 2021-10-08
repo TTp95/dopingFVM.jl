@@ -12,7 +12,7 @@ function find_bondValue(
     bcord::Char,
 )
 
-    boundvalue = phi.eval[i,j]
+    boundvalue = phi.eval[i]
 
     if (bcord == 'w') || (bcord == 'W')
         p1 = 'w'

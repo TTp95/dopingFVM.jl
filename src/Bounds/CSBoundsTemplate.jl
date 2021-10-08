@@ -8,7 +8,6 @@ function bounds_template(
     mesh::UnionCSMesh1D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads = false,
 )
     # vertices
     phi.bounds[1] = true
@@ -21,7 +20,6 @@ function bounds_template(
         mesh;
         T = T,
         N = N,
-        threads = threads,
     )
 
     dict["$(phi.gIndex[1])g1"].cord = 'w'
@@ -35,7 +33,6 @@ function bounds_template(
     mesh::UnionCSMesh2D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads = false,
 )
     # horizontal aristas
     for i in 2:(mesh.l1 - 1)
@@ -67,7 +64,6 @@ function bounds_template(
         mesh;
         T = T,
         N = N,
-        threads = threads,
     )
 
     for i in 2:(mesh.l1 - 1)
@@ -97,7 +93,6 @@ function bounds_template(
     mesh::UnionCSMesh3D;
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    threads = false,
 )
     # south and north surfaces
     for i in 2:(mesh.l1 - 1)
@@ -188,7 +183,6 @@ function bounds_template(
         mesh;
         T = T,
         N = N,
-        threads = threads,
     )
 
     # south and north surfaces
