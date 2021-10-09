@@ -10,8 +10,7 @@ function discretize_source(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # A = spzeros(T, n_equations, n_equations)
-    A = zeros(T, n_equations, n_equations)
+    A = spzeros(T, n_equations, n_equations)
 
     b = zeros(T, n_equations)
 
@@ -33,8 +32,7 @@ function discretize_source(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # A = spzeros(T, n_equations, n_equations)
-    A = zeros(T, n_equations, n_equations)
+    A = spzeros(T, n_equations, n_equations)
 
     b = zeros(T, n_equations)
 
@@ -58,8 +56,7 @@ function discretize_source(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # A = spzeros(T, n_equations, n_equations)
-    A = zeros(T, n_equations, n_equations)
+    A = spzeros(T, n_equations, n_equations)
 
     b = zeros(T, n_equations)
 

@@ -105,8 +105,7 @@ function implicit_relaxation(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # Ar = spzeros(T, n_equations, n_equations)
-    Ar = zeros(T, n_equations, n_equations)
+    Ar = spzeros(T, n_equations, n_equations)
 
     br = zeros(T, n_equations)
 
@@ -134,8 +133,7 @@ function implicit_relaxation(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # Ar = spzeros(T, n_equations, n_equations)
-    Ar = zeros(T, n_equations, n_equations)
+    Ar = spzeros(T, n_equations, n_equations)
 
     br = zeros(T, n_equations)
 
@@ -165,8 +163,7 @@ function implicit_relaxation(
 )
     n_equations = maximum_globalIndex(phi)
 
-    # Ar = spzeros(T, n_equations, n_equations)
-    Ar = zeros(T, n_equations, n_equations)
+    Ar = spzeros(T, n_equations, n_equations)
 
     br = zeros(T, n_equations)
 
