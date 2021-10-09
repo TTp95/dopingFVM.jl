@@ -14,8 +14,6 @@ function _discretize_diffusion_centralDifference_(
 )
     n_equations = maximum_globalIndex(phi)
 
-    if mthreads
-
     n = 0
     AI = zeros(N, (3 * n_equations))
     AJ = zeros(N, (3 * n_equations))

@@ -41,6 +41,10 @@ function discretize_BDF3_time(
         end
     end
 
+    A = spdiagm(0 => D[1:n])
+
+    return A, b
+end
 """
 
 """

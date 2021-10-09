@@ -4,7 +4,7 @@
 
 function plot_paraviewPVD(
     system::SystemControl,
-    mesh::MeshCartesianStructured,
+    mesh::MeshStructured,
     args...;
     fileVTK::Bool = false,
 )
@@ -53,7 +53,7 @@ function plot_paraviewPVD(
                 vtkfile["Pressure", VTKCellData()] = args[x].p.eval
             end
 
-        elseif (typeof(args[x]) <: PhiCartesianStructured)
+        elseif (typeof(args[x]) <: PhiStructured)
             vtk_point_data(vtkfile, args[x].eval, "$(args[x].key)")
 
         elseif (typeof(args[x]) <: AbstractArray)

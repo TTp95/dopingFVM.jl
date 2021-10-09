@@ -15,27 +15,9 @@ end
 @publish Structures BoundsStructured
 @publish Structures DeltaTime
 
-@publish Structures MeshCartesianStructured
-@publish Structures PhiCartesianStructured
-@publish Structures MaterialCartesianStructured
-
-@publish Structures MeshPolarStructured
-@publish Structures PhiPolarStructured
-@publish Structures MaterialPolarStructured
-
-@publish Structures MeshCylindricalStructured
-@publish Structures PhiCylindricalStructured
-@publish Structures MaterialCylindricalStructured
-
-@publish Structures MeshSphericalStructured
-@publish Structures PhiSphericalStructured
-@publish Structures MaterialSphericalStructured
-
 @publish Structures CSMaterial1D
 @publish Structures CSMaterial2D
 @publish Structures CSMaterial3D
-@publish Structures CSMaterialConstant
-@publish Structures CSMaterialConstantImmutable
 
 @publish Structures CSMesh1D
 @publish Structures CSMesh2D
@@ -43,9 +25,6 @@ end
 @publish Structures CSMesh1DImmutable
 @publish Structures CSMesh2DImmutable
 @publish Structures CSMesh3DImmutable
-
-@publish Structures CSMaterialConstant
-@publish Structures CSMaterialConstantImmutable
 
 @publish Structures CSPhi1D
 @publish Structures CSPhi2D
@@ -68,8 +47,6 @@ end
 @publish Structures UnionCSVelocity
 @publish Structures UnionCSMesh
 @publish Structures UnionCSMaterial
-@publish Structures UnionCSConstantMaterial
-@publish Structures UnionCSMaterialAll
 
 @publish StructuresConstructors create_BoundsStructured
 @publish StructuresConstructors create_Material
