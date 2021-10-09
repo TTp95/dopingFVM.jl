@@ -7,7 +7,7 @@ function discretize_convection end
     vel::CSVelocity1D,
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
-    material::Union{CSMaterial1D,UnionCSConstantMaterial},
+    material::CSMaterial1D,
     mesh::UnionCSMesh1D;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
@@ -17,8 +17,6 @@ function discretize_convection end
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    mthreads::Bool = false,
-    sparrays::Bool = true,
     scheme::Signed = 5,
     interpolation::Signed = 1,
 )
@@ -32,8 +30,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -47,8 +43,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -62,8 +56,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -78,8 +70,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -94,8 +84,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -109,8 +97,6 @@ function discretize_convection end
             velocityU = velocityU,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -125,7 +111,7 @@ end
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
-    material::Union{CSMaterial2D,UnionCSConstantMaterial},
+    material::CSMaterial2D,
     mesh::UnionCSMesh2D;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
@@ -136,8 +122,6 @@ end
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    mthreads::Bool = false,
-    sparrays::Bool = true,
     scheme::Signed = 5,
     interpolation::Signed = 1,
 )
@@ -152,8 +136,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -168,8 +150,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -184,8 +164,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -201,8 +179,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -218,8 +194,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -234,8 +208,6 @@ end
             velocityV = velocityV,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -250,7 +222,7 @@ end
     vel::CSVelocity3D,
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
-    material::Union{CSMaterial3D,UnionCSConstantMaterial},
+    material::CSMaterial3D,
     mesh::UnionCSMesh3D;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
@@ -262,8 +234,6 @@ end
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
-    mthreads::Bool = false,
-    sparrays::Bool = true,
     scheme::Signed = 5,
     interpolation::Signed = 1,
 )
@@ -279,8 +249,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -296,8 +264,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -313,8 +279,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -331,8 +295,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -349,8 +311,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
@@ -366,8 +326,6 @@ end
             velocityW = velocityW,
             T = T,
             N = N,
-            mthreads = mthreads,
-            sparrays = sparrays,
             interpolation = interpolation,
         )
 
