@@ -24,6 +24,8 @@ using dopingFVM.VelocityInterpolation
 export discretize_SIMPLE_PressureCorrection
 export SIMPLE_correction!
 
+export SIMPLER_pseudovelocity
+
 export discretize_SIMPLEC_PressureCorrection
 export SIMPLEC_correction!
 
@@ -43,6 +45,8 @@ include("./SIMPLE/CSCorrectionSIMPLE.jl")
 include("./SIMPLEC/CSPressureCorrectionDiscretization.jl")
 
 include("./SIMPLEC/CSCorrectionSIMPLEC.jl")
+
+include("./SIMPLER/CSPseudovelocitySIMPLER.jl")
 
 include("./ProjectionPressureCorrection/CSPressureLaplacian.jl")
 
