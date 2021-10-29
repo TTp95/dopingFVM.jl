@@ -143,6 +143,10 @@ function _discretize_convection_upwind_(
                 anc = 0.0
                 b4 = 0.0
                 mflux = 0.0
+                mfluxw = 0.0
+                mfluxe = 0.0
+                mfluxs = 0.0
+                mfluxn = 0.0
 
                 #West Coefficents
                 if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j])
@@ -152,6 +156,7 @@ function _discretize_convection_upwind_(
                     )
 
                     mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                    mfluxw = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
                     aw, awc, b1 = _convection_upwind_neighbors_(mflux)
 
                     n += 1
@@ -169,6 +174,7 @@ function _discretize_convection_upwind_(
                     )
 
                     mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                    mfluxe = rho * velocityU[i+1,j] * (mesh.dy[j])
                     ae, aec, b2 = _convection_upwind_neighbors_(mflux)
 
                     n += 1
@@ -186,6 +192,7 @@ function _discretize_convection_upwind_(
                     )
 
                     mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                    mfluxs = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
                     as, asc, b3 = _convection_upwind_neighbors_(mflux)
 
                     n += 1
@@ -203,6 +210,7 @@ function _discretize_convection_upwind_(
                     )
 
                     mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                    mfluxn = rho * velocityV[i,j+1] * (mesh.dx[i])
                     an, anc, b4 = _convection_upwind_neighbors_(mflux)
 
                     n += 1
@@ -227,13 +235,15 @@ function _discretize_convection_upwind_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    # AV[n] = ac + (aec + awc + anc + asc)
+                    AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    # AV[n] = ac + (aec + awc + anc + asc)
+                    AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
                 end
             end
         end
