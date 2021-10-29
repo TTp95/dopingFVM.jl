@@ -15,9 +15,11 @@ function velocityProjection_PPC_nonIncremental!(
     if (transientScheme == 1)
         coef = deltat.dt1
     elseif (transientScheme == 2)
-        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
-    elseif (transientScheme == 3)
         coef = 1.0 / ((1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 3)
+        coef = (1.0 / ( (1.0 / deltat.dt1) * (11.0 / 6.0) ) )
+    elseif (transientScheme == 10)
+        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
     else
         error("Transient scheme unimplemented...")
     end
@@ -52,9 +54,11 @@ function velocityProjection_PPC_nonIncremental!(
     if (transientScheme == 1)
         coef = deltat.dt1
     elseif (transientScheme == 2)
-        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
-    elseif (transientScheme == 3)
         coef = 1.0 / ((1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 3)
+        coef = (1.0 / ( (1.0 / deltat.dt1) * (11.0 / 6.0) ) )
+    elseif (transientScheme == 10)
+        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
     else
         error("Transient scheme unimplemented...")
     end
@@ -89,12 +93,14 @@ function velocityProjection_PPC_nonIncremental!(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
 )
-    if (transientScheme == 1)
+     if (transientScheme == 1)
         coef = deltat.dt1
     elseif (transientScheme == 2)
-        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
-    elseif (transientScheme == 3)
         coef = 1.0 / ((1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 3)
+        coef = (1.0 / ( (1.0 / deltat.dt1) * (11.0 / 6.0) ) )
+    elseif (transientScheme == 10)
+        coef = ((deltat.dt1 * (deltat.dt1 + deltat.dt2)) / deltat.dt2)
     else
         error("Transient scheme unimplemented...")
     end
