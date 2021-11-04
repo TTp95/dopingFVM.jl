@@ -162,6 +162,12 @@ end
 
 #@publish dopingSolver
 
-#@publish Backup
+@publish Backup save_Phi
+@publish Backup save_Velocity
+@publish Backup save_System
+
+@publish Backup load_Phi!
+@publish Backup load_Velocity!
+@publish Backup load_System!
 
 #@publish ScriptGenerator
