@@ -8,7 +8,8 @@ function _discretize_convection_upwind_(
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh1D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
@@ -37,6 +38,8 @@ function _discretize_convection_upwind_(
             aec = 0.0
             b2 = 0.0
             mflux = 0.0
+            mfluxw = 0.0
+            mfluxe = 0.0
 
             #West Coefficents
             if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1])
@@ -46,6 +49,7 @@ function _discretize_convection_upwind_(
                 )
 
                 mflux = -1.0 * rho * velocityU[i] * (1.0)
+                mfluxw = -1.0 * rho * velocityU[i] * (1.0)
                 aw, awc, b1 = _convection_upwind_neighbors_(mflux)
 
                 n += 1
@@ -63,6 +67,7 @@ function _discretize_convection_upwind_(
                 )
 
                 mflux = rho * velocityU[i+1] * (1.0)
+                mfluxe = rho * velocityU[i+1] * (1.0)
                 ae, aec, b2 = _convection_upwind_neighbors_(mflux)
 
                 n += 1
@@ -85,13 +90,21 @@ function _discretize_convection_upwind_(
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac - (ae + aw) #+ aec + awc
+                if inout
+                    AV[n] = ac + aec + awc
+                else
+                    AV[n] = ac - (ae + aw) #+ (mfluxw + mfluxe)
+                end
                 b[id] += b0
             else
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac - (ae + aw) #+ aec + awc
+                if inout
+                    AV[n] = ac + aec + awc
+                else
+                    AV[n] = ac - (ae + aw) #+ (mfluxw + mfluxe)
+                end
             end
         end
     end
@@ -106,7 +119,8 @@ function _discretize_convection_upwind_(
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
-    mesh::UnionCSMesh2D;
+    mesh::UnionCSMesh2D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
@@ -235,15 +249,22 @@ function _discretize_convection_upwind_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    # AV[n] = ac + (aec + awc + anc + asc)
-                    AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    if inout
+                        AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    else
+                        AV[n] = ac - (ae + aw + an + as) #+ (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    end
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    # AV[n] = ac + (aec + awc + anc + asc)
-                    AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    if inout
+                        # AV[n] = ac + (aec + awc + anc + asc)
+                        AV[n] = ac - (ae + aw + an + as) + (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    else
+                        AV[n] = ac - (ae + aw + an + as) #+ (mfluxe + mfluxw + mfluxn + mfluxs) #+ (aec + awc + anc + asc)
+                    end
                 end
             end
         end
@@ -259,7 +280,8 @@ function _discretize_convection_upwind_(
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
-    mesh::UnionCSMesh3D;
+    mesh::UnionCSMesh3D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,3} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,3} = vel.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
@@ -304,6 +326,12 @@ function _discretize_convection_upwind_(
                     atc = 0.0
                     b6 = 0.0
                     mflux = 0.0
+                    mfluxw = 0.0
+                    mfluxe = 0.0
+                    mfluxs = 0.0
+                    mfluxn = 0.0
+                    mfluxb = 0.0
+                    mfluxt = 0.0
 
                     #West Coefficents
                     if (i != 1) && (mesh.l1 != 1) && (phi.onoff[i-1,j,k])
@@ -313,6 +341,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
+                        mfluxw = -1.0 * rho * velocityU[i,j,k] * (mesh.dy[j] * mesh.dz[k])
                         aw, awc, b1 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -330,6 +359,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
+                        mfluxe = rho * velocityU[i+1,j,k] * (mesh.dy[j] * mesh.dz[k])
                         ae, aec, b2 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -347,6 +377,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
+                        mfluxs = -1.0 * rho * velocityV[i,j,k] * (mesh.dx[i] * mesh.dz[k])
                         as, asc, b3 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -364,6 +395,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
+                        mfluxn = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
                         an, anc, b4 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -381,6 +413,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
+                        mfluxb = -1.0 * rho * velocityW[i,j,k] * (mesh.dx[i] * mesh.dy[j])
                         ab, abc, b5 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -398,6 +431,7 @@ function _discretize_convection_upwind_(
                         )
 
                         mflux = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
+                        mfluxt = rho * velocityW[i,j,k+1] * (mesh.dx[i] * mesh.dy[j])
                         at, atc, b6 = _convection_upwind_neighbors_(mflux)
 
                         n += 1
@@ -424,13 +458,21 @@ function _discretize_convection_upwind_(
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac - (ae + aw + an + as + at + as) #+ aec + awc + anc + asc + atc + abc
+                        if inout
+                            AV[n] = ac - (ae + aw + an + as + at + as) + (mfluxw + mfluxe + mfluxs + mfluxn + mfluxb + mfluxt) #+ aec + awc + anc + asc + atc + abc
+                        else
+                            AV[n] = ac - (ae + aw + an + as + at + as)
+                        end
                         b[id] += b0
                     else
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac - (ae + aw + an + as + at + as) #+ aec + awc + anc + asc + atc + abc
+                        if inout
+                            AV[n] = ac - (ae + aw + an + as + at + as) + (mfluxw + mfluxe + mfluxs + mfluxn + mfluxb + mfluxt) #+ aec + awc + anc + asc + atc + abc
+                        else
+                            AV[n] = ac - (ae + aw + an + as + at + as)
+                        end
                     end
                 end
             end

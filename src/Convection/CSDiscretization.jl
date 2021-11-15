@@ -8,7 +8,8 @@ function discretize_convection end
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh1D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -39,7 +40,8 @@ function discretize_convection end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             T = T,
             N = N,
@@ -93,7 +95,8 @@ function discretize_convection end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             T = T,
             N = N,
@@ -112,7 +115,8 @@ end
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
-    mesh::UnionCSMesh2D;
+    mesh::UnionCSMesh2D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -145,7 +149,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             velocityV = velocityV,
             T = T,
@@ -203,7 +208,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             velocityV = velocityV,
             T = T,
@@ -223,7 +229,8 @@ end
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
-    mesh::UnionCSMesh3D;
+    mesh::UnionCSMesh3D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -258,7 +265,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             velocityV = velocityV,
             velocityW = velocityW,
@@ -320,7 +328,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             velocityU = velocityU,
             velocityV = velocityV,
             velocityW = velocityW,

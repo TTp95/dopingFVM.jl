@@ -544,9 +544,9 @@ function array_gradient(
                             by[id] = (num / den) * mesh.vol[i,j]
                         end
                     elseif (phi.onoff[i,j-1]) && (phi.onoff[i,j+1])
-                        dx0 = 0.5 * mesh.dy[j-1]
-                        dx1 = 0.5 * mesh.dy[j]
-                        dx2 = 0.5 * mesh.dy[j+1]
+                        dy0 = 0.5 * mesh.dy[j-1]
+                        dy1 = 0.5 * mesh.dy[j]
+                        dy2 = 0.5 * mesh.dy[j+1]
                         num = arrayG[i,j-1] * dy1 + arrayG[i,j] * dy0
                         den = dy1 + dy0
                         a = num / den
@@ -747,9 +747,9 @@ function array_gradient(
                                 by[id] = (num / den) * mesh.vol[i,j,k]
                             end
                         elseif (phi.onoff[i,j-1,k]) && (phi.onoff[i,j+1,k])
-                            dx0 = 0.5 * mesh.dy[j-1]
-                            dx1 = 0.5 * mesh.dy[j]
-                            dx2 = 0.5 * mesh.dy[j+1]
+                            dy0 = 0.5 * mesh.dy[j-1]
+                            dy1 = 0.5 * mesh.dy[j]
+                            dy2 = 0.5 * mesh.dy[j+1]
                             num = arrayG[i,j-1,k] * dy1 + arrayG[i,j,k] * dy0
                             den = dy1 + dy0
                             a = num / den

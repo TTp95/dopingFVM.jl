@@ -8,7 +8,8 @@ function _discretize_convection_secondorderupwind_(
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh1D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,1} = vel.fValues.uFace,
     T::Type{<:AbstractFloat} = Float64,
     N::Type{<:Signed} = Int64,
@@ -307,13 +308,21 @@ function _discretize_convection_secondorderupwind_(
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac + (ae + aee + aw + aww) - (aew + awe) #ac + aec + awc
+                if inout
+                    AV[n] = ac + aec + awc
+                else
+                    AV[n] = ac + (ae + aee + aw + aww) - (aew + awe) #ac + aec + awc
+                end
                 b[id] += b0
             else
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac + (ae + aee + aw + aww) - (aew + awe) #ac + aec + awc
+                if inout
+                    AV[n] = ac + aec + awc
+                else
+                    AV[n] = ac + (ae + aee + aw + aww) - (aew + awe) #ac + aec + awc
+                end
             end
         end
     end
@@ -328,7 +337,8 @@ function _discretize_convection_secondorderupwind_(
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
-    mesh::UnionCSMesh2D;
+    mesh::UnionCSMesh2D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
     T::Type{<:AbstractFloat} = Float64,
@@ -373,6 +383,14 @@ function _discretize_convection_secondorderupwind_(
                 anc = 0.0
                 b4 = 0.0
                 mflux = 0.0
+                mfluxw = 0.0
+                mfluxe = 0.0
+                mfluxs = 0.0
+                mfluxn = 0.0
+                acfw = 0.0
+                acfe = 0.0
+                acfs = 0.0
+                acfn = 0.0
                 num = 0.0
                 den = 0.0
 
@@ -384,6 +402,7 @@ function _discretize_convection_secondorderupwind_(
                     )
 
                     mflux = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
+                    mfluxw = -1.0 * rho * velocityU[i,j] * (mesh.dy[j])
 
                     if (mflux >= 0) && (i != mesh.l1) && (phi.onoff[i+1,j])
                         num = ((mesh.x[i] - 0.5 * mesh.dx[i]) - mesh.x[i])
@@ -408,6 +427,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         awc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfw = (1.0 + alpha) * max(mflux, 0.0)
                         awe = 0.0
                         b1 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -425,6 +445,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         awc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfw = (1.0 + alpha) * max(mflux, 0.0)
                         awe = 0.0
                         b1 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -509,6 +530,7 @@ function _discretize_convection_secondorderupwind_(
                     )
 
                     mflux = rho * velocityU[i+1,j] * (mesh.dy[j])
+                    mfluxe = rho * velocityU[i+1,j] * (mesh.dy[j])
 
                     if (mflux >= 0) && (i != 1) && (phi.onoff[i-1,j])
                         num = ((mesh.x[i] + 0.5 * mesh.dx[i]) - mesh.x[i])
@@ -533,6 +555,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         aec = (1.0 + alpha) * max(mflux, 0.0)
+                        acfe = (1.0 + alpha) * max(mflux, 0.0)
                         aew = 0.0
                         b2 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -550,6 +573,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         aec = (1.0 + alpha) * max(mflux, 0.0)
+                        acfe = (1.0 + alpha) * max(mflux, 0.0)
                         aew = 0.0
                         b2 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -634,6 +658,7 @@ function _discretize_convection_secondorderupwind_(
                     )
 
                     mflux = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
+                    mfluxs = -1.0 * rho * velocityV[i,j] * (mesh.dx[i])
 
                     if (mflux >= 0) && (j != mesh.m1) && (phi.onoff[i,j+1])
                         num = ((mesh.y[j] - 0.5 * mesh.dy[j]) - mesh.y[j])
@@ -658,6 +683,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         asc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfs = (1.0 + alpha) * max(mflux, 0.0)
                         asn = 0.0
                         b3 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -675,6 +701,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         asc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfs = (1.0 + alpha) * max(mflux, 0.0)
                         asn = 0.0
                         b3 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -759,6 +786,7 @@ function _discretize_convection_secondorderupwind_(
                     )
 
                     mflux = rho * velocityV[i,j+1] * (mesh.dx[i])
+                    mfluxn = rho * velocityV[i,j+1] * (mesh.dx[i])
 
                     if (mflux >= 0) && (j != 1) && (phi.onoff[i,j-1])
                         num = ((mesh.y[j] + 0.5 * mesh.dy[j]) - mesh.y[j])
@@ -783,6 +811,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         anc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfn = (1.0 + alpha) * max(mflux, 0.0)
                         ans = 0.0
                         b4 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -800,6 +829,7 @@ function _discretize_convection_secondorderupwind_(
                         end
 
                         anc = (1.0 + alpha) * max(mflux, 0.0)
+                        acfn = (1.0 + alpha) * max(mflux, 0.0)
                         ans = 0.0
                         b4 = (alpha * boundvalue) * max(mflux, 0.0)
 
@@ -891,13 +921,23 @@ function _discretize_convection_secondorderupwind_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) #ac + (aec + awc + anc + asc)
+                    if inout
+                        AV[n] = ac + (aec + awc + anc + asc)
+                        #AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) + (acfw + acfe + acfs + acfn) + (mfluxw + mfluxe + mfluxs + mfluxn)
+                    else
+                        AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) #ac + (aec + awc + anc + asc)
+                    end
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) #ac + (aec + awc + anc + asc)
+                    if inout
+                        AV[n] = ac + (aec + awc + anc + asc)
+                        #AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) + (acfw + acfe + acfs + acfn) + (mfluxw + mfluxe + mfluxs + mfluxn)
+                    else
+                        AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass) - (aew + awe + ans + asn) #ac + (aec + awc + anc + asc)
+                    end
                 end
             end
         end
@@ -913,7 +953,8 @@ function _discretize_convection_secondorderupwind_(
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
-    mesh::UnionCSMesh3D;
+    mesh::UnionCSMesh3D,
+    inout::Bool = false;
     velocityU::Array{<:AbstractFloat,3} = vel.fValues.uFace,
     velocityV::Array{<:AbstractFloat,3} = vel.fValues.vFace,
     velocityW::Array{<:AbstractFloat,3} = vel.fValues.wFace,
@@ -1740,13 +1781,21 @@ function _discretize_convection_secondorderupwind_(
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass + at + att + ab + abb) - (aew + awe + ans + asn + atb + abt) # ac + aec + awc + anc + asc + atc + abc
+                        if inout
+                            AV[n] = ac + aec + awc + anc + asc + atc + abc
+                        else
+                            AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass + at + att + ab + abb) - (aew + awe + ans + asn + atb + abt) # ac + aec + awc + anc + asc + atc + abc
+                        end
                         b[id] += b0
                     else
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass + at + att + ab + abb) - (aew + awe + ans + asn + atb + abt) # ac + aec + awc + anc + asc + atc + abc
+                        if inout
+                            AV[n] = ac + aec + awc + anc + asc + atc + abc
+                        else
+                            AV[n] = ac + (ae + aee + aw + aww + an + ann + as + ass + at + att + ab + abb) - (aew + awe + ans + asn + atb + abt) # ac + aec + awc + anc + asc + atc + abc
+                        end
                     end
                 end
             end
