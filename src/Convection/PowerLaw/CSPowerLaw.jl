@@ -8,7 +8,8 @@ function _discretize_convection_powerlaw_(
     phi::CSPhi1D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial1D,
-    mesh::UnionCSMesh1D;
+    mesh::UnionCSMesh1D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -101,13 +102,25 @@ function _discretize_convection_powerlaw_(
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac - (ae + aw) #- (ae + aw) + (aec + awc)
+
+                if inout
+                    AV[n] = ac - (ae + aw) + (aec + awc)
+                else
+                    AV[n] = ac - (ae + aw) #- (ae + aw) + (aec + awc)
+                end
+
                 b[id] += b0
             else
                 n += 1
                 AI[n] = id
                 AJ[n] = id
-                AV[n] = ac - (ae + aw) #- (ae + aw) + (aec + awc)
+
+                if inout
+                    AV[n] = ac - (ae + aw) + (aec + awc)
+                else
+                    AV[n] = ac - (ae + aw) #- (ae + aw) + (aec + awc)
+                end
+
             end
         end
     end
@@ -122,7 +135,8 @@ function _discretize_convection_powerlaw_(
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial2D,
-    mesh::UnionCSMesh2D;
+    mesh::UnionCSMesh2D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -265,13 +279,25 @@ function _discretize_convection_powerlaw_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + as + an) #ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+
+                    if inout
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+                    else
+                        AV[n] = ac - (ae + aw + as + an) #ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+                    end
+
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + as + an) #ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+
+                    if inout
+                        AV[n] = ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+                    else
+                        AV[n] = ac - (ae + aw + as + an) #ac - (ae + aw + as + an) + (aec + awc + anc + asc)
+                    end
+
                 end
             end
         end
@@ -287,7 +313,8 @@ function _discretize_convection_powerlaw_(
     phi::CSPhi3D,
     bounds::Dict{String,BoundsStructured},
     material::CSMaterial3D,
-    mesh::UnionCSMesh3D;
+    mesh::UnionCSMesh3D,
+    inout::Bool = false;
     Adiff::Union{
         SparseVector{<:AbstractFloat,<:Signed},
         SparseMatrixCSC{<:AbstractFloat,<:Signed},
@@ -480,13 +507,26 @@ function _discretize_convection_powerlaw_(
                         n += 1
                         AI[n] = id
                         AJ[n] = id
-                        AV[n] = ac - (ae + aw + as + an + ab + at) #ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+
+                        if inout
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+                        else
+                            AV[n] = ac - (ae + aw + as + an + ab + at) #ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+                        end
+
                         b[id] += b0
                     else
                         n += 1
                         AI[n] = id
                         AJ[n] = id
                         AV[n] = ac - (ae + aw + as + an + ab + at) #ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+
+                        if inout
+                            AV[n] = ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+                        else
+                            AV[n] = ac - (ae + aw + as + an + ab + at) #ac - (ae + aw + as + an + ab + at) + (aec + awc + anc + asc + atc + abc)
+                        end
+
                     end
                 end
             end

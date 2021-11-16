@@ -81,7 +81,8 @@ function discretize_convection end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             Adiff = Adiff,
             velocityU = velocityU,
             T = T,
@@ -193,7 +194,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             Adiff = Adiff,
             velocityU = velocityU,
             velocityV = velocityV,
@@ -312,7 +314,8 @@ end
             phi,
             bounds,
             material,
-            mesh;
+            mesh,
+            inout;
             Adiff = Adiff,
             velocityU = velocityU,
             velocityV = velocityV,
