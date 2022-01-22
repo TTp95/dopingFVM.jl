@@ -17,7 +17,7 @@ function discretize_BDF2OPT_time(
     materialtime2::AbstractArray = material,
     materialtime3::AbstractArray = material;
     T::Type{<:AbstractFloat} = Float64,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     n_equations = maximum_globalIndex(phi)
 
@@ -66,7 +66,7 @@ function discretize_BDF2OPT_nonUniform_time(
     materialtime2::AbstractArray = material,
     materialtime3::AbstractArray = material;
     T::Type{<:AbstractFloat} = Float64,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     n_equations = maximum_globalIndex(phi)
 

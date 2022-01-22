@@ -12,7 +12,7 @@ function velocityProjection_PPC_Incremental!(
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     if (transientScheme == 1)
         coef = deltat.dt1
@@ -55,7 +55,7 @@ function velocityProjection_PPC_Incremental!(
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     if (transientScheme == 1)
         coef = deltat.dt1
@@ -101,7 +101,7 @@ function velocityProjection_PPC_Incremental!(
     pressure::AbstractArray = velocity.p.time1,
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     if (transientScheme == 1)
         coef = deltat.dt1

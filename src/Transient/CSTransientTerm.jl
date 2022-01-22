@@ -16,7 +16,7 @@ function discretize_time(
     scheme::Signed = 1,
     forceScheme::Bool = false,
     nonUniform::Bool = false,
-    β = 0.48,
+    β::Float64 = 0.48,
 )
     if (scheme == 1) # euler
         A, b = discretize_euler_time(

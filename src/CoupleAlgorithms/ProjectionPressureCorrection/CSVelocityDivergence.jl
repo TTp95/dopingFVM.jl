@@ -12,7 +12,7 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     n_equations = maximum_globalIndex(velocity.p)
 
@@ -102,7 +102,7 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     n_equations = maximum_globalIndex(velocity.p)
 
@@ -243,7 +243,7 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
-    β::Signed = 0.48
+    β::Float64 = 0.48,
 )
     n_equations = maximum_globalIndex(velocity.p)
 

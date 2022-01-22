@@ -13,6 +13,7 @@ function discretize_PPC_pressureEquation(
     N::Type{<:Signed} = Int64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Float64 = 0.48,
 )
     A = _projection_PC_pressure_laplacian_(
         velocity.p,
@@ -30,6 +31,7 @@ function discretize_PPC_pressureEquation(
         T = T,
         transientScheme = transientScheme,
         interpolation = interpolation,
+        β = β,
     )
 
     return A, b
@@ -46,6 +48,7 @@ function discretize_PPC_pressureEquation(
     N::Type{<:Signed} = Int64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Float64 = 0.48,
 )
     A = _projection_PC_pressure_laplacian_(
         velocity.p,
@@ -64,6 +67,7 @@ function discretize_PPC_pressureEquation(
         T = T,
         transientScheme = transientScheme,
         interpolation = interpolation,
+        β = β,
     )
 
     return A, b
@@ -81,6 +85,7 @@ function discretize_PPC_pressureEquation(
     N::Type{<:Signed} = Int64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Float64 = 0.48,
 )
     A = _projection_PC_pressure_laplacian_(
         velocity.p,
@@ -100,6 +105,7 @@ function discretize_PPC_pressureEquation(
         T = T,
         transientScheme = transientScheme,
         interpolation = interpolation,
+        β = β,
     )
 
     return A, b
