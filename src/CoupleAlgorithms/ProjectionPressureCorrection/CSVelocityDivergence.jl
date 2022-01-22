@@ -12,6 +12,7 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Signed = 0.48
 )
     n_equations = maximum_globalIndex(velocity.p)
 
@@ -22,9 +23,11 @@ function _projection_PC_velocity_divergence_(
     elseif (transientScheme == 2)
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
-        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
-    elseif (transientScheme == 4)
         coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
+    elseif (transientScheme == 4)
+        coef = β * ((1.0/deltat.dt1) * (11.0  / 6.0)) + (1 - β) * (( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 10)
+        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
     else
         error("Transient scheme unimplemented...")
     end
@@ -99,19 +102,22 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Signed = 0.48
 )
     n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
     if (transientScheme == 1)
-        coef = 1.0/deltat.dt1
+        coef = (1.0 / deltat.dt1)
     elseif (transientScheme == 2)
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
-        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
-    elseif (transientScheme == 4)
         coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
+    elseif (transientScheme == 4)
+        coef = β * ((1.0/deltat.dt1) * (11.0  / 6.0)) + (1 - β) * (( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 10)
+        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
     else
         error("Transient scheme unimplemented...")
     end
@@ -237,19 +243,22 @@ function _projection_PC_velocity_divergence_(
     T::Type{<:AbstractFloat} = Float64,
     transientScheme::Signed = 1,
     interpolation::Signed = 1,
+    β::Signed = 0.48
 )
     n_equations = maximum_globalIndex(velocity.p)
 
     bdiv = zeros(T, n_equations)
 
     if (transientScheme == 1)
-        coef = 1.0/deltat.dt1
+        coef = (1.0 / deltat.dt1)
     elseif (transientScheme == 2)
         coef = (deltat.dt2 / (deltat.dt1 * (deltat.dt1 + deltat.dt2)))
     elseif (transientScheme == 3)
-        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
-    elseif (transientScheme == 4)
         coef = (1.0 / deltat.dt1) * (11.0 / 6.0)
+    elseif (transientScheme == 4)
+        coef = β * ((1.0/deltat.dt1) * (11.0  / 6.0)) + (1 - β) * (( 1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2)))
+    elseif (transientScheme == 10)
+        coef = (1.0 / deltat.dt1 ) + ( 1.0 / (deltat.dt1 + deltat.dt2))
     else
         error("Transient scheme unimplemented...")
     end

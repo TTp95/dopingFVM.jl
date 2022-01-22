@@ -348,9 +348,9 @@ function _discretize_convection_secondorderupwind_(
     n_equations = maximum_globalIndex(phi)
 
     n = 0
-    AI = zeros(N, (7 * n_equations))
-    AJ = zeros(N, (7 * n_equations))
-    AV = zeros(T, (7 * n_equations))
+    AI = zeros(N, (9 * n_equations))
+    AJ = zeros(N, (9 * n_equations))
+    AV = zeros(T, (9 * n_equations))
 
     b = zeros(T, n_equations)
 
@@ -965,9 +965,9 @@ function _discretize_convection_secondorderupwind_(
     n_equations = maximum_globalIndex(phi)
 
     n = 0
-    AI = zeros(N, (9 * n_equations))
-    AJ = zeros(N, (9 * n_equations))
-    AV = zeros(T, (9 * n_equations))
+    AI = zeros(N, (13 * n_equations))
+    AJ = zeros(N, (13 * n_equations))
+    AV = zeros(T, (13 * n_equations))
 
     b = zeros(T, n_equations)
 
@@ -1396,7 +1396,7 @@ function _discretize_convection_secondorderupwind_(
                             interpolation = interpolation
                         )
 
-                        mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[z])
+                        mflux = rho * velocityV[i,j+1,k] * (mesh.dx[i] * mesh.dz[k])
 
                         if (mflux >= 0) && (j != 1) && (phi.onoff[i,j-1,k])
                             num = ((mesh.y[j] + 0.5 * mesh.dy[j]) - mesh.y[j])
