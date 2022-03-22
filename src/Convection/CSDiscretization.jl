@@ -104,6 +104,20 @@ function discretize_convection end
             interpolation = interpolation,
         )
 
+    elseif (scheme == 7)
+        A, b = _discretize_convection_quick_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh,
+            inout;
+            velocityU = velocityU,
+            T = T,
+            N = N,
+            interpolation = interpolation,
+        )
+
     else
         error("Diffusion scheme number $(scheme) unimplemented.")
     end
@@ -206,6 +220,21 @@ end
 
     elseif (scheme == 6)
         A, b = _discretize_convection_secondorderupwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh,
+            inout;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 7)
+        A, b = _discretize_convection_quick_(
             vel,
             phi,
             bounds,
@@ -327,6 +356,22 @@ end
 
     elseif (scheme == 6)
         A, b = _discretize_convection_secondorderupwind_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh,
+            inout;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            velocityW = velocityW,
+            T = T,
+            N = N,
+            interpolation = interpolation,
+        )
+
+    elseif (scheme == 7)
+        A, b = _discretize_convection_quick_(
             vel,
             phi,
             bounds,

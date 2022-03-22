@@ -48,6 +48,11 @@ export _convection_secondorderupwind_neighbors_
 export _convection_secondorderupwind_central_
 export _convection_secondorderupwind_bounds_
 
+export _discretize_convection_quick_
+export _convection_quick_neighbors_
+export _convection_quick_central_
+export _convection_quick_bounds_
+
 include("CSDiscretization.jl")
 
 include("./CentralDifference/CSCentralDifference.jl")
@@ -85,5 +90,11 @@ include("./SOU/CSSOU.jl")
 include("./SOU/CSSOUCoefficients.jl")
 
 include("./SOU/CSSOUCoefficientsBoundaries.jl")
+
+include("./QUICK/CSQUICK.jl")
+
+include("./QUICK/CSQUICKCoefficients.jl")
+
+include("./QUICK/CSQUICKCoefficientsBoundaries.jl")
 
 end # module
