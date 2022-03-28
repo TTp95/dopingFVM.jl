@@ -282,6 +282,7 @@ function _discretize_convection_quick_(
     return A, b
 end
 
+# TODO: No se puede usar una condición de borde distinta de cero en la parte sur
 function _discretize_convection_quick_(
     vel::CSVelocity2D,
     phi::CSPhi2D,
