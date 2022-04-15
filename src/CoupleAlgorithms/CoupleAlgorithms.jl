@@ -26,6 +26,10 @@ export SIMPLE_correction!
 
 export SIMPLER_pseudovelocity
 
+export PISO_correction!
+export discretize_PISO_PressureCorrection
+export PISO_pseudovelocity
+
 export discretize_SIMPLEC_PressureCorrection
 export SIMPLEC_correction!
 
@@ -47,6 +51,12 @@ include("./SIMPLEC/CSPressureCorrectionDiscretization.jl")
 include("./SIMPLEC/CSCorrectionSIMPLEC.jl")
 
 include("./SIMPLER/CSPseudovelocitySIMPLER.jl")
+
+include("./PISO/CSPressureCorrectionDiscretization.jl")
+
+include("./PISO/CSCorrectionPISO.jl")
+
+include("./PISO/CSPseudovelocityPISO.jl")
 
 include("./ProjectionPressureCorrection/CSPressureLaplacian.jl")
 
