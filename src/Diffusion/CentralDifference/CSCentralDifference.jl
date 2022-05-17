@@ -111,6 +111,20 @@ function _discretize_diffusion_centralDifference_(
 
     b = zeros(T, n_equations)
 
+    #Auxiliar variables
+    id = 0
+    ac = 0.0
+    b0 = 0.0
+    aw = 0.0
+    b1 = 0.0
+    ae = 0.0
+    b2 = 0.0
+    as = 0.0
+    b3 = 0.0
+    an = 0.0
+    b4 = 0.0
+    gamma = 0.0
+
     for i in 1:mesh.l1
         for j in 1:mesh.m1
             if phi.onoff[i,j]
@@ -134,7 +148,7 @@ function _discretize_diffusion_centralDifference_(
                         mesh.dx[i], mesh.dx[i-1], material.Γ[i,j], material.Γ[i-1,j];
                         interpolation = interpolation
                     )
-                    @inbounds aw, b1 = _diffusion_centralDifference_neighbors_(
+                    aw, b1 = _diffusion_centralDifference_neighbors_(
                         gamma, mesh.dx[i], mesh.dx[i-1], (mesh.dy[j])
                     )
                     n += 1
@@ -150,7 +164,7 @@ function _discretize_diffusion_centralDifference_(
                         mesh.dx[i], mesh.dx[i+1], material.Γ[i,j], material.Γ[i+1,j];
                         interpolation = interpolation
                     )
-                    @inbounds ae, b2 = _diffusion_centralDifference_neighbors_(
+                    ae, b2 = _diffusion_centralDifference_neighbors_(
                         gamma, mesh.dx[i], mesh.dx[i+1], (mesh.dy[j])
                     )
                     n += 1
@@ -166,7 +180,7 @@ function _discretize_diffusion_centralDifference_(
                         mesh.dy[j], mesh.dy[j-1], material.Γ[i,j], material.Γ[i,j-1];
                         interpolation = interpolation
                     )
-                    @inbounds as, b3 = _diffusion_centralDifference_neighbors_(
+                    as, b3 = _diffusion_centralDifference_neighbors_(
                         gamma, mesh.dy[j], mesh.dy[j-1], (mesh.dx[i])
                     )
                     n += 1
@@ -182,7 +196,7 @@ function _discretize_diffusion_centralDifference_(
                         mesh.dy[j], mesh.dy[j+1], material.Γ[i,j], material.Γ[i,j+1];
                         interpolation = interpolation
                     )
-                    @inbounds an, b4 = _diffusion_centralDifference_neighbors_(
+                    an, b4 = _diffusion_centralDifference_neighbors_(
                         gamma, mesh.dy[j], mesh.dy[j+1], (mesh.dx[i])
                     )
                     n += 1
@@ -194,7 +208,7 @@ function _discretize_diffusion_centralDifference_(
 
                 #Center Coefficent
                 if phi.bounds[i,j]
-                    @inbounds ac, b0 = _diffusion_centralDifference_central_(
+                    ac, b0 = _diffusion_centralDifference_central_(
                         i,
                         j,
                         phi,
