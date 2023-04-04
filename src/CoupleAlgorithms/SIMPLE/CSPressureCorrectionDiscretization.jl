@@ -471,7 +471,7 @@ function discretize_SIMPLE_PressureCorrection(
                         b[id] += b3
                     end
 
-                    #North Coefficents
+                    #North Coefficents 3D
                     if (j != mesh.m1) && (mesh.m1 != 1) && (phi.onoff[i,j+1,k])
                         rho = density_interpolation(
                             mesh.dy[j], mesh.dy[j+1], material.ρ[i,j,k], material.ρ[i,j+1,k];
