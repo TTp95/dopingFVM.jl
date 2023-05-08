@@ -248,6 +248,21 @@ end
             interpolation = interpolation,
         )
 
+    elseif (scheme == 106)
+        A, b = _discretize_convection_secondorderupwind_TVD_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh,
+            inout;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            interpolation = interpolation,
+        )
+
     else
         error("Diffusion scheme number $(scheme) unimplemented.")
     end
