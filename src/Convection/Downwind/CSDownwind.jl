@@ -227,13 +227,15 @@ function _discretize_convection_downwind_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    # AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    AV[n] = ac + (aec + awc + anc + asc)
                     b[id] += b0
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    # AV[n] = ac - (ae + aw + an + as) #+ (aec + awc + anc + asc)
+                    AV[n] = ac + (aec + awc + anc + asc)
                 end
             end
         end

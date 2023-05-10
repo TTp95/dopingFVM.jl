@@ -248,7 +248,7 @@ end
             interpolation = interpolation,
         )
 
-    elseif (scheme == 106)
+    elseif (scheme == 100)
         A, b = _discretize_convection_secondorderupwind_TVD_(
             vel,
             phi,

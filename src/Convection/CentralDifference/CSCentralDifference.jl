@@ -219,13 +219,20 @@ function _discretize_convection_centralDifference_(
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae - aw + an - as)#+ aec - awc + anc - asc
+                    # TODO
+                    # AV[n] = ac - (ae - aw + an - as)#+ aec - awc + anc - asc
+                    AV[n] = ac + aec - awc + anc - asc
                     b[id] += b0
+
+                    # println("$(i),$(j) -> $(AV[n]) =  $(ac),$(aw),$(ae),$(an),$(as)")
                 else
                     n += 1
                     AI[n] = id
                     AJ[n] = id
-                    AV[n] = ac - (ae - aw + an - as)#+ aec - awc + anc - asc
+                    # AV[n] = ac - (ae - aw + an - as)#+ aec - awc + anc - asc
+                    AV[n] = ac + aec - awc + anc - asc
+
+                    # println("$(i),$(j) -> $(AV[n]) = $(ac),$(aw),$(ae),$(an),$(as)")
                 end
             end
         end
