@@ -34,6 +34,7 @@ function _discretize_convection_secondorderupwind_TVD_(
         value_m = 0.0
         value_n = 0.0
 
+        # MINMOD
         if rf < 0.0
             value_m = 0.0
             value_n = 0.0
@@ -47,6 +48,21 @@ function _discretize_convection_secondorderupwind_TVD_(
             value_n = 0.0
 
         end
+
+        # OSHER
+        # if rf < 0.0
+        #     value_m = 0.0
+        #     value_n = 0.0
+        #
+        # elseif rf > 2.0
+        #     value_m = 0.0
+        #     value_n = 2.0
+        #
+        # else
+        #     value_m = 1.0
+        #     value_n = 0.0
+        #
+        # end
 
         # UP
         # value_m = 0.0
