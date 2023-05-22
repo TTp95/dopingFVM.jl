@@ -249,7 +249,8 @@ end
         )
 
     elseif (scheme == 100)
-        A, b = _discretize_convection_secondorderupwind_TVD_(
+        error()
+        A, b = _discretize_convection_TVD_(
             vel,
             phi,
             bounds,
@@ -385,25 +386,70 @@ end
             interpolation = interpolation,
         )
 
-    elseif (scheme == 7)
-        A, b = _discretize_convection_quick_(
-            vel,
-            phi,
-            bounds,
-            material,
-            mesh,
-            inout;
-            velocityU = velocityU,
-            velocityV = velocityV,
-            velocityW = velocityW,
-            T = T,
-            N = N,
-            interpolation = interpolation,
-        )
+    # elseif (scheme == 7)
+    #     A, b = _discretize_convection_quick_(
+    #         vel,
+    #         phi,
+    #         bounds,
+    #         material,
+    #         mesh,
+    #         inout;
+    #         velocityU = velocityU,
+    #         velocityV = velocityV,
+    #         velocityW = velocityW,
+    #         T = T,
+    #         N = N,
+    #         interpolation = interpolation,
+    #     )
 
     else
         error("Diffusion scheme number $(scheme) unimplemented.")
     end
+
+    return A, b
+end
+
+# ---
+# ---
+# TVD
+# ---
+# ---
+
+@inline function discretize_convection(
+    tvd_scheme::Signed,
+    vel::CSVelocity2D,
+    phi::CSPhi2D,
+    bounds::Dict{String,BoundsStructured},
+    material::CSMaterial2D,
+    mesh::UnionCSMesh2D,
+    inout::Bool = false;
+    Adiff::Union{
+        SparseVector{<:AbstractFloat,<:Signed},
+        SparseMatrixCSC{<:AbstractFloat,<:Signed},
+        Array{<:AbstractFloat,2},
+    } = [0.0 0.0; 0.0 0.0;],
+    velocityU::Array{<:AbstractFloat,2} = vel.fValues.uFace,
+    velocityV::Array{<:AbstractFloat,2} = vel.fValues.vFace,
+    T::Type{<:AbstractFloat} = Float64,
+    N::Type{<:Signed} = Int64,
+    scheme::Signed = 5,
+    interpolation::Signed = 1,
+)
+
+    A, b = _discretize_convection_TVD_(
+        tvd_scheme,
+        vel,
+        phi,
+        bounds,
+        material,
+        mesh,
+        inout;
+        velocityU = velocityU,
+        velocityV = velocityV,
+        T = T,
+        N = N,
+        interpolation = interpolation,
+    )
 
     return A, b
 end
