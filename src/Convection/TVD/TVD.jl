@@ -600,25 +600,25 @@ function _discretize_convection_TVD_(
                     end
                 end
 
-                println("")
-                println("$id")
-                println("Center")
-                println("ac + aec + awc + anc + asc -- b[id]")
-                println("$ac + $aec + $awc + $anc + $asc -- $(b[id])")
-
-                println("")
-
-                println("awd1 + awd2 + awd3")
-                println("$awd1 + $awd2 + $awc")
-
-                println("aed1 + aed2 + aed3")
-                println("$aed1 + $aed2 + $aec")
-
-                println("asd1 + asd2 + asd3")
-                println("$asd1 + $asd2 + $asc")
-
-                println("and1 + and2 + and3")
-                println("$and1 + $and2 + $anc")
+                # println("")
+                # println("$id")
+                # println("Center")
+                # println("ac + aec + awc + anc + asc -- b[id]")
+                # println("$ac + $aec + $awc + $anc + $asc -- $(b[id])")
+                #
+                # println("")
+                #
+                # println("awd1 + awd2 + awd3")
+                # println("$awd1 + $awd2 + $awc")
+                #
+                # println("aed1 + aed2 + aed3")
+                # println("$aed1 + $aed2 + $aec")
+                #
+                # println("asd1 + asd2 + asd3")
+                # println("$asd1 + $asd2 + $asc")
+                #
+                # println("and1 + and2 + and3")
+                # println("$and1 + $and2 + $anc")
 
             end
         end
@@ -751,6 +751,52 @@ function tvd_coef(rf, tvd_scheme)
             value_c = 2.0
 
         end
+
+    elseif tvd_scheme == 105
+        # TVD -> Van Leer
+
+        if rf > 0.0
+            frf_w = 2 * (rf - 0.01) / (1 + (rf - 0.01))
+            frf_p = 2 * rf / (1 + rf)
+            frf_e = 2 * (rf + 0.01) / (1 + (rf + 0.01))
+            value_m = 2.0 * (frf_e - frf_w) / (0.02)
+            value_n = 2.0 * (frf_p - value_m * rf)
+            value_c = 0.0
+
+        else
+            value_m = 0.0
+            value_n = 0.0
+            value_c = 0.0
+        end
+    #
+    # elseif tvd_scheme == 201
+    #     # TVD -> DoubleMINMOD
+    #
+    #     if rf > 0.0
+    #         frf = min(1.0, 4.0 * rf / (1.0 + rf), 4.0 / (1.0 + rf))
+    #
+    #         if frf == 1.0
+    #             value_m = 0.0
+    #             value_n = 0.0
+    #             value_c = 0.0
+    #
+    #         elseif frf == 4.0 * rf / (1.0 + rf)
+    #         elseif frf == 4.0 / (1.0 + rf)
+    #         end
+    #
+    #         frf_w = 2 * (rf - 0.01) / (1 + (rf - 0.01))
+    #         frf_p = min(1, 4 * rf / (1 + rf), 4 / (1 + rf)  )
+    #         frf_e = 2 * (rf + 0.01) / (1 + (rf + 0.01))
+    #         value_m = (frf_e - frf_w) / (0.02)
+    #         value_n = (frf_p - value_m * rf)
+    #         value_c = 0.0
+    #
+    #     else
+    #         value_m = 0.0
+    #         value_n = 0.0
+    #         value_c = 0.0
+    #
+    #     end
 
     # elseif tvd_scheme == 1xx
     #     # TVD -> xxxxx
