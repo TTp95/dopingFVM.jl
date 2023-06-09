@@ -3,6 +3,7 @@
 """
 function _discretize_convection_TVD_(
     tvd_scheme::Signed,
+    dt::Float64,
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
@@ -15,7 +16,7 @@ function _discretize_convection_TVD_(
     N::Type{<:Signed} = Int64,
     interpolation::Signed = 1,
 )
-    println("TVD")
+    # println("TVD")
 
     n_equations = maximum_globalIndex(phi)
 
@@ -106,8 +107,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
-
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityU[i,j] * dt / mesh.dx[i]))
                         m_tvd = m_coef * ge
                         n_tvd = n_coef * gw + c_coef
 
@@ -162,7 +162,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i-1,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityU[i,j] * dt / mesh.dx[i]))
 
                         m_tvd = m_coef * gww
                         n_tvd = n_coef * (1.0 - gw) + c_coef
@@ -229,7 +229,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityU[i+1,j] * dt / mesh.dx[i]))
 
                         m_tvd = m_coef * gw
                         n_tvd = n_coef * ge + c_coef
@@ -285,7 +285,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i+1,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityU[i+1,j] * dt / mesh.dx[i]))
 
                         m_tvd = m_coef * gee
                         n_tvd = n_coef * (1.0 - ge) + c_coef
@@ -354,7 +354,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityV[i,j] * dt / mesh.dy[j]))
 
                         m_tvd = m_coef * gn
                         n_tvd = n_coef * gs + c_coef
@@ -410,7 +410,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j-1]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityV[i,j] * dt / mesh.dy[j]))
 
                         m_tvd = m_coef * gss
                         n_tvd = n_coef * (1.0 - gs) + c_coef
@@ -479,7 +479,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityV[i,j+1] * dt / mesh.dy[j]))
 
                         m_tvd = m_coef * gs
                         n_tvd = n_coef * gn + c_coef
@@ -535,7 +535,7 @@ function _discretize_convection_TVD_(
                         vc = phi.eval[i,j+1]
 
                         vrf = rf(vu, vc, vd)
-                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme)
+                        m_coef, n_coef, c_coef = tvd_coef(vrf, tvd_scheme, (velocityV[i,j+1] * dt / mesh.dy[j]))
 
                         m_tvd = m_coef * gnn
                         n_tvd = n_coef * (1.0 - gn) + c_coef
@@ -629,7 +629,8 @@ function _discretize_convection_TVD_(
     return A, b
 end
 
-function tvd_coef(rf, tvd_scheme)
+function tvd_coef(rf, tvd_scheme, cfl_neg)
+    cfl = abs(cfl_neg)
 
     if tvd_scheme == 1
         # CD
@@ -768,7 +769,27 @@ function tvd_coef(rf, tvd_scheme)
             value_n = 0.0
             value_c = 0.0
         end
-    #
+
+    elseif tvd_scheme == 106
+        # TVD -> SUPERBEE CFL
+
+        if rf > 0.0
+            frf(rf) = maximum([0.0; minimum([1.0; 2.0*(1.0 - cfl)*rf/cfl]); minimum([2.0; rf])])
+            # println("$(frf(rf))")
+            # println("$(cfl)")
+            frf_w = 2 * frf(rf - 0.001)
+            frf_p = 2 * frf(rf)
+            frf_e = 2 * frf(rf + 0.001)
+            value_m = 2.0 * (frf_e - frf_w) / (0.002)
+            value_n = 2.0 * (frf_p - value_m * rf)
+            value_c = 0.0
+
+        else
+            value_m = 0.0
+            value_n = 0.0
+            value_c = 0.0
+        end
+
     # elseif tvd_scheme == 201
     #     # TVD -> DoubleMINMOD
     #

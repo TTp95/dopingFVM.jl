@@ -881,3 +881,160 @@ function array_gradient(
 
     return bx, by, bz
 end
+
+function array_gradient_bound(
+    arrayG::Array{<:AbstractFloat,2},
+    phi::CSPhi2D,
+    bounds::Dict{String,BoundsStructured},
+    mesh::UnionCSMesh2D,;
+    T::Type{<:AbstractFloat} = Float64,
+)
+    n_equations = maximum_globalIndex(phi)
+
+    bx = zeros(T, n_equations)
+    by = zeros(T, n_equations)
+
+    value = 0.0
+
+    for i in 1:mesh.l1
+        for j in 1:mesh.m1
+            if phi.onoff[i,j]
+                if (mesh.l1 != 1)
+                    if (i == 1)
+                        id = phi.gIndex[i,j]
+                        value = 0.0
+                        if phi.bounds[i,j]
+                            value = find_bondValue(i, j, id, phi, mesh, bounds, 'w')
+                        else
+                            value = phi.eval[i,j]
+                        end
+                        dx0 = 0.0
+                        dx1 = 0.5 * mesh.dx[i]
+                        dx2 = 0.5 * mesh.dx[i+1]
+                        a = value
+                        num = arrayG[i,j] * dx2 + arrayG[i+1,j] * dx1
+                        den = dx1 + dx2
+                        b = num / den
+                        bx[id] = ((b - a) / mesh.dx[i])
+                        # id = phi.gIndex[i,j]
+                        # num = arrayG[i+1,j] - arrayG[i,j]
+                        # den = 0.5 * (mesh.dx[i] + mesh.dx[i+1])
+                        # bx[id] = (num / den)
+                    elseif (i == mesh.l1)
+                        id = phi.gIndex[i,j]
+                        value = 0.0
+                        if phi.bounds[i,j]
+                            value = find_bondValue(i, j, id, phi, mesh, bounds, 'e')
+                        else
+                            value = phi.eval[i,j]
+                        end
+                        dx0 = 0.5 * mesh.dx[i-1]
+                        dx1 = 0.5 * mesh.dx[i]
+                        dx2 = 0.0
+                        num = arrayG[i-1,j] * dx1 + arrayG[i,j] * dx0
+                        den = dx1 + dx0
+                        a = num / den
+                        b = value
+                        bx[id] = ((b - a) / mesh.dx[i])
+                        # id = phi.gIndex[i,j]
+                        # num = arrayG[i,j] - arrayG[i-1,j]
+                        # den = 0.5 * (mesh.dx[i] + mesh.dx[i-1])
+                        # bx[id] = (num / den)
+                    elseif (phi.onoff[i-1,j]) && (phi.onoff[i+1,j])
+                        id = phi.gIndex[i,j]
+                        dx0 = 0.5 * mesh.dx[i-1]
+                        dx1 = 0.5 * mesh.dx[i]
+                        dx2 = 0.5 * mesh.dx[i+1]
+                        num = arrayG[i-1,j] * dx1 + arrayG[i,j] * dx0
+                        den = dx1 + dx0
+                        a = num / den
+                        num = arrayG[i,j] * dx2 + arrayG[i+1,j] * dx1
+                        den = dx1 + dx2
+                        b = num / den
+                        bx[id] = ((b - a) / mesh.dx[i])
+                    elseif (!phi.onoff[i-1,j])
+                        id = phi.gIndex[i,j]
+                        num = arrayG[i+1,j] - arrayG[i,j]
+                        den = 0.5 * (mesh.dx[i] + mesh.dx[i+1])
+                        bx[id] = (num / den)
+                    elseif (!phi.onoff[i+1,j])
+                        id = phi.gIndex[i,j]
+                        num = arrayG[i,j] - arrayG[i-1,j]
+                        den = 0.5 * (mesh.dx[i] + mesh.dx[i-1])
+                        bx[id] = (num / den)
+                    else
+                        error("CONFIGURATION ERROR")
+                    end
+                end
+
+                if (mesh.m1 != 1)
+                    if (j == 1)
+                        id = phi.gIndex[i,j]
+                        if phi.bounds[i,j]
+                            value = find_bondValue(i, j, id, phi, mesh, bounds, 's')
+                        else
+                            value = phi.eval[i,j]
+                        end
+                        dy0 = 0.0
+                        dy1 = 0.5 * mesh.dy[j]
+                        dy2 = 0.5 * mesh.dy[j+1]
+                        a = value
+                        num = arrayG[i,j] * dy2 + arrayG[i,j+1] * dy1
+                        den = dy1 + dy2
+                        b = num / den
+                        by[id] = ((b - a) / mesh.dy[j])
+                        # id = phi.gIndex[i,j]
+                        # num = arrayG[i,j+1] - arrayG[i,j]
+                        # den = 0.5 * (mesh.dy[j] + mesh.dy[j+1])
+                        # by[id] = (num / den)
+                    elseif (j == mesh.m1)
+                        id = phi.gIndex[i,j]
+                        if phi.bounds[i,j]
+                            value = find_bondValue(i, j, id, phi, mesh, bounds, 'n')
+                        else
+                            value = phi.eval[i,j]
+                        end
+                        dy0 = 0.5 * mesh.dy[j-1]
+                        dy1 = 0.5 * mesh.dy[j]
+                        dy2 = 0.0
+                        num = arrayG[i,j-1] * dy1 + arrayG[i,j] * dy0
+                        den = dy1 + dy0
+                        a = num / den
+                        b = value
+                        by[id] = ((b - a) / mesh.dy[j])
+                        # id = phi.gIndex[i,j]
+                        # num = arrayG[i,j] - arrayG[i,j-1]
+                        # den = 0.5 * (mesh.dy[j] + mesh.dy[j-1])
+                        # by[id] = (num / den)
+                    elseif (phi.onoff[i,j-1]) && (phi.onoff[i,j+1])
+                        id = phi.gIndex[i,j]
+                        dy0 = 0.5 * mesh.dy[j-1]
+                        dy1 = 0.5 * mesh.dy[j]
+                        dy2 = 0.5 * mesh.dy[j+1]
+                        num = arrayG[i,j-1] * dy1 + arrayG[i,j] * dy0
+                        den = dy1 + dy0
+                        a = num / den
+                        num = arrayG[i,j] * dy2 + arrayG[i,j+1] * dy1
+                        den = dy1 + dy2
+                        b = num / den
+                        by[id] = ((b - a) / mesh.dy[j])
+                    elseif (!phi.onoff[i,j-1])
+                        id = phi.gIndex[i,j]
+                        num = arrayG[i,j+1] - arrayG[i,j]
+                        den = 0.5 * (mesh.dy[j] + mesh.dy[j+1])
+                        by[id] = (num / den)
+                    elseif (!phi.onoff[i,j+1])
+                        id = phi.gIndex[i,j]
+                        num = arrayG[i,j] - arrayG[i,j-1]
+                        den = 0.5 * (mesh.dy[j] + mesh.dy[j-1])
+                        by[id] = (num / den)
+                    else
+                        error("CONFIGURATION ERROR")
+                    end
+                end
+            end
+        end
+    end
+
+    return bx, by
+end

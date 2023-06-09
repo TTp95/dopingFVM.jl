@@ -417,6 +417,7 @@ end
 
 @inline function discretize_convection(
     tvd_scheme::Signed,
+    dt::Float64,
     vel::CSVelocity2D,
     phi::CSPhi2D,
     bounds::Dict{String,BoundsStructured},
@@ -438,6 +439,7 @@ end
 
     A, b = _discretize_convection_TVD_(
         tvd_scheme,
+        dt,
         vel,
         phi,
         bounds,

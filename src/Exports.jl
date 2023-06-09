@@ -127,6 +127,7 @@ end
 @publish Gradients pressure_phi_gradient
 @publish Gradients array_gradient
 @publish Gradients array_coordGradient
+@publish Gradients array_gradient_bound
 
 @publish Transient discretize_time
 

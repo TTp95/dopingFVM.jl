@@ -18,6 +18,7 @@ using dopingFVM.Bounds
 export pressure_phi_gradient
 export array_gradient
 export array_coordGradient
+export array_gradient_bound
 
 include("CSPressurePhiGradient.jl")
 
