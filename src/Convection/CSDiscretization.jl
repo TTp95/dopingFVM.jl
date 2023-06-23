@@ -248,6 +248,21 @@ end
             interpolation = interpolation,
         )
 
+    elseif (scheme == 8)
+        A, b = _discretize_convection_FROMM_(
+            vel,
+            phi,
+            bounds,
+            material,
+            mesh,
+            inout;
+            velocityU = velocityU,
+            velocityV = velocityV,
+            T = T,
+            N = N,
+            interpolation = interpolation,
+        )
+
     elseif (scheme == 100)
         error()
         A, b = _discretize_convection_TVD_(

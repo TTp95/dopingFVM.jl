@@ -54,6 +54,7 @@ export _convection_quick_central_
 export _convection_quick_bounds_
 
 export _discretize_convection_TVD_
+export _discretize_convection_FROMM_
 
 include("CSDiscretization.jl")
 
@@ -101,8 +102,6 @@ include("./QUICK/CSQUICKCoefficientsBoundaries.jl")
 
 include("./TVD/TVD.jl")
 
-# include("./SOU/CSSOUCoefficients.jl")
-
-# include("./SOU/CSSOUCoefficientsBoundaries.jl")
+include("./FROMM/FROMM.jl")
 
 end # module
