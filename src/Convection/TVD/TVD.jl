@@ -699,8 +699,8 @@ function tvd_coef(rf, tvd_scheme, cfl_neg)
             value_c = 0.0
 
         elseif rf <= 2.0
-            value_m = 0.0
-            value_n = 2.0
+            value_m = 2.0
+            value_n = 0.0
             value_c = 0.0
 
         elseif rf > 2.0
